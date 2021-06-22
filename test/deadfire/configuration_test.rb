@@ -13,6 +13,14 @@ class ConfigurationTest < Minitest::Test
     assert_equal ["app/js"], Deadfire.configuration.directories
   end
 
+  def test_raises_error_when_invalid_root_path
+    assert_raises(Deadfire::DirectoryNotFoundError) do
+      Deadfire.configure do |config|
+        config.root_path = "fake_dir"
+      end
+    end
+  end
+
   def test_reset_configuration
     Deadfire.configure do |config|
       config.directories << "app/js"

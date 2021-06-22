@@ -1,60 +1,39 @@
+require 'strscan'
+
 module Deadfire
   class Apply
     TAG = "@apply"
     NEWLINE = "\n"
 
-    def initialize(input)
-      @cached_css = {}
-      @input = input
+    singleton_class.attr_accessor :cached_mixins
+    self.cached_mixins = {}
+
+    def initialize(input, lineno)
+      @buffer = input
+      @output = []
+      @lineno = lineno
     end
 
-    def self.rework(input)
-      new(input).rework
-    end
+    def resolve
+      raise EarlyApplyException.new(@buffer, @lineno) if Apply.cached_mixins.empty?
 
-    def rework
-      output = []
-      input.split(NEWLINE).each do |line|
-        case
-        when line.include?(TAG)
-          _, values = line.split(" ")
-          css_keys = find_apply_keys(line)
-          css_keys.each do |key|
-            puts key.inspect
-            output << "  " + find(key)
-          end
-        else
-          output << line
-        end
+      @buffer.split(" ").each do |css|
+        next if css.include?(TAG)
+        css.gsub!(";", "")
+
+        @output << find(css)
       end
-      separated_without_empty_lines(output)
+
+      @output.join(NEWLINE)
     end
 
     private
 
-      attr_reader :cached_css, :input
-
+      # find css class key/val from hash, otherwise throw because the mixin is not defined
       def find(key)
-        if cached_css.include?(key)
-          cached_css[key]
-        else
-          cached_css[key] = find_css(key)
-        end
-      end
+        raise EarlyApplyException.new(key, @lineno) unless Apply.cached_mixins.include?(key)
 
-      def find_css(key)
-        # find class from input, then pull out css and add to cache
-        "padding: 0.5rem;"
-      end
-
-      def find_apply_keys(line)
-        values = line.gsub("@apply", "")
-        values.gsub!(";", "").strip!
-        values.split(" ").map { |key| ".#{key}" }
-      end
-
-      def separated_without_empty_lines(output)
-        output.reject { |line| line.strip.empty? }.join(NEWLINE)
+        Apply.cached_mixins[key]
       end
   end
 end

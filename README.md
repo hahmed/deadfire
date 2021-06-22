@@ -1,8 +1,25 @@
 # Deadfire
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/autoprefixer/rb`. To experiment with that code, run `bin/console` for an interactive prompt.
+WIP: This gem/readme is a work in progress.
 
-TODO: Delete this and the text above, and describe your gem
+Use plain old boring css in the asset pipeline with a little bit of @import, @apply and nestings.
+
+By using this gem, there is no need to rely on the JS pipeline (nodejs/webpack) for your css.
+
+## Usage
+
+Import example;
+
+```CSS
+@import "print";
+@import "shared/buttons.css";
+```
+
+## TODO
+
+- Add support for @import
+- Add support for [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
+- Add support for [nesting](https://drafts.csswg.org/css-nesting-1)
 
 ## Installation
 
@@ -19,10 +36,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install deadfire
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
