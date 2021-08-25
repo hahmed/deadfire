@@ -22,8 +22,6 @@ module Deadfire
   end
 
   class << self
-    attr_accessor :configuration
-
     def configuration
       @configuration ||= Configuration.new
     end
@@ -33,7 +31,7 @@ module Deadfire
     end
 
     def configure
-      yield(configuration)
+      yield(@configuration)
     end
 
     def execute(file)

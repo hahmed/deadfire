@@ -1,6 +1,6 @@
 module Deadfire
   class Configuration
-    attr_accessor :directories, :root_path
+    attr_reader :directories, :root_path
 
     def initialize
       @directories = []

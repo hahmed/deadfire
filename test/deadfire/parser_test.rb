@@ -38,6 +38,20 @@ class ParserTest < Minitest::Test
     end
   end
 
+  def test_custom_mixin_parses_correctly
+    output = <<~OUTPUT
+    :root {
+      --main-color: hotpink;
+      --admin-header-padding: 5px 42px;
+    }
+    OUTPUT
+
+    assert_equal output.chomp, Deadfire::Parser.call(options("custom_mixins.css"))
+    assert Deadfire::Apply.cached_mixins.include?("--bg-header")
+    output = {"color"=>"red", "padding"=>"4px"}
+    assert_equal output, Deadfire::Apply.cached_mixins["--bg-header"]
+  end
+
   private
 
     def options(filename)

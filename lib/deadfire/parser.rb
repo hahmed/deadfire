@@ -6,7 +6,7 @@ module Deadfire
     OPENING_SELECTOR_PATTERN  = /\..*\{/
     OPENING_SELECTOR_PATTERN2 = /\s*\{/
     CLOSING_SELECTOR_PATTERN  = /\s*\}/
-    ROOT_SELECTOR_PATTERN     = /\::root*\}/
+    ROOT_SELECTOR_PATTERN     = ":root {"
     IMPORT_SELECTOR_PATTERN   = "@import"
     APPLY_SELECTOR_PATTERN    = "@apply"
 
@@ -44,6 +44,9 @@ module Deadfire
         elsif line.include?(APPLY_SELECTOR_PATTERN)
           apply = Apply.new(line, buffer.lineno)
           apply.resolve
+        elsif line.include?(ROOT_SELECTOR_PATTERN)
+          mixins = Mixin.new(buffer, line, buffer.lineno)
+          mixins.resolve
         else
           line
         end

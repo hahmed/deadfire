@@ -6,7 +6,7 @@ module Deadfire
     NEWLINE = "\n"
 
     singleton_class.attr_accessor :cached_mixins
-    self.cached_mixins = {}
+    self.cached_mixins = Hash.new { |h, k| h[k] = [] }
 
     def initialize(input, lineno)
       @buffer = input
