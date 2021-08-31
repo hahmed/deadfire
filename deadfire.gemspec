@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Haroon Ahmed"]
   spec.email         = ["haroon.ahmed25@gmail.com"]
 
-  spec.summary       = "Deadfire - css imports"
+  spec.summary       = "Deadfire - minimal css preprocessor"
   spec.homepage      = "https://github.com/hahmed/deadfire"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7")
