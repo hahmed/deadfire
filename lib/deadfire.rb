@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "deadfire/version"
 require_relative "deadfire/configuration"
 require_relative "deadfire/parser"

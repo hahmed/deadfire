@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deadfire
   class Configuration
     attr_reader :directories, :root_path
