@@ -1,10 +1,14 @@
 # Deadfire
 
-WIP: This gem/readme is a work in progress.
+A miminal CSS preprocessor.
 
 Use plain old boring css in the asset pipeline with a little bit of @import, @apply and nestings.
 
-By using this gem, there is no need to rely on the JS pipeline (nodejs/webpack) for your css.
+## Features
+
+- [x] @import
+- [x] [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
+- [ ] [nesting](https://drafts.csswg.org/css-nesting-1)
 
 ## Usage
 
@@ -14,12 +18,6 @@ Import example;
 @import "print";
 @import "shared/buttons.css";
 ```
-
-## TODO
-
-- Add support for @import
-- Add support for [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
-- Add support for [nesting](https://drafts.csswg.org/css-nesting-1)
 
 ## Installation
 
@@ -45,7 +43,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/deadfire. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/deadfire/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/hahmed/deadfire. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hahmed/deadfire/blob/master/CODE_OF_CONDUCT.md).
 
 
 ## License
@@ -54,4 +52,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Autoprefixer::Rb project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/deadfire/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Autoprefixer::Rb project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hahmed/deadfire/blob/master/CODE_OF_CONDUCT.md).
