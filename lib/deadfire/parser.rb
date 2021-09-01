@@ -19,7 +19,7 @@ module Deadfire
     attr_reader :output
 
     def initialize(options)
-      @buffer   = StringIO.new(options[:input])
+      @buffer   = StringIO.new(options[:data])
       @filename = options[:filename]
       @output   = StringIO.new
       @lineno   = 0

@@ -57,7 +57,7 @@ class ParserTest < Minitest::Test
     def options(filename)
       {
         filename: filename,
-        input: css_input(filename)
+        data: css_input(filename)
       }
     end
 
