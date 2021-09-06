@@ -8,6 +8,8 @@ module Deadfire
     OPENING_SELECTOR_PATTERN  = /\..*\{/
     OPENING_SELECTOR_PATTERN2 = /\s*\{/
     CLOSING_SELECTOR_PATTERN  = /\s*\}/
+    BEGIN_COMMENT_PATTERN  = "/*"
+    END_COMMENT_PATTERN  = "*/"
     ROOT_SELECTOR_PATTERN     = ":root {"
     IMPORT_SELECTOR_PATTERN   = "@import"
     APPLY_SELECTOR_PATTERN    = "@apply"
@@ -18,8 +20,8 @@ module Deadfire
 
     attr_reader :output
 
-    def initialize(options)
-      @buffer   = StringIO.new(options[:data])
+    def initialize(content, options = {})
+      @buffer   = StringIO.new(content)
       @filename = options[:filename]
       @output   = StringIO.new
       @lineno   = 0
@@ -29,14 +31,19 @@ module Deadfire
 
     def call
       while ! buffer.eof?
-        output.write(process_line(buffer.gets))
+        line = buffer.gets
+        if comment_block?(line)
+          write_comments(line)
+        else
+          output.write(process_line(line))
+        end
       end
 
       output.string
     end
 
     private
-      attr_reader :buffer, :lineno, :imports, :apply, :dirname, :filename
+      attr_reader :buffer, :lineno, :imports, :apply, :dirname, :filename, :output
 
       def process_line(line)
         if line.include?(IMPORT_SELECTOR_PATTERN)
@@ -51,6 +58,21 @@ module Deadfire
           mixins.resolve
         else
           line
+        end
+      end
+
+      def comment_block?(line)
+        line.start_with?(BEGIN_COMMENT_PATTERN)
+      end
+
+      def write_comments(line)
+        output.write(line)
+
+        unless line.include?(END_COMMENT_PATTERN)
+          while ! line.include?(END_COMMENT_PATTERN) && ! buffer.eof?
+            line = buffer.gets
+            output.write(line)
+          end
         end
       end
   end

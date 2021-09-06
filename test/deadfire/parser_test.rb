@@ -16,7 +16,7 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(options("test_1.css"))
+    assert_equal output.chomp, Deadfire::Parser.call(css_input("test_1.css"))
   end
 
   def test_import_parses_correctly
@@ -29,12 +29,12 @@ class ParserTest < Minitest::Test
     }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(options("application.css"))
+    assert_equal output.chomp, Deadfire::Parser.call(css_input("application.css"))
   end
 
   def test_early_apply_raises_error_when_mixins_not_defined
     assert_raises Deadfire::EarlyApplyException do
-      Deadfire::Parser.call(options("early_apply_error.css"))
+      Deadfire::Parser.call(css_input("early_apply_error.css"))
     end
   end
 
@@ -46,20 +46,60 @@ class ParserTest < Minitest::Test
     }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(options("custom_mixins.css"))
+    assert_equal output.chomp, Deadfire::Parser.call(css_input("custom_mixins.css"))
     assert Deadfire::Apply.cached_mixins.include?("--bg-header")
     output = {"color"=>"red", "padding"=>"4px"}
     assert_equal output, Deadfire::Apply.cached_mixins["--bg-header"]
   end
 
-  private
-
-    def options(filename)
-      {
-        filename: filename,
-        data: css_input(filename)
+  def test_inline_comment_outputs_correctly
+    output = <<~OUTPUT
+      .test_css_1 {
+        padding: 1rem; /* comment */
       }
-    end
+    OUTPUT
+
+    assert_equal output, Deadfire::Parser.call(output)
+  end
+
+  def test_top_comment_outputs_correctly
+    output = <<~OUTPUT
+      /* comment */
+      .test_css_1 {
+        padding: 1rem;
+      }
+    OUTPUT
+
+    assert_equal output, Deadfire::Parser.call(output)
+  end
+
+  def test_multiline_comment_outputs_correctly
+    output = <<~OUTPUT
+      /* comment
+      on
+      multlines */
+      .test_css_1 {
+        padding: 1rem;
+      }
+    OUTPUT
+
+    assert_equal output, Deadfire::Parser.call(output)
+  end
+
+  def test_commented_import_outputs_correctly
+    output = <<~OUTPUT
+      /* comment
+      @import "test_1.css";
+      multlines */
+      .test_css_1 {
+        padding: 1rem;
+      }
+    OUTPUT
+
+    assert_equal output, Deadfire::Parser.call(output)
+  end
+
+  private
 
     def css_input(filename)
       file = File.new(File.join(fixtures_path, filename))

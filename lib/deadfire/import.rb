@@ -11,7 +11,6 @@ module Deadfire
       @lineno      = lineno
     end
 
-    # find file using file resolver
     def resolve
       lookup_path = resolve_import_path(import_path)
 
@@ -35,6 +34,7 @@ module Deadfire
 
     private
 
+      # TODO: there may be additional directories to traverse from the config
       def resolve_import_path(import_path)
         path = self.class.parse_import_path(import_path)
         unless path.end_with?(FILE_EXTENSION)

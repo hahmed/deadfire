@@ -44,10 +44,11 @@ module Deadfire
       current_line.tr("{", "").tr(".", "").tr(":", "").strip
     end
 
+    # TODO: handle css properties that have hanging comments e.g. color: red;  /* Set text color to red */
     def extract_properties_from_mixin(buffer, current_line)
       properties = {}
       current_line = buffer.gets # skip opening {
-      while current_line !~ Deadfire::Parser::CLOSING_SELECTOR_PATTERN
+      while current_line !~ Deadfire::Parser::CLOSING_SELECTOR_PATTERN && !buffer.eof?
         name, value = extract_name_and_values(current_line)
         properties[name] = value
         current_line = buffer.gets
