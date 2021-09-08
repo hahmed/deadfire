@@ -22,4 +22,18 @@ class MixinTest < Minitest::Test
     mixin = Deadfire::Mixin.new(StringIO.new(css))
     assert_equal css, mixin.resolve
   end
+
+  def test_multiline_vars_parses_correctly
+    skip
+    css = <<~CSS
+      :root {
+        --test-css: {
+          padding: 1rem;
+        }
+      }
+    CSS
+
+    mixin = Deadfire::Mixin.new(StringIO.new(css))
+    assert_equal css, mixin.resolve
+  end
 end

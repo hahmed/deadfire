@@ -2,7 +2,15 @@
 
 A miminal CSS preprocessor.
 
-Use plain old boring css in the asset pipeline with a little bit of @import, @apply and nestings.
+Use plain ol' boring CSS with a little bit of @import, @apply and nestings.
+
+CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features.
+
+With the rise of the utility first approach. There is not a great amount of custom CSS to write.
+
+Deadfire sprinkles a few extra features which helps you write CSS, easier!
+
+Deadfire can be used with or without a CSS frameworks.
 
 ## Features
 
@@ -10,13 +18,95 @@ Use plain old boring css in the asset pipeline with a little bit of @import, @ap
 - [x] [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
 - [ ] [nesting](https://drafts.csswg.org/css-nesting-1)
 
-## Usage
+## Examples
 
-Import example;
+### @import
+
+Imports allow you to easily include a file from the file system in your current css document. All @import statements must be at the top of the document (but after a @charset).
 
 ```CSS
-@import "print";
+/* shared/buttons.css */
+.button {
+  color: red;
+  text-align: center;
+}
+
+/* application.css */
 @import "shared/buttons.css";
+
+.page-title {
+  font-size: 20px;
+}
+```
+
+The output is;
+
+```CSS
+/* application.css */
+.button {
+  color: red;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 20px;
+}
+```
+
+### @apply
+
+@apply inlines your classes into your custom css.
+
+The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Let's see an example of how to declare your mixins and use the @apply directive.
+
+NOTE: All mixins must be declared on the `:root` element or preloaded via the `Deadfire.mixins` method. Root should be declared after the import statements and any comments.
+
+```CSS
+:root {
+  --font-bold: {
+    font-weight: bold;
+  }
+
+  --text-company-blue: color: blue;
+
+  --btn: {
+    padding-bottom: 10px;
+    text-align: center;
+  }
+}
+```
+
+How can we use the mixins? Using @apply...
+
+```CSS
+.btn-blue {
+  @apply btn font-bold text-company-blue;
+}
+
+.homepage-hero {
+  @apply font-bold text-company-blue;
+}
+```
+
+### nesting
+
+Nesting adds the ability to nest one style rule inside another.
+
+NOTE: This feature is still a work in progress.
+
+```CSS
+/* & can be used on its own */
+.btn {
+  color: blue;
+  & > .homepage { color: red; }
+}
+```
+
+This is expanded to:
+
+```CSS
+.btn { color: blue; }
+.btn > .homepage { color: red; }
 ```
 
 ## Installation
