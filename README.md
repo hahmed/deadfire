@@ -4,13 +4,13 @@ A miminal CSS preprocessor.
 
 Use plain ol' boring CSS with a little bit of @import, @apply and nestings.
 
-CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features.
+CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features (wait... that's a bad thing?).
 
 With the rise of the utility first approach. There is not a great amount of custom CSS to write.
 
 Deadfire sprinkles a few extra features which helps you write CSS, easier!
 
-Deadfire can be used with or without a CSS frameworks.
+Deadfire can be used with or without a CSS framework.
 
 ## Features
 
@@ -22,7 +22,7 @@ Deadfire can be used with or without a CSS frameworks.
 
 ### @import
 
-Imports allow you to easily include a file from the file system in your current css document. All @import statements must be at the top of the document (but after a @charset).
+Imports allow you to easily include a file from the file system into your current css document.
 
 ```CSS
 /* shared/buttons.css */
@@ -39,7 +39,7 @@ Imports allow you to easily include a file from the file system in your current 
 }
 ```
 
-The output is;
+Output;
 
 ```CSS
 /* application.css */
@@ -57,17 +57,17 @@ The output is;
 
 @apply inlines your classes into your custom css.
 
-The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Let's see an example of how to declare your mixins and use the @apply directive.
+The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Mixins simplify applying existing css to a new class.
 
-NOTE: All mixins must be declared on the `:root` element or preloaded via the `Deadfire.mixins` method. Root should be declared after the import statements and any comments.
+All mixins must be declared on the `:root` element or preloaded via the `Deadfire.mixins` method. Using a mixin before it's declared will raise an `EarlyApplyException`. Ideally the `:root` element should appear near the top of the document.
+
+Let's see an example of how to declare mixins and use the @apply directive.
 
 ```CSS
 :root {
   --font-bold: {
     font-weight: bold;
   }
-
-  --text-company-blue: color: blue;
 
   --btn: {
     padding-bottom: 10px;
@@ -76,15 +76,15 @@ NOTE: All mixins must be declared on the `:root` element or preloaded via the `D
 }
 ```
 
-How can we use the mixins? Using @apply...
+How can we use mixins? Using @apply...
 
 ```CSS
 .btn-blue {
-  @apply btn font-bold text-company-blue;
+  @apply --btn --font-bold;
 }
 
 .homepage-hero {
-  @apply font-bold text-company-blue;
+  @apply --font-bold;
 }
 ```
 
@@ -124,6 +124,26 @@ And then execute:
 Or install it yourself as:
 
     $ gem install deadfire
+
+## Deadfire + Ruby on Rails
+
+After adding Deadfire gem to your rails application, open the file `config/initializers/assets.rb` to setup your Sprocket and the asset pipeline to use the new preprocessor.
+
+```ruby
+# config/initializers/assets.rb
+class DeadfireProcessor
+  def call(input)
+    return { data: Deadfire.parse(input[:data]) }
+  end
+end
+
+Deadfire.configuration.root_path = Rails.root.join('app', 'assets', 'stylesheets')
+Sprockets.register_preprocessor('text/css', DeadfireProcessor.new)
+```
+
+Your css file should now be run through Deadfire.
+
+NOTE: The deadfire-rails gem has not been developed, mostly because it will include some simple to use conventions when writing css for your rails application and that needs a little more thought.
 
 ## Development
 

@@ -99,6 +99,29 @@ class ParserTest < Minitest::Test
     assert_equal output, Deadfire::Parser.call(output)
   end
 
+  def test_mixin_outputs_correctly
+    skip
+    output = <<~OUTPUT
+      :root {
+      }
+
+      .title {
+        font-weight: bold;}
+    OUTPUT
+
+    assert_equal output, Deadfire::Parser.call(<<~INPUT)
+      :root {
+        --font-bold: {
+          font-weight: bold;
+        }
+      }
+
+      .title {
+        @apply --font-bold;
+      }
+    INPUT
+  end
+
   private
 
     def css_input(filename)
