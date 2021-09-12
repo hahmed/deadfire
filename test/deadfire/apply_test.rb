@@ -30,6 +30,6 @@ class ApplyTest < Minitest::Test
     Deadfire::Apply.cached_mixins["--margin-sm"]  = { "margin": "2px"}
     apply = Deadfire::Apply.new("@apply --margin-sm --text-red;", 0)
 
-    assert_includes "  margin: 2px;\n  font-color: red;", apply.resolve
+    assert_includes "margin: 2px;\nfont-color: red;", apply.resolve
   end
 end
