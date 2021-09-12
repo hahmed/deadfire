@@ -24,7 +24,6 @@ class MixinTest < Minitest::Test
   end
 
   def test_multiline_vars_parses_correctly
-    skip
     css = <<~CSS
       :root {
         --test-css: {
@@ -34,6 +33,9 @@ class MixinTest < Minitest::Test
     CSS
 
     mixin = Deadfire::Mixin.new(StringIO.new(css))
-    assert_equal css, mixin.resolve
+    assert_equal <<~OUTPUT, mixin.resolve
+    :root {
+    }
+    OUTPUT
   end
 end

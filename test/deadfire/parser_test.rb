@@ -39,6 +39,8 @@ class ParserTest < Minitest::Test
   end
 
   def test_custom_mixin_parses_correctly
+    # TODO: we may not support this format, this should be a function
+    # that means we can drop this this
     output = <<~OUTPUT
     :root {
       --main-color: hotpink;
@@ -100,7 +102,6 @@ class ParserTest < Minitest::Test
   end
 
   def test_mixin_outputs_correctly
-    skip
     output = <<~OUTPUT
       :root {
       }

@@ -6,7 +6,7 @@ module Deadfire
     NEWLINE = "\n"
 
     singleton_class.attr_accessor :cached_mixins
-    self.cached_mixins = Hash.new { |h, k| h[k] = [] }
+    self.cached_mixins = Hash.new { |h, k| h[k] = {} }
 
     def initialize(input, lineno)
       @buffer = input
@@ -14,14 +14,23 @@ module Deadfire
       @lineno = lineno
     end
 
+    # p {
+    #   @apply --font-bold --text-red;
+    # }
+    # => p {
+    # =>   font-weight: bold;
+    # =>   color: red;
+    # => }
     def resolve
       raise EarlyApplyException.new(@buffer, @lineno) if Apply.cached_mixins.empty?
 
       @buffer.split(" ").each do |css|
         next if css.include?(TAG)
         css.gsub!(";", "")
-
-        @output << find(css)
+        
+        find(css).each_pair do |key, value|
+          @output << "  #{key}: #{value};"
+        end
       end
 
       @output.join(NEWLINE)
