@@ -25,7 +25,6 @@ module Deadfire
         f.read # apply mixins
       end
 
-      # TODO: more tests
       def parse_import_path(line)
         path = line.split.last
         path.gsub!("\"", "")

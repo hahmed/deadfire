@@ -52,4 +52,12 @@ class ImportTest < Minitest::Test
   def test_parses_import_path_with_single_quotes_correctly
     assert_equal "something", Deadfire::Import.parse_import_path("@import \'something\'")
   end
+
+  def test_parses_import_path_with_semicolons_correctly
+    assert_equal "something", Deadfire::Import.parse_import_path("@import \"something\";")
+  end
+
+  def test_parses_import_path_with_dirname_correctly
+    assert_equal "admin/test3.css", Deadfire::Import.parse_import_path("@import \"admin/test3.css\";")
+  end
 end

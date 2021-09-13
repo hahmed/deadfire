@@ -35,8 +35,6 @@ module Deadfire
           next if css.include?(TAG)
           css.gsub!(";", "")
           
-          # find pos of @import char, then remove everything on the line and insert custom properties
-          # with correct amount of spacing
           find(css, lineno).each_pair do |key, value|
             output << "#{space * space_counter}#{key}: #{value};"
           end
