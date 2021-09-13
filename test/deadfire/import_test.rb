@@ -10,15 +10,14 @@ class ImportTest < Minitest::Test
   end
 
   def test_raises_error_when_invalid_import_location
-    importer = Deadfire::Import.new("randomness/test_1", 0)
-    assert_raises(Deadfire::FileNotFoundError) do
-      importer.resolve
+    assert_raises(Deadfire::ImportException) do
+      Deadfire::Import.resolve_import_path("randomness/test_1", 0)
     end
   end
 
   def test_basic_import
-    importer = Deadfire::Import.new("test_1", 0)
-    output = importer.resolve
+    import_path = Deadfire::Import.resolve_import_path("test_1", 0)
+    output = Deadfire::Import.resolve(import_path)
     assert_equal <<~CSS.strip, output
       .test_css_1 {
         padding: 1rem;
@@ -27,8 +26,8 @@ class ImportTest < Minitest::Test
   end
 
   def test_import_with_extension
-    importer = Deadfire::Import.new("test_2.css", 0)
-    output = importer.resolve
+    import_path = Deadfire::Import.resolve_import_path("test_2.css", 0)
+    output = Deadfire::Import.resolve(import_path)
     assert_equal <<~CSS.strip, output
       .test_css_2 {
         padding: 2rem;
@@ -37,8 +36,8 @@ class ImportTest < Minitest::Test
   end
 
   def test_import_in_admin_directory
-    importer = Deadfire::Import.new("admin/test_3.css", 0)
-    output = importer.resolve
+    import_path = Deadfire::Import.resolve_import_path("admin/test_3.css", 0)
+    output = Deadfire::Import.resolve(import_path)
     assert_equal <<~CSS.strip, output
       .test_css_3 {
         padding: 3rem;

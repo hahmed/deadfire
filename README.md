@@ -18,8 +18,6 @@ Deadfire can be used with or without a CSS framework.
 - [x] [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
 - [ ] [nesting](https://drafts.csswg.org/css-nesting-1)
 
-## Examples
-
 ### @import
 
 Imports allow you to easily include a file from the file system into your current css document.
@@ -162,4 +160,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Autoprefixer::Rb project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hahmed/deadfire/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Deadfire project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hahmed/deadfire/blob/master/CODE_OF_CONDUCT.md).

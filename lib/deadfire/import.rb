@@ -4,25 +4,28 @@ module Deadfire
   class Import
     FILE_EXTENSION = ".css"
 
-    attr_reader :lineno, :import_path
+    class << self
+      # TODO: there may be additional directories to traverse from the config e.g. node_modules?
+      def resolve_import_path(current_line, lineno)
+        path = parse_import_path(current_line)
+        unless path.end_with?(FILE_EXTENSION)
+          path += FILE_EXTENSION
+        end
+        import_path = File.join(Deadfire.configuration.root_path, path)
 
-    def initialize(import_path, lineno)
-      @import_path = import_path
-      @lineno      = lineno
-    end
+        unless File.exist?(import_path)
+          raise ImportException.new(import_path, lineno)
+        end
 
-    def resolve
-      lookup_path = resolve_import_path(import_path)
-
-      unless File.exist?(lookup_path)
-        raise FileNotFoundError.new("File not found #{lookup_path}")
+        import_path
       end
 
-      f = File.open(lookup_path, "r")
-      f.read
-    end
+      def resolve(import_path)
+        f = File.open(import_path, "r")
+        f.read # apply mixins
+      end
 
-    class << self
+      # TODO: more tests
       def parse_import_path(line)
         path = line.split.last
         path.gsub!("\"", "")
@@ -31,16 +34,5 @@ module Deadfire
         path
       end
     end
-
-    private
-
-      # TODO: there may be additional directories to traverse from the config
-      def resolve_import_path(import_path)
-        path = self.class.parse_import_path(import_path)
-        unless path.end_with?(FILE_EXTENSION)
-          path += FILE_EXTENSION
-        end
-        File.join(Deadfire.configuration.root_path, path)
-      end
   end
 end

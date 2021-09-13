@@ -47,9 +47,12 @@ module Deadfire
 
       def process_line(line)
         if line.include?(IMPORT_SELECTOR_PATTERN)
-          import = Import.new(line, buffer.lineno)
-          imports << import
-          import.resolve
+          import_path = Import.resolve_import_path(line, buffer.lineno)
+          if imports.include?(import_path)
+            raise DuplicateImportException.new(import_path, lineno)
+          end
+          imports << import_path
+          Import.resolve(import_path)
         elsif line.include?(APPLY_SELECTOR_PATTERN)
           apply = Apply.new(line, buffer.lineno)
           apply.resolve
