@@ -10,26 +10,22 @@ class ApplyTest < Minitest::Test
   end
 
   def test_apply_raises_when_no_mixins
-    apply = Deadfire::Apply.new("@apply --padding-sm;", 0)
-
     assert_raises Deadfire::EarlyApplyException do
-      apply.resolve
+      Deadfire::Apply.resolve("@apply --padding-sm;", 0)
     end
   end
 
   def test_single_mixin_output_is_correct
     # TODO: we may drop this test too, because it's actually a function?
     Deadfire::Apply.cached_mixins["--padding-sm"] = {"padding": "2px"}
-    apply = Deadfire::Apply.new("@apply --padding-sm", 0)
 
-    assert_includes "  padding: 2px;", apply.resolve
+    assert_equal "padding: 2px;", Deadfire::Apply.resolve("@apply --padding-sm", 0)
   end
 
   def test_multiple_mixins_output_are_correct
     Deadfire::Apply.cached_mixins["--text-red"] = { "font-color": "red"}
     Deadfire::Apply.cached_mixins["--margin-sm"]  = { "margin": "2px"}
-    apply = Deadfire::Apply.new("@apply --margin-sm --text-red;", 0)
 
-    assert_includes "margin: 2px;\nfont-color: red;", apply.resolve
+    assert_includes "margin: 2px;\nfont-color: red;", Deadfire::Apply.resolve("@apply --margin-sm --text-red;", 0)
   end
 end
