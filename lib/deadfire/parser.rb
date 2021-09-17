@@ -26,38 +26,35 @@ module Deadfire
       @output   = StringIO.new
       @lineno   = 0
       @imports  = []
-      @mixins   = []
     end
 
     def call
-      while ! buffer.eof?
-        line = buffer.gets
+      while ! @buffer.eof?
+        line = @buffer.gets
         if comment_block?(line)
           write_comments(line)
         else
-          output.write(process_line(line))
+          @output.write(process_line(line))
         end
       end
 
-      output.string
+      @output.string
     end
 
     private
-      attr_reader :buffer, :lineno, :imports, :apply, :dirname, :filename, :output
 
       def process_line(line)
         if line.include?(IMPORT_SELECTOR_PATTERN)
-          import_path = Import.resolve_import_path(line, buffer.lineno)
-          if imports.include?(import_path)
-            raise DuplicateImportException.new(import_path, lineno)
+          import_path = Import.resolve_import_path(line, @buffer.lineno)
+          if @imports.include?(import_path)
+            raise DuplicateImportException.new(import_path, @lineno)
           end
-          imports << import_path
+          @imports << import_path
           Import.resolve(import_path)
         elsif line.include?(APPLY_SELECTOR_PATTERN)
-          Apply.resolve(line, buffer.lineno)
+          Apply.resolve(line, @buffer.lineno)
         elsif line.include?(ROOT_SELECTOR_PATTERN)
-          mixins = Mixin.new(buffer, line, buffer.lineno)
-          mixins.resolve
+          Mixin.resolve(@buffer, line, @buffer.lineno)
         else
           line
         end
@@ -68,12 +65,12 @@ module Deadfire
       end
 
       def write_comments(line)
-        output.write(line)
+        @output.write(line)
 
         unless line.include?(END_COMMENT_PATTERN)
-          while ! line.include?(END_COMMENT_PATTERN) && ! buffer.eof?
-            line = buffer.gets
-            output.write(line)
+          while ! line.include?(END_COMMENT_PATTERN) && ! @buffer.eof?
+            line = @buffer.gets
+            @output.write(line)
           end
         end
       end

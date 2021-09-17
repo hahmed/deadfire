@@ -8,8 +8,7 @@ class MixinTest < Minitest::Test
       }
     CSS
 
-    mixin = Deadfire::Mixin.new(StringIO.new(css))
-    assert_equal css, mixin.resolve
+    assert_equal css, Deadfire::Mixin.resolve(StringIO.new(css))
   end
 
   def test_root_with_vars_parses_correctly
@@ -19,8 +18,7 @@ class MixinTest < Minitest::Test
       }
     CSS
 
-    mixin = Deadfire::Mixin.new(StringIO.new(css))
-    assert_equal css, mixin.resolve
+    assert_equal css, Deadfire::Mixin.resolve(StringIO.new(css))
   end
 
   def test_multiline_vars_parses_correctly
@@ -32,8 +30,7 @@ class MixinTest < Minitest::Test
       }
     CSS
 
-    mixin = Deadfire::Mixin.new(StringIO.new(css))
-    assert_equal <<~OUTPUT, mixin.resolve
+    assert_equal <<~OUTPUT, Deadfire::Mixin.resolve(StringIO.new(css))
     :root {
     }
     OUTPUT
