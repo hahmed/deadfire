@@ -21,8 +21,23 @@ module Deadfire
       end
 
       def resolve(import_path)
+        output = StringIO.new
         f = File.open(import_path, "r")
-        f.read # apply mixins
+        buffer = StringIO.new(f.read) # apply mixins
+        f.close
+
+        while ! buffer.eof?
+          current_line = buffer.gets
+          if Comment.match?(current_line)
+            Comment.write(buffer, current_line, output)
+          elsif current_line.include?(Parser::APPLY_SELECTOR_PATTERN)
+            output.write Apply.resolve(current_line, buffer.lineno)
+          else
+            output.write  current_line
+          end
+        end
+
+        output.string
       end
 
       def parse_import_path(line)

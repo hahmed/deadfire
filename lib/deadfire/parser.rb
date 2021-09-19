@@ -8,8 +8,6 @@ module Deadfire
     OPENING_SELECTOR_PATTERN  = /\..*\{/
     OPENING_SELECTOR_PATTERN2 = /\s*\{/
     CLOSING_SELECTOR_PATTERN  = /\s*\}/
-    BEGIN_COMMENT_PATTERN  = "/*"
-    END_COMMENT_PATTERN  = "*/"
     ROOT_SELECTOR_PATTERN     = ":root {"
     IMPORT_SELECTOR_PATTERN   = "@import"
     APPLY_SELECTOR_PATTERN    = "@apply"
@@ -31,8 +29,8 @@ module Deadfire
     def call
       while ! @buffer.eof?
         line = @buffer.gets
-        if comment_block?(line)
-          write_comments(line)
+        if Comment.match?(line)
+          Comment.write(@buffer, line, @output)
         else
           @output.write(process_line(line))
         end
@@ -50,28 +48,13 @@ module Deadfire
             raise DuplicateImportException.new(import_path, @lineno)
           end
           @imports << import_path
-          Import.resolve(import_path)
+          Import.resolve(import_path) # make this async and insert an empty line where we will add the imported css
         elsif line.include?(APPLY_SELECTOR_PATTERN)
           Apply.resolve(line, @buffer.lineno)
         elsif line.include?(ROOT_SELECTOR_PATTERN)
           Mixin.resolve(@buffer, line, @buffer.lineno)
         else
           line
-        end
-      end
-
-      def comment_block?(line)
-        line.start_with?(BEGIN_COMMENT_PATTERN)
-      end
-
-      def write_comments(line)
-        @output.write(line)
-
-        unless line.include?(END_COMMENT_PATTERN)
-          while ! line.include?(END_COMMENT_PATTERN) && ! @buffer.eof?
-            line = @buffer.gets
-            @output.write(line)
-          end
         end
       end
   end

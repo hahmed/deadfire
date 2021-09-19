@@ -123,6 +123,25 @@ class ParserTest < Minitest::Test
     INPUT
   end
 
+  def test_import_with_mixins_parses_correctly
+    # TODO: fix empty lines in mixin, maybe remove entire root tag if no mixins?
+    output = <<~OUTPUT
+    :root {
+
+
+
+    }
+
+    .hero-title {
+      font-weight: bold;}
+    .title {
+      font-weight: bold;
+      padding: 2px 0;}
+    OUTPUT
+
+    assert_equal output.chomp, Deadfire::Parser.call(css_input("complete.css"))
+  end
+
   private
 
     def css_input(filename)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "deadfire/apply"
+require_relative "deadfire/comment"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/import"

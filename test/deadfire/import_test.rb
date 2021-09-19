@@ -17,8 +17,7 @@ class ImportTest < Minitest::Test
 
   def test_basic_import
     import_path = Deadfire::Import.resolve_import_path("test_1", 0)
-    output = Deadfire::Import.resolve(import_path)
-    assert_equal <<~CSS.strip, output
+    assert_equal <<~CSS.strip, Deadfire::Import.resolve(import_path)
       .test_css_1 {
         padding: 1rem;
       }
@@ -26,11 +25,10 @@ class ImportTest < Minitest::Test
   end
 
   def test_import_with_extension
-    import_path = Deadfire::Import.resolve_import_path("test_2.css", 0)
-    output = Deadfire::Import.resolve(import_path)
-    assert_equal <<~CSS.strip, output
-      .test_css_2 {
-        padding: 2rem;
+    import_path = Deadfire::Import.resolve_import_path("test_1.css", 0)
+    assert_equal <<~CSS.strip, Deadfire::Import.resolve(import_path)
+      .test_css_1 {
+        padding: 1rem;
       }
     CSS
   end
