@@ -2,7 +2,6 @@
 
 module Deadfire
   class Mixin
-
     class << self
       def resolve(buffer, current_line = nil, lineno = 0)
         end_tag = false

@@ -22,9 +22,7 @@ module Deadfire
 
       def resolve(import_path)
         output = StringIO.new
-        f = File.open(import_path, "r")
-        buffer = StringIO.new(f.read) # apply mixins
-        f.close
+        buffer = StringIO.new(File.read(import_path))
 
         while ! buffer.eof?
           current_line = buffer.gets

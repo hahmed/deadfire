@@ -145,7 +145,6 @@ class ParserTest < Minitest::Test
   private
 
     def css_input(filename)
-      file = File.new(File.join(fixtures_path, filename))
-      file.read
+      File.read(File.join(fixtures_path, filename))
     end
 end
