@@ -1,8 +1,8 @@
 # Deadfire
 
-A miminal CSS preprocessor.
+A lightweight CSS preprocessor.
 
-Use plain ol' boring CSS with a little bit of @import, @apply and nestings.
+Use plain ol' CSS with a little bit of @import, @apply and nestings.
 
 CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features (wait... that's a bad thing?).
 
@@ -117,11 +117,11 @@ gem 'deadfire'
 
 And then execute:
 
-    $ bundle install
+  `> bundle install`
 
 Or install it yourself as:
 
-    $ gem install deadfire
+  `> gem install deadfire`
 
 ## Deadfire + Ruby on Rails
 
@@ -140,9 +140,6 @@ Sprockets.register_preprocessor('text/css', DeadfireProcessor.new)
 ```
 
 Your css file should now be run through Deadfire.
-
-NOTE: The deadfire-rails gem has not been developed, mostly because it will include some simple to use conventions when writing css for your rails application and that needs a little more thought.
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

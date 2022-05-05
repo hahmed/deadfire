@@ -11,12 +11,12 @@ module Deadfire
       end
 
       def write(buffer, line, output)
-        output.write(line)
+        output << line
 
         unless line.include?(END_COMMENT_PATTERN)
           while ! line.include?(END_COMMENT_PATTERN) && ! buffer.eof?
             line = buffer.gets
-            output.write(line)
+            output << line
           end
         end
       end

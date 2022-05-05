@@ -6,6 +6,7 @@ require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/import"
 require_relative "deadfire/mixin"
+require_relative "deadfire/nest"
 require_relative "deadfire/parser"
 require_relative "deadfire/version"
 
