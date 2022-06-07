@@ -55,13 +55,6 @@ module Deadfire
         elsif line.include?(APPLY_SELECTOR_PATTERN)
           Apply.resolve(line, @buffer.lineno)
         elsif Deadfire::Nest.match?(line)
-          # NOTE:
-          # nesting blocks could have @apply blocks
-          # if end of css block, add any additional nestings after then clear array
-          # lets assert a few things, the nesting block is the last part of the css block
-          # another nest block can appear but can there be more css key/vals after the nesting block??
-
-          # do not write nesting line, instead read the entire nesting block
           Nesting.resolve(@buffer, @output, line, @buffer.lineno)
         else
           line
