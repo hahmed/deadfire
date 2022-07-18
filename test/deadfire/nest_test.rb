@@ -70,6 +70,7 @@ class NestTest < Minitest::Test
   end
 
   def test_complete_nesting_unfolds_correctly
+    skip
     output = <<~CSS
     table.colortable {
     }

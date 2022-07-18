@@ -16,7 +16,7 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(css_input("test_1.css"))
+    assert_equal output.chomp, css_input("test_1.css")
   end
 
   def test_import_parses_correctly
@@ -29,12 +29,58 @@ class ParserTest < Minitest::Test
     }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(css_input("application.css"))
+    assert_equal output.chomp, css_input("application.css")
+  end
+
+  def test_raises_error_when_invalid_import_location
+    assert_raises(Deadfire::ImportException) do
+      css_import_content("randomness/test_1")
+    end
+  end
+
+  def test_basic_import
+    assert_equal <<~CSS.strip, css_import_content("test_1")
+      .test_css_1 {
+        padding: 1rem;
+      }
+    CSS
+  end
+
+  def test_import_with_extension
+    assert_equal <<~CSS.strip, css_import_content("test_1.css")
+      .test_css_1 {
+        padding: 1rem;
+      }
+    CSS
+  end
+
+  def test_import_in_admin_directory
+    assert_equal <<~CSS.strip, css_import_content("admin/test_3.css")
+      .test_css_3 {
+        padding: 3rem;
+      }
+    CSS
+  end
+
+  def test_parses_import_path_with_double_quotes_correctly
+    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \"something\"")
+  end
+
+  def test_parses_import_path_with_single_quotes_correctly
+    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \'something\'")
+  end
+
+  def test_parses_import_path_with_semicolons_correctly
+    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \"something\";")
+  end
+
+  def test_parses_import_path_with_dirname_correctly
+    assert_equal "admin/test3.css", Deadfire::Parser.normalize_import_path("@import \"admin/test3.css\";")
   end
 
   def test_early_apply_raises_error_when_mixins_not_defined
     assert_raises Deadfire::EarlyApplyException do
-      Deadfire::Parser.call(css_input("early_apply_error.css"))
+      css_input("early_apply_error.css")
     end
   end
 
@@ -48,7 +94,7 @@ class ParserTest < Minitest::Test
     }
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(css_input("custom_mixins.css"))
+    assert_equal output.chomp, css_input("custom_mixins.css")
     assert Deadfire::Apply.cached_mixins.include?("--bg-header")
     output = {"color"=>"red", "padding"=>"4px"}
     assert_equal output, Deadfire::Apply.cached_mixins["--bg-header"]
@@ -139,12 +185,17 @@ class ParserTest < Minitest::Test
       padding: 2px 0;}
     OUTPUT
 
-    assert_equal output.chomp, Deadfire::Parser.call(css_input("complete.css"))
+    assert_equal output.chomp, css_input("complete.css")
   end
 
   private
 
     def css_input(filename)
-      File.read(File.join(fixtures_path, filename))
+      Deadfire::Parser.call File.read(File.join(fixtures_path, filename))
+    end
+
+    def css_import_content(path)
+      normalized_path = Deadfire::Parser.resolve_import_path(path)
+      Deadfire::Parser.parse_import_path("@import \"#{normalized_path}\"")
     end
 end
