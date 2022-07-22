@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "deadfire/apply"
+require_relative "deadfire/css_buffer"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
-require_relative "deadfire/mixin"
-require_relative "deadfire/nest"
 require_relative "deadfire/parser"
+require_relative "deadfire/transformers/transformer"
+require_relative "deadfire/transformers/apply"
+require_relative "deadfire/transformers/comment"
+require_relative "deadfire/transformers/import"
+require_relative "deadfire/transformers/mixin"
+require_relative "deadfire/transformers/nesting"
 require_relative "deadfire/version"
 
 module Deadfire
