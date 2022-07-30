@@ -12,7 +12,6 @@ module Deadfire
       @content  = content
       @filename = options[:filename]
       @output   = []
-      @lineno   = 0
       @imports  = []
     end
 
@@ -34,8 +33,6 @@ module Deadfire
       while ! buffer.eof?
         a =  process_line(buffer.readline)
         @output << a
-
-        @lineno += 1
       end
 
       # todo, somewhere there is a an array output that is not beig handled or 
@@ -47,7 +44,7 @@ module Deadfire
 
       def process_line(line)
         transformers.each do |transformer|
-          return transformer.transform(line, buffer, @lineno, @output) if transformer.matches?(line)
+          return transformer.transform(line, buffer, @output) if transformer.matches?(line)
         end
 
         line

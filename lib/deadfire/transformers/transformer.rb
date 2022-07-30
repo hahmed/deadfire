@@ -10,7 +10,7 @@ module Deadfire::Transformers
       false
     end
   
-    def transform(line, buffer, lineno, output); end
+    def transform(line, buffer, output); end
   
     def reset; end
   end

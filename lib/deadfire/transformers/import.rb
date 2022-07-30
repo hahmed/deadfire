@@ -16,7 +16,7 @@ module Deadfire::Transformers
       line.strip.start_with?(SELECTOR)
     end
     
-    def transform(line, buffer, lineno, output)
+    def transform(line, buffer, output)
       import_path = self.class.resolve_import_path(line, lineno: buffer.lineno)
       if self.class.import_path_cache.include?(import_path)
         raise DuplicateImportException.new(import_path, buffer.lineno)
@@ -35,7 +35,7 @@ module Deadfire::Transformers
         import_path = File.join(Deadfire.configuration.root_path, path)
 
         unless File.exist?(import_path)
-          raise Deadfire::ImportException.new(import_path, lineno)
+          raise Deadfire::ImportException.new(import_path, buffer.lineno)
         end
 
         import_path

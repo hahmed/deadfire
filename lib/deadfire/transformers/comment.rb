@@ -17,7 +17,7 @@ module Deadfire::Transformers
       true
     end
     
-    def transform(line, buffer, lineno, output)
+    def transform(line, buffer, output)
       output << line if keep_comments?
 
       unless line.include?(END_COMMENT_PATTERN)

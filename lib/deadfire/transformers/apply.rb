@@ -23,26 +23,25 @@ module Deadfire::Transformers
       # =>   font-weight: bold;
       # =>   color: red;
       # => }
-    def transform(line, buffer, lineno, output)
-      buffer = line.dup
+    def transform(line, buffer, output)
+      current_line = line.dup
       output = []
-      lineno = lineno.to_i
       space  = " "
       space_counter = 0
       import_start_tag = "@"
 
-      raise Deadfire::EarlyApplyException.new(buffer, lineno) if Apply.cached_mixins.empty?
+      raise Deadfire::EarlyApplyException.new(buffer, buffer.lineno) if Apply.cached_mixins.empty?
 
-      buffer.each_char do |char|
+      current_line.each_char do |char|
         break if char == import_start_tag
         space_counter += 1
       end
 
-      buffer.split(" ").each do |css|
+      current_line.split(" ").each do |css|
         next if css.include?(SELECTOR)
         css.gsub!(";", "")
         
-        find(css, lineno).each_pair do |key, value|
+        find(css, buffer.lineno).each_pair do |key, value|
           output << "#{space * space_counter}#{key}: #{value};"
         end
       end

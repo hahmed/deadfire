@@ -14,7 +14,7 @@ module Deadfire::Transformers
       line.strip.start_with?(ROOT_SELECTOR)
     end
 
-    def transform(line, buffer, lineno, output)
+    def transform(line, buffer, output)
       end_tag = false
       output_line = true
       content = []

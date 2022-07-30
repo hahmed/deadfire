@@ -17,12 +17,12 @@ module Deadfire::Transformers
       line.strip.start_with?("&")
     end
     
-    def transform(line, buffer, lineno, output)
+    def transform(line, buffer, output)
       line = buffer.gets unless line
       output << "}\n"
-      lineno += 1
       block_name = []
       found_end_for_current_nested_block = false
+      lineno = output.size
       block_name << find_block_name(output, lineno)
 
       while ! buffer.eof?

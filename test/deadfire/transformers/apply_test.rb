@@ -33,7 +33,7 @@ module Transformers
     private
 
     def transform(css)
-      Deadfire::Transformers::Apply.new.transform(css, buffer, 0, "")
+      Deadfire::Transformers::Apply.new.transform(css, buffer, "")
     end
   end
 end

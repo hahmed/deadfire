@@ -70,7 +70,6 @@ module Transformers
     end
 
     def test_complete_nesting_unfolds_correctly
-      skip
       output = <<~CSS
       table.colortable {
       }
@@ -117,7 +116,7 @@ module Transformers
           current_line = buffer.gets
 
           if nesting.matches?(current_line)
-            nesting.transform(current_line, buffer, buffer.lineno, output)
+            nesting.transform(current_line, buffer, output)
           else
             output << current_line
           end

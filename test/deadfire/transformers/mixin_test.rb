@@ -48,7 +48,7 @@ module Transformers
 
       css_buffer.each_line do |line|
         if mixin.matches? line
-          content << mixin.transform(line, css_buffer, 1, output)
+          content << mixin.transform(line, css_buffer, output)
         end
       end
 
