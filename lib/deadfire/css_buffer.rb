@@ -6,7 +6,5 @@ module Deadfire
     def initialize(content)
       super(content)
     end
-
-    
   end
 end
