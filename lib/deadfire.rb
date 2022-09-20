@@ -21,8 +21,8 @@ module Deadfire
       yield(@configuration)
     end
 
-    def parse(content)
-      Parser.call(content)
+    def parse(content, options = {})
+      Parser.parse(content, options)
     end
   end
 end

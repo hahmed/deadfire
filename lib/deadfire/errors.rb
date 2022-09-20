@@ -6,7 +6,7 @@ module Deadfire
 
   class DuplicateImportException < StandardError
     def initialize(filename = "", lineno = "")
-      msg = if input
+      msg = if filename
         "Duplicate import found: `#{filename}` line: #{lineno}"
       else
         "Duplicate import."

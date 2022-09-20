@@ -4,11 +4,14 @@ class ParserTest < Minitest::Test
   def setup
     Deadfire.configuration.root_path = fixtures_path
     Deadfire::Parser.cached_mixins = {}
+    Deadfire::Parser.import_path_cache = []
   end
 
   def teardown
     Deadfire.reset
+    
     Deadfire::Parser.cached_mixins = {}
+    Deadfire::Parser.import_path_cache = []
   end
 
   def test_simple_css_outputs_correctly
@@ -18,7 +21,7 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output.chomp, css_input("test_1.css")
+    assert_equal output, css_import_content("test_1.css")
   end
 
   def test_import_parses_correctly
@@ -26,17 +29,18 @@ class ParserTest < Minitest::Test
     .test_css_1 {
       padding: 1rem;
     }
+
     .app_css {
       margin: 1rem;
     }
     OUTPUT
 
-    assert_equal output.chomp, css_input("application.css")
+    assert_equal output, css_import_content("application.css")
   end
 
   def test_early_apply_raises_error_when_mixins_not_defined
     assert_raises Deadfire::EarlyApplyException do
-      css_input("early_apply_error.css")
+      css_import_content("early_apply_error.css")
     end
   end
 
@@ -50,10 +54,10 @@ class ParserTest < Minitest::Test
     }
     OUTPUT
 
-    assert_equal output.chomp, css_input("custom_mixins.css")
-    assert Deadfire::Transformers::Apply.cached_mixins.include?("--bg-header")
+    assert_equal output, css_import_content("custom_mixins.css")
+    assert Deadfire::Parser.cached_mixins.include?("--bg-header")
     output = {"color"=>"red", "padding"=>"4px"}
-    assert_equal output, Deadfire::Transformers::Apply.cached_mixins["--bg-header"]
+    assert_equal output, Deadfire::Parser.cached_mixins["--bg-header"]
   end
 
   def test_inline_comment_outputs_correctly
@@ -63,7 +67,7 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output, Deadfire::Parser.call(output)
+    assert_equal output, transform(output)
   end
 
   def test_top_comment_outputs_correctly
@@ -74,7 +78,7 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output, Deadfire::Parser.call(output)
+    assert_equal output, transform(output)
   end
 
   def test_multiline_comment_outputs_correctly
@@ -87,20 +91,39 @@ class ParserTest < Minitest::Test
       }
     OUTPUT
 
-    assert_equal output, Deadfire::Parser.call(output)
+    assert_equal output, transform(output)
   end
 
   def test_commented_import_outputs_correctly
     output = <<~OUTPUT
       /* comment
       @import "test_1.css";
-      multlines */
+      multilines */
       .test_css_1 {
         padding: 1rem;
       }
     OUTPUT
 
-    assert_equal output, Deadfire::Parser.call(output)
+    assert_equal output, transform(output)
+  end
+
+  def test_multiline_comment_is_removed_when_config_setting_is_true
+    Deadfire.configuration.keep_comments = false
+    input = <<~OUTPUT
+      /* comment
+      @import "test_1.css";
+      multilines */
+      .test_css_1 {
+        padding: 1rem;
+      }
+    OUTPUT
+    output = <<~OUTPUT
+      .test_css_1 {
+        padding: 1rem;
+      }
+    OUTPUT
+
+    assert_equal output, transform(output)
   end
 
   def test_mixin_outputs_correctly
@@ -112,7 +135,7 @@ class ParserTest < Minitest::Test
         font-weight: bold;}
     OUTPUT
 
-    assert_equal output, Deadfire::Parser.call(<<~INPUT)
+    assert_equal output, transform(<<~INPUT)
       :root {
         --font-bold: {
           font-weight: bold;
@@ -136,12 +159,13 @@ class ParserTest < Minitest::Test
 
     .hero-title {
       font-weight: bold;}
+
     .title {
       font-weight: bold;
       padding: 2px 0;}
     OUTPUT
 
-    assert_equal output.chomp, css_input("complete.css")
+    assert_equal output, css_import_content("complete.css")
   end
 
   # mixins
@@ -189,14 +213,14 @@ class ParserTest < Minitest::Test
 
   def test_single_mixin_output_is_correct
     # TODO: we may drop this test too, because it's actually a function?
-    Deadfire::Transformers::Apply.cached_mixins["--padding-sm"] = {"padding": "2px"}
+    Deadfire::Parser.cached_mixins["--padding-sm"] = {"padding": "2px"}
 
     assert_equal "padding: 2px;", transform("@apply --padding-sm")
   end
 
   def test_multiple_mixins_output_are_correct
-    Deadfire::Transformers::Apply.cached_mixins["--text-red"] = { "font-color": "red"}
-    Deadfire::Transformers::Apply.cached_mixins["--margin-sm"]  = { "margin": "2px"}
+    Deadfire::Parser.cached_mixins["--text-red"] = { "font-color": "red"}
+    Deadfire::Parser.cached_mixins["--margin-sm"]  = { "margin": "2px"}
 
     assert_includes "margin: 2px;\nfont-color: red;", transform("@apply --margin-sm --text-red;")
   end
@@ -209,7 +233,7 @@ class ParserTest < Minitest::Test
     .foo > .bar { color: red; }
     CSS
 
-    assert_includes output, parse_input(<<~INPUT)
+    assert_includes output, transform(<<~INPUT)
     .foo {
       color: blue;
       & > .bar { color: red; }
@@ -225,7 +249,7 @@ class ParserTest < Minitest::Test
     .foo.bar { color: red; }
     CSS
 
-    assert_includes output, parse_input(<<~INPUT)
+    assert_includes output, transform(<<~INPUT)
     .foo {
       color: blue;
       &.bar { color: red; }
@@ -243,7 +267,7 @@ class ParserTest < Minitest::Test
     .foo.bar { color: red; }
     CSS
 
-    assert_equal output, parse_input(<<~INPUT)
+    assert_equal output, transform(<<~INPUT)
     .foo, .bar {
       .foo, .bar { color: blue; }
       :is(.foo, .bar) + .baz,
@@ -260,7 +284,7 @@ class ParserTest < Minitest::Test
     .foo .bar .foo .baz .foo .qux { color: red; }
     CSS
 
-    assert_includes output, parse_input(<<~INPUT)
+    assert_includes output, transform(<<~INPUT)
     .foo {
       color: blue;
       & .bar & .baz & .qux { color: red; }
@@ -288,7 +312,7 @@ class ParserTest < Minitest::Test
     }
     CSS
 
-    assert_includes parse_input(<<~INPUT), output
+    assert_includes transform(<<~INPUT), output
     table.colortable {
       & th {
         text-align:center;
@@ -305,19 +329,19 @@ class ParserTest < Minitest::Test
   end
 
   def test_parses_import_path_with_double_quotes_correctly
-    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \"something\"")
+    assert_equal "something", Deadfire::Parser::Import.normalize_import_path("@import \"something\"")
   end
 
   def test_parses_import_path_with_single_quotes_correctly
-    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \'something\'")
+    assert_equal "something", Deadfire::Parser::Import.normalize_import_path("@import \'something\'")
   end
 
   def test_parses_import_path_with_semicolons_correctly
-    assert_equal "something", Deadfire::Parser.normalize_import_path("@import \"something\";")
+    assert_equal "something", Deadfire::Parser::Import.normalize_import_path("@import \"something\";")
   end
 
   def test_parses_import_path_with_dirname_correctly
-    assert_equal "admin/test3.css", Deadfire::Parser.normalize_import_path("@import \"admin/test3.css\";")
+    assert_equal "admin/test3.css", Deadfire::Parser::Import.normalize_import_path("@import \"admin/test3.css\";")
   end
 
   def test_raises_error_when_invalid_import_location
@@ -327,7 +351,7 @@ class ParserTest < Minitest::Test
   end
 
   def test_basic_import
-    assert_equal <<~CSS.strip, css_import_content("test_1")
+    assert_equal <<~CSS, css_import_content("test_1")
       .test_css_1 {
         padding: 1rem;
       }
@@ -335,7 +359,7 @@ class ParserTest < Minitest::Test
   end
 
   def test_import_with_extension
-    assert_equal <<~CSS.strip, css_import_content("test_1.css")
+    assert_equal <<~CSS, css_import_content("test_1.css")
       .test_css_1 {
         padding: 1rem;
       }
@@ -343,7 +367,7 @@ class ParserTest < Minitest::Test
   end
 
   def test_import_in_admin_directory
-    assert_equal <<~CSS.strip, css_import_content("admin/test_3.css")
+    assert_equal <<~CSS, css_import_content("admin/test_3.css")
       .test_css_3 {
         padding: 3rem;
       }
@@ -353,16 +377,11 @@ class ParserTest < Minitest::Test
   private
 
     def transform(css)
-      Deadfire::Parser.new(css).parse
-    end
-
-    def css_input(filename)
-      file = File.read(File.join(fixtures_path, filename))
-      Deadfire::Parser.call file
+      Deadfire::Parser.parse(css).chomp
     end
 
     def css_import_content(filename)
-      normalized_path = Deadfire::Parser.resolve_import_path(path)
-      Deadfire::Parser.parse_import_path("@import \"#{normalized_path}\"")
+      normalized_path = Deadfire::Parser::Import.normalize_import_path(filename)
+      transform("@import \"#{normalized_path}\"")
     end
 end
