@@ -203,43 +203,82 @@ module Deadfire
     end
 
     class Nesting < Line
+      attr_accessor :block_names
+
       def initialize(content, lineno, buffer, output)
         super(content, lineno)
         @buffer = buffer
         @output = output
-        @nestings = []
-        @block_name = []
-        @found_end_block = false
+        @block_names = []
+        @nested_level = 0
       end
 
       def parse
-        line = @buffer.gets unless line
-        @block_name << find_block_name(@output, @lineno)
-  
-        while !@found_end_block || !@buffer.eof?
-          if line.strip.start_with?(NEST_SELECTOR)
-            spaces = calculate_spaces_to_add(line)
-            @nestings << "#{spaces}#{rewrite_line(line.strip, @block_name.join(" "))}\n"
-          else
-            @nestings << line
-          end
-  
-          if line.strip.end_with?(END_BLOCK_CHAR)
-            @found_end_block = true
-          end
-          line = @buffer.gets
-        end
-  
-        # if there is an ending block after the nested content, that can be ignored
-        # line = @buffer.gets
-        # unless line.strip.end_with?(END_BLOCK_CHAR)
-        #   @buffer.ungetc(line)
-        # end
+        line = content.dup.strip
+        @block_names << find_block_name(@output, @lineno)
+        tmp = []
+        
+        add_end_block_when_no_end_block_on_prev_line(arr: tmp)
 
-        @nestings 
+        # table.colortable {\n}
+        # table.colortable td {\n  text-align:center;\n}
+        # table.colortable td:first-child {\n  text-align:center;\n}
+
+         # table.colortable {
+          # & td {
+          #   &.c { text-transform:uppercase }
+          # }
+          # & .active { color:red }
+        # }
+        while @nested_level > 0 || !@buffer.eof?
+          # spaces = calculate_spaces_to_add(line)
+          if line.start_with?(NEST_SELECTOR)
+            add_end_block_when_no_end_block_on_prev_line(arr: tmp) if @nested_level > 0
+            add_selector_to_block_name(line)
+            @nested_level += 1
+            tmp << rewrite_line(line, @block_names[0...-1].join(" "))
+            remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
+
+            # @nestings << "#{spaces}#{rewrite_line(line.strip, @block_name.join(" "))}\n"
+          elsif line.end_with?(END_BLOCK_CHAR)
+            remove_last_block_name_entry
+            tmp << line
+          else
+            tmp << line
+            # @nestings << "#{spaces}#{line.lstrip}"
+          end
+
+          line = @buffer.gets
+
+          if line.nil? || @buffer.eof? || line.empty?
+            break
+          else
+            line.strip!
+          end
+        end
+
+        tmp.pop if tmp[-1] == END_BLOCK_CHAR
+        tmp.join("\n")
       end
 
       private
+
+      def remove_last_block_name_entry
+        @nested_level -= 1
+        @block_names.pop
+      end
+
+      def add_selector_to_block_name(line)
+        line = extract_selector(line)
+        line = line_without_nested_block(line)
+        @block_names << line unless @block_names.include?(line)
+      end
+
+      def add_end_block_when_no_end_block_on_prev_line(arr: @output)
+        unless arr[-1]&.strip&.end_with?("}")
+          arr << "}"
+        end
+      end
 
       def calculate_spaces_to_add(line)
         unless line =~ OPENING_SELECTOR_PATTERN || line =~ CLOSING_SELECTOR_PATTERN
@@ -250,7 +289,11 @@ module Deadfire
       end
   
       def extract_selector(line)
-        line.tr(START_BLOCK_CHAR, "").strip
+        line.split(START_BLOCK_CHAR).first.strip
+      end
+
+      def line_without_nested_block(line)
+        line.split(NEST_SELECTOR).last.strip
       end
   
       def rewrite_line(line, selector)
@@ -258,7 +301,7 @@ module Deadfire
         when 0
           line
         when 1
-          "#{selector} { #{extract_selector(line)} }"
+          "#{line.gsub("&", selector)}"
         else
           line.strip.each_char.map do |s|
             if s == NEST_SELECTOR
@@ -272,7 +315,7 @@ module Deadfire
   
       def number_of_selectors_in(line)
         line.split.count do |s|
-          break if s == "{" # early exit, no need to read every char
+          # break if s == "{" # early exit, no need to read every char
           s.start_with?(NEST_SELECTOR)
         end
       end
@@ -293,18 +336,6 @@ module Deadfire
       end
     end
 
-    # parse line
-    # if no closing bracket, read next line and add to rule
-    class Rule < Line
-      attr_accessor :found_end_block, :children, :parent, :name, :properties
-
-      def initialize(...)
-        super(...)
-        children = []
-        found_end_block = false
-      end
-    end
-
     def parse
       # preprocess
 
@@ -317,6 +348,7 @@ module Deadfire
 
       # finalize
       @output << NEWLINE
+
       @output.join
     end
 
@@ -378,7 +410,7 @@ module Deadfire
       @output << @root.parse
     end
 
-    def handle_nestings(line)
+    def handle_nestings(line)      
       nesting = Nesting.new(line, buffer.lineno, buffer, @output)
       @output << nesting.parse
     end
