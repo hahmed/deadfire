@@ -304,15 +304,11 @@ class ParserTest < Minitest::Test
     table.colortable td {
       text-align:center;
     }
-    table.colortable td.c {
-      text-transform:uppercase;
-    }
-    table.colortable td:first-child, table.colortable td:first-child+td {
-      border:1px solid black;
-    }
+    table.colortable td.c { text-transform:uppercase; }
+    table.colortable td:first-child, table.colortable td:first-child+td { border:1px solid black; }
     CSS
 
-    assert_includes transform(<<~INPUT), output
+    assert_includes transform(<<~INPUT), output.chomp
     table.colortable {
       & th {
         text-align:center;
@@ -321,8 +317,8 @@ class ParserTest < Minitest::Test
       }
       & td {
         text-align:center;
-        &.c { text-transform:uppercase }
-        &:first-child, &:first-child + td { border:1px solid black }
+        &.c { text-transform:uppercase; }
+        &:first-child, &:first-child+td { border:1px solid black; }
       }
     }
     INPUT

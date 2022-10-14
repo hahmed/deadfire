@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# https://www.w3.org/TR/css-syntax-3/#consume-token
 module Deadfire
   class Parser
     singleton_class.attr_accessor :cached_mixins
@@ -20,8 +19,8 @@ module Deadfire
     APPLY_SELECTOR = "@apply"
     NEWLINE = "\n"
 
-    def self.parse(options)
-      new(options).parse
+    def self.parse(content, options = {})
+      new(content, options).parse
     end
 
     attr_reader :output
@@ -58,20 +57,6 @@ module Deadfire
         @output = []
         @buffer = buffer
       end
-
-      # 
-      # @media (min-width: 45em) {
-      #   :root {
-      #       --type-base:calc(0.9em + 0.9vw)
-      #   }
-      # }
-
-      # @media (min-width: 91em) {
-      #   :root {
-      #       --type-base:2.2em
-      #   }
-      # }
-      # also can have multiple :root tags! they don't contain mixins so ignore
 
       def parse
         line = @content
@@ -219,33 +204,17 @@ module Deadfire
         tmp = []
         
         add_end_block_when_no_end_block_on_prev_line(arr: tmp)
-
-        # table.colortable {\n}
-        # table.colortable td {\n  text-align:center;\n}
-        # table.colortable td:first-child {\n  text-align:center;\n}
-
-         # table.colortable {
-          # & td {
-          #   &.c { text-transform:uppercase }
-          # }
-          # & .active { color:red }
-        # }
         while @nested_level > 0 || !@buffer.eof?
-          # spaces = calculate_spaces_to_add(line)
+          spaces = calculate_spaces_to_add(line)
           if line.start_with?(NEST_SELECTOR)
             add_end_block_when_no_end_block_on_prev_line(arr: tmp) if @nested_level > 0
             add_selector_to_block_name(line)
             @nested_level += 1
-            tmp << rewrite_line(line, @block_names[0...-1].join(" "))
+            tmp << rewrite_line(spaces, line, @block_names[0...-1].join(" "))
             remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
-
-            # @nestings << "#{spaces}#{rewrite_line(line.strip, @block_name.join(" "))}\n"
-          elsif line.end_with?(END_BLOCK_CHAR)
-            remove_last_block_name_entry
-            tmp << line
           else
-            tmp << line
-            # @nestings << "#{spaces}#{line.lstrip}"
+            remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
+            tmp << "#{spaces}#{line.lstrip}"
           end
 
           line = @buffer.gets
@@ -296,12 +265,12 @@ module Deadfire
         line.split(NEST_SELECTOR).last.strip
       end
   
-      def rewrite_line(line, selector)
+      def rewrite_line(spaces, line, selector)
         case number_of_selectors_in(line)
         when 0
           line
         when 1
-          "#{line.gsub("&", selector)}"
+          "#{spaces}#{line.lstrip.gsub("&", selector)}"
         else
           line.strip.each_char.map do |s|
             if s == NEST_SELECTOR
@@ -337,16 +306,10 @@ module Deadfire
     end
 
     def parse
-      # preprocess
-
-      # lex and parse in one pass
       while ! buffer.eof?
         process_line(buffer.readline)
       end
 
-      # run custom transformers/plugins
-
-      # finalize
       @output << NEWLINE
 
       @output.join
@@ -354,7 +317,7 @@ module Deadfire
 
     private
 
-    # this method returns void, and instead modifies the output array directly
+    # this method returns void, and modifies the output array directly
     def process_line(line)
       if line.strip.start_with?("/*")
         handle_comment(line)
@@ -394,10 +357,9 @@ module Deadfire
       self.class.import_path_cache << import.import_path
 
       # TODO: 
-      # - improve this code
       # - decide on how many levels of imports we want to allow
       # - make async??
-      @output << import.parse # make this async? empty line after this?
+      @output << import.parse
     end
 
     def handle_apply(line)
