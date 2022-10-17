@@ -6,12 +6,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Haroon Ahmed"]
   spec.email         = ["haroon.ahmed25@gmail.com"]
 
-  spec.summary       = "Deadfire - minimal css preprocessor"
+  spec.summary       = "Deadfire - lightweight css preprocessor"
   spec.homepage      = "https://github.com/hahmed/deadfire"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7")
-
-  spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/hahmed/deadfire"
