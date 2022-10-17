@@ -6,9 +6,7 @@ Use plain ol' CSS with a little bit of @import, @apply and nestings.
 
 CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features (wait... that's a bad thing?).
 
-With the rise of the utility first approach. There is not a great amount of custom CSS to write.
-
-Deadfire sprinkles a few extra features which helps you write CSS, easier!
+Deadfire sprinkles a few extra features which helps you write CSS, easier.
 
 Deadfire can be used with or without a CSS framework.
 
@@ -16,7 +14,7 @@ Deadfire can be used with or without a CSS framework.
 
 - [x] @import
 - [x] [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
-- [ ] [nesting](https://drafts.csswg.org/css-nesting-1)
+- [x] [nesting](https://drafts.csswg.org/css-nesting-1)
 
 ### @import
 
@@ -146,6 +144,7 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+To run the tests, run `bin/test`.
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/hahmed/deadfire. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hahmed/deadfire/blob/master/CODE_OF_CONDUCT.md).
