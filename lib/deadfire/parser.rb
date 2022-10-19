@@ -307,7 +307,7 @@ module Deadfire
 
     def parse
       while ! buffer.eof?
-        process_line(buffer.readline)
+        process_line(buffer.gets)
       end
 
       @output << NEWLINE

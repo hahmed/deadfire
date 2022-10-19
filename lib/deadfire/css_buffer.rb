@@ -2,9 +2,27 @@
 require "stringio"
 
 module Deadfire
-  class CssBuffer < StringIO
+  class CssBuffer
+    attr_reader :lineno
+    private attr_reader :content, :buffer
+
     def initialize(content)
-      super(content)
+      @content = StringIO.new(content)
+      @buffer = []
+      @lineno = 0
+    end
+
+    def gets(skip_buffer: false)
+      output = content.gets
+      if output && !skip_buffer
+        buffer << output
+      end
+      @lineno += 1
+      output
+    end
+
+    def eof?
+      content.eof? && buffer.size == lineno
     end
   end
 end
