@@ -3,8 +3,7 @@ require "stringio"
 
 module Deadfire
   class CssBuffer
-    attr_reader :lineno
-    private attr_reader :content, :buffer
+    attr_reader :lineno, :buffer
 
     def initialize(content)
       @content = StringIO.new(content)
@@ -24,5 +23,9 @@ module Deadfire
     def eof?
       content.eof? && buffer.size == lineno
     end
+
+    private
+
+    attr_reader :content
   end
 end
