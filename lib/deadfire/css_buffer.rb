@@ -20,8 +20,14 @@ module Deadfire
       output
     end
 
+    def peek
+      output = content.gets
+      content.ungetc(output)
+      output
+    end
+
     def eof?
-      content.eof? && buffer.size == lineno
+      content.eof?
     end
 
     private

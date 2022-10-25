@@ -202,19 +202,27 @@ module Deadfire
         line = content.dup.strip
         @block_names << find_block_name(@output, @lineno)
         tmp = []
-        
-        add_end_block_when_no_end_block_on_prev_line(arr: tmp)
+
         while @nested_level > 0 || !@buffer.eof?
           spaces = calculate_spaces_to_add(line)
+
           if line.start_with?(NEST_SELECTOR)
-            add_end_block_when_no_end_block_on_prev_line(arr: tmp) if @nested_level > 0
+            add_end_block_when_no_end_block_on_prev_line(arr: tmp)
             add_selector_to_block_name(line)
             @nested_level += 1
             tmp << rewrite_line(spaces, line, @block_names[0...-1].join(" "))
-            remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
           else
-            remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
             tmp << "#{spaces}#{line.lstrip}"
+          end
+
+          remove_last_block_name_entry if line.end_with?(END_BLOCK_CHAR)
+
+          if line.end_with?(END_BLOCK_CHAR)
+            result = @buffer.peek
+            if result.strip == END_BLOCK_CHAR
+              @buffer.gets(skip_buffer: true)
+              break
+            end
           end
 
           line = @buffer.gets
@@ -226,8 +234,7 @@ module Deadfire
           end
         end
 
-        tmp.pop if tmp[-1] == END_BLOCK_CHAR
-        tmp.join("\n")
+        tmp.join("\n").concat("\n")
       end
 
       private
@@ -270,7 +277,7 @@ module Deadfire
         when 0
           line
         when 1
-          "#{spaces}#{line.lstrip.gsub("&", selector)}"
+          "#{spaces}#{line.strip.gsub("&", selector)}"
         else
           line.strip.each_char.map do |s|
             if s == NEST_SELECTOR

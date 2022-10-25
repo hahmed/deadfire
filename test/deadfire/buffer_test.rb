@@ -7,9 +7,9 @@ class BufferTest < Minitest::Test
     assert buffer.eof?
   end
 
-  def test_read_from_buffer_and_skip_buffer_is_not_eof
+  def test_read_from_buffer_and_skip_buffer_is_eof
     buffer = Deadfire::CssBuffer.new("body { color: red; }")
     assert_equal "body { color: red; }", buffer.gets(skip_buffer: true)
-    refute buffer.eof?
+    assert buffer.eof?
   end
 end

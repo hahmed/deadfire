@@ -370,6 +370,24 @@ class ParserTest < Minitest::Test
     CSS
   end
 
+  def test_parses_content_after_nested_block
+    output = <<~OUTPUT 
+    .title {
+      color: blue;
+    }
+    .title .text { padding: 3px; }
+    .image { padding: 2px; }
+    OUTPUT
+
+    assert_equal output, transform(<<~INPUT)
+    .title {
+      color: blue;
+      & .text { padding: 3px; }
+    }
+    .image { padding: 2px; }
+    INPUT
+  end
+
   private
 
     def transform(css)
