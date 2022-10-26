@@ -153,31 +153,43 @@ module Deadfire
         super
         @current_line = @content.dup
         @space  = " "
-        @space_counter = 0
-        @import_start_tag = "@"
+        @apply_start_char = "@"
         @output = []
       end
-
+      
       def parse
         raise Deadfire::EarlyApplyException.new(@content, @lineno) if Parser.cached_mixins.empty?
-  
-        @current_line.each_char do |char|
-          break if char == @import_start_tag
-          @space_counter += 1
-        end
+        
+        space_counter = calculate_number_of_spaces
+        ends_with_end_block_char = false
   
         @current_line.split(" ").each do |css|
           next if css.include?(APPLY_SELECTOR)
+          
           css.gsub!(";", "")
+          if css.end_with?(END_BLOCK_CHAR)
+            ends_with_end_block_char = true
+            css.gsub!(END_BLOCK_CHAR, "")
+          end
           
           fetch_cached_mixin(css).each_pair do |key, value|
-            @output << "#{@space * @space_counter}#{key}: #{value};"
+            @output << "#{@space * space_counter}#{key}: #{value};"
           end
         end
+        @output << "#{END_BLOCK_CHAR}" if ends_with_end_block_char
         @output
       end
 
       private
+
+      def calculate_number_of_spaces
+        space_counter = 0
+        @current_line.each_char do |char|
+          break if char == @apply_start_char
+          space_counter += 1
+        end
+        space_counter
+      end
 
       # find css class key/val from hash, otherwise throw because the mixin is not defined
       def fetch_cached_mixin(key)

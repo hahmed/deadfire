@@ -388,6 +388,28 @@ class ParserTest < Minitest::Test
     INPUT
   end
 
+  def test_parses_apply_correctly_when_line_ends_with_end_block_char
+    css = <<~CSS
+    :root {
+      --font-bold: {
+        font-weight: bold;
+      }
+    }
+
+    .title {
+      @apply --font-bold;}
+    CSS
+
+    assert_equal <<~OUTPUT.chomp, transform(css)
+    :root {
+    }
+
+    .title {
+      font-weight: bold;
+    }
+    OUTPUT
+  end
+
   private
 
     def transform(css)
