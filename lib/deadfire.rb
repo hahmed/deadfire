@@ -4,6 +4,7 @@ require_relative "deadfire/css_buffer"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/parser"
+require_relative "deadfire/filename_helper"
 require_relative "deadfire/transformers/transformer"
 require_relative "deadfire/version"
 
