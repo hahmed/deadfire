@@ -10,16 +10,18 @@ require_relative "deadfire/version"
 
 module Deadfire
   class << self
+    attr_reader :config
+
     def configuration
-      @configuration ||= Configuration.new
+      @config ||= Configuration.new
     end
 
     def reset
-      @configuration = Configuration.new
+      @config = Configuration.new
     end
 
     def configure
-      yield(@configuration)
+      yield(configuration)
     end
 
     def parse(content, options = {})
