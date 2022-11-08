@@ -34,9 +34,9 @@ module Deadfire
     end
 
     def buffer
+      preprocess
       @buffer ||= CssBuffer.new(@content)
     end
-
     
     def parse
       while ! buffer.eof?
@@ -49,6 +49,10 @@ module Deadfire
     end
     
     private
+
+    def preprocess
+      @content.gsub(/\r\n?|\f/, "\n").gsub("\u{0000}", "\u{FFFD}")
+    end
     
     # this method returns void, and modifies the output array directly
     def process_line(line)
