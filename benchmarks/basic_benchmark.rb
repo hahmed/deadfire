@@ -13,7 +13,7 @@ gemfile(true) do
 end
 
 css = <<~CSS
-
+/* My very first css file! */
 body {
   font-family: helvetica, arial, sans-serif;
   font-size: calc(1.3em + 0.5vw);
@@ -27,7 +27,10 @@ body {
 h1 {
   font-size: 40px; 
 }
-
+/* Just
+a
+random
+comment */
 a {
   font-size: 1em;
   vertical-align: baseline;
@@ -41,15 +44,15 @@ a {
   text-decoration-width: 0.1rem
 }
 
-.button--block {
-  min-width:100% !important
-}
+.button--block { min-width:100% !important }
 
 code {
   font-family: Roboto Mono;
   font-size: 12px;
   color: gray;
 }
+
+/* I like code                  blocks!!!!!======= */
 
 .banner {
   border: 1px solid #ccc;

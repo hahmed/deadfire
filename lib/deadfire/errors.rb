@@ -39,4 +39,32 @@ module Deadfire
       super(msg)
     end
   end
+
+  class SyntaxError < StandardError
+    def initialize(message = "", lineno = "", original_line = "")
+      msg = if message
+        "#{original_line}\nline: #{lineno}: #{message}"
+      else
+        "Syntax "
+      end
+
+      super(msg)
+    end
+  end
+
+  class ErrorsList
+    attr_reader :errors
+
+    def initialize
+      @errors = []
+    end
+
+    def add(message:, lineno:, original_line:)
+      @errors << SyntaxError.new(message, lineno, original_line)
+    end
+
+    def empty?
+      @errors.empty?
+    end
+  end
 end
