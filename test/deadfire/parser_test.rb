@@ -126,6 +126,17 @@ class ParserTest < Minitest::Test
     assert_equal output, transform(output)
   end
 
+  def test_comment_without_closing_tag_has_errors
+    output = <<~OUTPUT
+    /* comment
+    OUTPUT
+
+    parser = Deadfire::Parser.new(output)
+    assert_equal output, parser.parse.chomp
+    assert parser.errors?
+    assert_includes parser.errors_list.errors.first.message, "line: 1: Unclosed comment error"
+  end
+
   def test_mixin_outputs_correctly
     output = <<~OUTPUT
       :root {

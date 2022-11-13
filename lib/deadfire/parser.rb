@@ -24,17 +24,18 @@ module Deadfire
       new(content, options).parse
     end
 
-    attr_reader :output
+    attr_reader :output, :errors_list
 
     def initialize(content, options = {})
       @content  = content
+      @errors_list   = ErrorsList.new
       @filename = options[:filename]
       @output   = []
       @imports  = []
     end
 
     def buffer
-      preprocess
+      @content = preprocess
       @buffer ||= CssBuffer.new(@content)
     end
     
@@ -46,6 +47,10 @@ module Deadfire
       @output << NEWLINE
       
       @output.join
+    end
+
+    def errors?
+      @errors_list.errors.any?
     end
     
     private
@@ -81,6 +86,10 @@ module Deadfire
       while ! line.include?(CLOSE_COMMENT_SELECTOR) && ! buffer.eof?
         line = buffer.gets
         @output << Line.new(line, buffer.lineno) if keep_comments?
+      end
+
+      if buffer.eof?
+        @errors_list.add(message: "Unclosed comment error", lineno: buffer.lineno, original_line: line)
       end
     end
     
