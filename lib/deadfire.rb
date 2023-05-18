@@ -3,7 +3,10 @@
 require_relative "deadfire/css_buffer"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
+require_relative "deadfire/error_reporter"
 require_relative "deadfire/parser"
+require_relative "deadfire/parser2"
+require_relative "deadfire/spec"
 require_relative "deadfire/filename_helper"
 require_relative "deadfire/version"
 
