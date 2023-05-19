@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deadfire
   class ErrorReporter
     attr_reader :errors

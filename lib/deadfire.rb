@@ -9,6 +9,8 @@ require_relative "deadfire/parser2"
 require_relative "deadfire/spec"
 require_relative "deadfire/filename_helper"
 require_relative "deadfire/version"
+require_relative "deadfire/front_end/scanner"
+require_relative "deadfire/front_end/token_type"
 
 module Deadfire
   class << self

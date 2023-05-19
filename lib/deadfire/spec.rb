@@ -29,9 +29,6 @@ module Deadfire
       "@document"
     ]
 
-    MIN_AT_RULE_LENGTH = 4
-    MAX_AT_RULE_LENGTH = 13
-
     CSS_SELECTORS = [
       ":root",
       "::before",
