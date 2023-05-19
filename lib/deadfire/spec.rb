@@ -83,6 +83,7 @@ module Deadfire
       :enumerated, # e.g. inline, block, list-item, etc.
       :functional, # e.g.  calc(), attr(), and var() - calc(100% - 10px)
       :other # everything else like inherit, initial, unset
+    ]
 
     COMMON_CSS_PROPERTIES = [
       "color",

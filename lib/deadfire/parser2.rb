@@ -57,7 +57,7 @@ module Deadfire
 
       def scan_token
         case advance
-        when "@" then add_token(at_selector)
+        when "@" then add_at_keyword
         when "{" then add_token(:left_brace)
         when "}" then add_token(:right_brace)
         when "#" then add_token(:id_selector)
@@ -89,27 +89,35 @@ module Deadfire
         @tokens << TokenType.new(type, text, literal, @line)
       end
 
-      def at_selector
+      def add_at_keyword(literal = nil)
         selector = [@source[@current]]
-        # do I look ahead 13 chars and see if any matches, then move the current pointer forward that many chars?
 
-        selector << @source[@current + 1..@current + Spec::MIN_AT_RULE_LENGTH]
-
-        # peek next char and add to selector if selector matches at rule then return otherwise keep going
-        while peek && Spec::CSS_AT_RULES.include?(selector.join)
+        while Spec::CSS_AT_RULES.none? { |kwrd| kwrd == selector.join + peek } && !at_end?
+          if peek == "\n"
+            break
+          end
           selector << advance
         end
 
-        if Spec::CSS_AT_RULES.include?(selector.join)
-          :at_selector
+        # final char in at-keyword
+        selector << advance
+
+        current_keyword = selector.join
+
+        if peek == "\n"
+          @line += 1
+          @error_reporter.error(@line, "at-keyword cannot be on multiple lines.")
+          @tokens << TokenType.new(:at_keyword, current_keyword, literal, @line) # do we add errors like this to tokenizer? I think so
+        elsif at_keyword = Spec::CSS_AT_RULES.find { |kwrd| kwrd == current_keyword }
+          text = "at_#{at_keyword[1..-1]}"
+          @tokens << TokenType.new(text.to_sym, at_keyword, literal, @line)
         else
-          @current += 1
-          peek = @source[@current + 1]
+          @error_reporter.error(@line, "Invalid at-keyword.")
         end
       end
 
       def peek
-        @source[@current] unless at_end?
+        @source[@current + 1] unless at_end?
       end
     end
   end
