@@ -63,9 +63,12 @@ module Deadfire
         when NEWLINE then @line += 1
         when " ", "\r", "\t" # Ignore whitespace.
         when '"' then add_string_token
+        when nil
         else
           if digit?(current_char)
             add_number_token
+          elsif text?(current_char)
+            add_text_token # or word token?
           else
             @error_reporter.error(@line, "Unexpected character.")
           end
@@ -127,6 +130,18 @@ module Deadfire
         add_token(:string, value)
       end
 
+      # This token is very similar to the string token, but we want to explicitly
+      # split up text from string, because string in css is surrounded by quotes and text is free form
+      # which can be a property or value e.g. `color: red;`.
+      def add_text_token
+        while text?(peek) && !at_end?
+          advance
+        end
+
+        value = @source[@start..@current]
+        add_token(:text, value)
+      end
+
       def add_number_token
         while digit?(peek)
           advance
@@ -158,7 +173,11 @@ module Deadfire
       end
 
       def digit?(char)
-        char && char >= "0" && char <= "9"
+        char >= "0" && char <= "9"
+      end
+
+      def text?(char)
+        (char >= "a" && char <= "z") || (char >= "A" && char <= "Z")
       end
     end
   end
