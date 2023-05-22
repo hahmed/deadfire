@@ -15,6 +15,7 @@ module Deadfire
     # property           = NAME;
     # value              = any-value [ ',' S* any-value ]*;
     # any-value          = IDENT | STRING | NUMBER | PERCENTAGE | DIMENSION | COLOR | URI | FUNCTION any-value* ')' | '(' any-value* ')' | '[' any-value* ']' | '{' any-value* '}' | ';';
+
     CSS_AT_RULES = [
       "@charset",
       "@import",

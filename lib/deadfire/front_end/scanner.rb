@@ -56,14 +56,14 @@ module Deadfire
         when "$" then add_token(:dollar)
         when "|" then add_token(:pipe)
         when "!" then add_token(:exclamation)
-        when "-" then add_token(:minus)
+        when "-" then add_hypen_token
         when "/" then add_token(:slash)
         when "&" then add_token(:ampersand)
         when "'" then add_token(:single_quote)
         when NEWLINE then @line += 1
         when " ", "\r", "\t" # Ignore whitespace.
         when '"' then add_string_token
-        when nil
+        when nil # TODO: I think there is a null added at the end of file, which we ignore for now.
         else
           if digit?(current_char)
             add_number_token
@@ -158,6 +158,15 @@ module Deadfire
         end
 
         add_token(:number, @source[@start..@current].to_f)
+      end
+
+      def add_hypen_token
+        if peek == "-"
+          advance
+          add_token(:double_hyphen)
+        else
+          add_token(:hyphen)
+        end
       end
 
       def peek
