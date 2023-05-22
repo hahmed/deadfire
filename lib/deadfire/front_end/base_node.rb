@@ -8,6 +8,10 @@ module Deadfire
         @operator = operator
         @right = right
       end
+
+      def accept
+        raise NotImplementedError
+      end
     end
   end
 end
