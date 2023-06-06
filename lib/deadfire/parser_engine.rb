@@ -1,5 +1,5 @@
 module Deadfire
-  class Parser2
+  class ParserEngine
     attr_reader :error_reporter, :tokens, :options, :current
 
     def initialize(content, options = {})
@@ -7,15 +7,19 @@ module Deadfire
       @tokens = []
       @options = {}
       @current = 0
-      @scanner = FrontEnd::Scanner.new(content, @error_reporter)
+      @scanner = FrontEnd::Scanner.new(content, error_reporter)
+      @statements = []
     end
 
     def parse
-      tokens = @scanner.scan_tokens
+      tokens = @scanner.tokenize
 
       tokens.each do |token|
-        puts token
+        puts token.inspect
       end
+
+      # write some code to group tokens into statements
+      ast = FrontEnd::Parser.new(tokens, error_reporter, options).parse
     end
 
     def errors?

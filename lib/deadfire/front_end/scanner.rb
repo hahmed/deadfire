@@ -15,13 +15,13 @@ module Deadfire
         @error_reporter = error_reporter
       end
 
-      def scan_tokens
+      def tokenize
         until at_end?
           @start = @current
           scan_token
         end
 
-        @tokens << TokenType.new(:eof, "", nil, @line)
+        @tokens << Token.new(:eof, "", nil, @line)
       end
 
       private
@@ -82,7 +82,7 @@ module Deadfire
 
       def add_token(type, literal = nil)
         text = @source[@start..@current]
-        @tokens << TokenType.new(type, text, literal, @line)
+        @tokens << Token.new(type, text, literal, @line)
       end
 
       def add_at_keyword(literal = nil)

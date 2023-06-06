@@ -2,7 +2,7 @@
 
 module Deadfire
   module FrontEnd
-    class TokenType
+    class Token
       attr_reader :type, :lexeme, :literal, :lineno
 
       def initialize(type, lexeme, literal, lineno)
