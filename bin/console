@@ -9,16 +9,12 @@ require "deadfire"
 #  simple css test
  css = <<-CSS
   @charset "UTF-8";
-  .foo {
-    color: red;
-    text-align: center;
-    font-family: "Times New Roman", Times, serif;
-  }
+  @import url("fineprint.css") print;
 CSS
 
 puts css.inspect
 
-parser = Deadfire::Parser2.new(css)
+parser = Deadfire::ParserEngine.new(css)
 parser.parse
 
 require "irb"

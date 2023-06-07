@@ -3,10 +3,9 @@ module Deadfire
     class Parser
       attr_reader :error_reporter, :tokens, :options, :current
 
-      def initialize(tokens, error_reporter, options = {})
+      def initialize(tokens, error_reporter)
         @error_reporter = error_reporter
-        @tokens = []
-        @options = {}
+        @tokens = tokens
         @current = 0
         @statements = []
       end
@@ -59,15 +58,15 @@ module Deadfire
 
         while !is_at_end?
           if matches_at_rule?
-            at_rule_declaration
+            @statements << at_rule_declaration
           elsif matches_ruleset?
-            ruleset_declaration
+            @statements << ruleset_declaration
           else
             throw "error eval-ing statement"
           end
         end
 
-        statements
+        @statements
       end
 
       private
@@ -116,7 +115,7 @@ module Deadfire
       end
 
       def matches_at_rule?
-        match?(:at_keyword)
+        match?(:at_rule)
       end
 
       def matches_ruleset?
@@ -124,31 +123,44 @@ module Deadfire
       end
 
       def at_rule_declaration
-        # This will break for at_rule, because some types are a bit more complex, or do I need to simplify all into at_keyword only?
-        # have a think about this, because I may need to peek and check for specific types and consume acordingly, because
-        # not all at_keywords have blocks for example.
-        consume(:at_keyword, "Expect at keyword")
-        consume(:left_brace, "Expect left brace")
+        consume(:at_rule, "Expect at rule")
+        keyword = previous
 
-        block = block
+        # peek until we get to ; or {, if we reach ; then add to at rule node and return
+        values = []
+        while !match?(:semicolon, :left_brace)
+          values << advance
+        end
 
-        consume(:right_brace, "Expect right brace")
+        if previous.type == :semicolon
+          values << previous # add the semicolon to the values
+          return AtRuleNode.new(keyword, values, nil)
+        end
 
-        AtRuleNode.new(block)
+        # if we reach { then we need to parse the block
+        block = []
+        block << previous
+        while !match?(:right_brace)
+          block << advance # TODO: we need to break this down into further nodes, but it's workable for now
+        end
+
+        block << previous # add the right brace to the block
+        AtRuleNode.new(keyword, values[0..-2], block) # remove the left brace, because it's not a value, but part of the block
       end
 
       def ruleset_declaration
-        consume(:ruleset, "Expect ruleset")
+        # consume(:ruleset, "Expect ruleset")
 
-        selectors = selectors
+        # selectors = selectors
 
-        consume(:left_brace, "Expect left brace")
+        # consume(:left_brace, "Expect left brace")
 
-        declarations = declarations
+        # declarations = declarations
 
-        consume(:right_brace, "Expect right brace")
+        # consume(:right_brace, "Expect right brace")
 
-        RulesetNode.new(selectors, declarations)
+        # RulesetNode.new(selectors, declarations)
       end
+    end
   end
 end

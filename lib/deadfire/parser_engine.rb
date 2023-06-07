@@ -14,12 +14,17 @@ module Deadfire
     def parse
       tokens = @scanner.tokenize
 
-      tokens.each do |token|
-        puts token.inspect
-      end
+      # tokens.each do |token|
+      #   puts token.inspect
+      # end
 
       # write some code to group tokens into statements
-      ast = FrontEnd::Parser.new(tokens, error_reporter, options).parse
+      ast = FrontEnd::Parser.new(tokens, error_reporter).parse
+
+      printer = AstPrinter.new
+      ast.each do |node|
+        printer.print(node)
+      end
     end
 
     def errors?

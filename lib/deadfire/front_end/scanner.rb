@@ -34,7 +34,7 @@ module Deadfire
 
       def scan_token
         case advance
-        when "@" then add_at_keyword
+        when "@" then add_at_rule
         when "{" then add_token(:left_brace)
         when "}" then add_token(:right_brace)
         when "#" then add_token(:id_selector)
@@ -85,7 +85,7 @@ module Deadfire
         @tokens << Token.new(type, text, literal, @line)
       end
 
-      def add_at_keyword(literal = nil)
+      def add_at_rule(literal = nil)
         selector = [@source[@current]]
 
         while Spec::CSS_AT_RULES.none? { |kwrd| kwrd == selector.join + peek } && !at_end?
@@ -93,21 +93,21 @@ module Deadfire
           selector << advance
         end
 
-        # final char in at-keyword
+        # final char in at-rule
         selector << advance
 
-        current_keyword = selector.join
-        at_keyword = Spec::CSS_AT_RULES.find { |kwrd| kwrd == current_keyword }
+        current_at_rule = selector.join
+        at_rule = Spec::CSS_AT_RULES.find { |kwrd| kwrd == current_at_rule }
 
         if peek == NEWLINE
           @line += 1
-          @error_reporter.error(@line, "at-keyword cannot be on multiple lines.")
-          add_token(:at_keyword, current_keyword)
-        elsif at_keyword
-          text = "at_#{at_keyword[1..-1]}"
-          add_token(text.to_sym, at_keyword)
+          @error_reporter.error(@line, "at-rule cannot be on multiple lines.")
+          add_token(:at_rule, current_at_rule)
+        elsif at_rule
+          text = "at_#{at_rule[1..-1]}"
+          add_token(:at_rule, text)
         else
-          @error_reporter.error(@line, "Invalid at-keyword.")
+          @error_reporter.error(@line, "Invalid at-rule.")
         end
       end
 
