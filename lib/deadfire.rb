@@ -2,6 +2,7 @@
 
 require_relative "deadfire/ast_printer"
 require_relative "deadfire/css_buffer"
+require_relative "deadfire/css_generator"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/error_reporter"

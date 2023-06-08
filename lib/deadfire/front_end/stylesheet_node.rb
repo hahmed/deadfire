@@ -9,13 +9,12 @@ module Deadfire
         @statements = []
       end
 
-      def add_child_node(node)
-        @statements << node
-        node.parent = self
+      def accept(visitor)
+        visitor.visit_stylesheet_node(self)
       end
 
-      def to_css
-        @statements.map(&:to_css).join
+      def << (node)
+        @statements << node
       end
     end
   end

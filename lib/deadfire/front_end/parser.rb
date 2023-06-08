@@ -9,7 +9,7 @@ module Deadfire
         @error_reporter = error_reporter
         @tokens = tokens
         @current = 0
-        @statements = []
+        @stylesheet = StylesheetNode.new
       end
 
       def parse
@@ -60,15 +60,15 @@ module Deadfire
 
         while !is_at_end?
           if matches_at_rule?
-            @statements << at_rule_declaration
+            @stylesheet << at_rule_declaration
           elsif matches_ruleset?
-            @statements << ruleset_declaration
+            @stylesheet << ruleset_declaration
           else
             throw "error eval-ing statement"
           end
         end
 
-        @statements
+        @stylesheet
       end
 
       private
