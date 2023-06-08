@@ -13,7 +13,7 @@ module Deadfire
       end
 
       def to_s
-        "[#{type}] #{lexeme} #{literal}"
+        "[:#{type}] #{lexeme}"
       end
     end
   end

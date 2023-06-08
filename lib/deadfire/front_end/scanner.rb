@@ -81,7 +81,7 @@ module Deadfire
       end
 
       def add_token(type, literal = nil)
-        text = @source[@start..@current]
+        text = @source[@start + 1..@current]
         @tokens << Token.new(type, text, literal, @line)
       end
 

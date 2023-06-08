@@ -10,9 +10,9 @@ module Deadfire
 
     def visit_at_rule_node(node)
       puts "AtRuleNode"
-      puts "  AtKeyword: #{node.at_keyword.literal}"
+      puts "  AtKeyword: #{node.at_keyword.lexeme}"
       node.value.each do |value|
-        puts "  Value(s): #{value.literal}"
+        puts "  Value: #{value}"
       end
       puts "  Block: #{node.block}" if node.block
     end
