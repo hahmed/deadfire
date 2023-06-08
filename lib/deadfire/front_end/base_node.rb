@@ -1,14 +1,8 @@
+# frozen_string_literal: true
+
 module Deadfire
   module FrontEnd
     class BaseNode
-      attr_reader :left, :right, :operator
-
-      def initialize(left, operator, right)
-        @left = left
-        @operator = operator
-        @right = right
-      end
-
       def accept
         raise NotImplementedError
       end

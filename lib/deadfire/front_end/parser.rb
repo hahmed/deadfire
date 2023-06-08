@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deadfire
   module FrontEnd
     class Parser
@@ -138,7 +140,7 @@ module Deadfire
         end
 
         # if we reach { then we need to parse the block
-        block = []
+        block = BlockNode.new
         block << previous
         while !match?(:right_brace)
           block << advance # TODO: we need to break this down into further nodes, but it's workable for now

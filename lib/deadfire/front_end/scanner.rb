@@ -1,9 +1,7 @@
 # frozen_string_literal: true
+
 module Deadfire
   module FrontEnd
-    # TODO: the lexemes are not printing out the correct value, they have spaces in front end and \ too.
-    # type=:semicolon, lexeme="\";", literal=nil
-    # type=:string, lexeme=" \"UTF-8\"", literal=" \"UTF-8",
     class Scanner
       def initialize(source, error_reporter)
         @source = source

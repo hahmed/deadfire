@@ -9,7 +9,11 @@ require "deadfire"
 #  simple css test
  css = <<-CSS
   @charset "UTF-8";
-  @import url("fineprint.css") print;
+  @viewport { width: device-width; }
+  @page :first { margin: 1cm; }
+  @font-face {
+    font-family: "Open Sans";
+  }
 CSS
 
 puts css.inspect

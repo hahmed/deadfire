@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deadfire
   class AstPrinter
     def initialize
@@ -14,12 +16,24 @@ module Deadfire
       node.value.each do |value|
         puts "  Value: #{value}"
       end
-      puts "  Block: #{node.block}" if node.block
+      if node.block
+        visit_block_node(node.block)
+      end
+    end
+
+    def visit_block_node(node)
+      puts "BlockNode"
+      node.declarations.each do |declaration|
+        puts "  Declaration: #{declaration}"
+      end
     end
 
     def visit_ruleset_node(node)
       puts "RulesetNode"
       puts "  Selector: #{node.selector}"
+      node.value.each do |value|
+        puts "  Value: #{value}"
+      end
       puts "  Block: #{node.block}"
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deadfire
   module FrontEnd
     class PropertyNode < BaseNode
