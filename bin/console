@@ -19,7 +19,8 @@ CSS
 puts css.inspect
 
 parser = Deadfire::ParserEngine.new(css)
-parser.parse
+parser.print_ast
+puts parser.parse
 
 require "irb"
 IRB.start(__FILE__)

@@ -12,7 +12,7 @@ module Deadfire
     def parse
       _parse
       ast = _parse
-      puts CssGenerator.new(ast).generate
+      CssGenerator.new(ast).generate
     end
 
     def print_ast
