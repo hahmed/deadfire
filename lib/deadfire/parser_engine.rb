@@ -5,12 +5,10 @@ module Deadfire
     def initialize(content, options = {})
       @error_reporter = ErrorReporter.new
       @options = {}
-      @current = 0
       @scanner = FrontEnd::Scanner.new(content, error_reporter)
     end
 
     def parse
-      _parse
       ast = _parse
       CssGenerator.new(ast).generate
     end

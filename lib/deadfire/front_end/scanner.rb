@@ -15,7 +15,7 @@ module Deadfire
 
       def tokenize
         until at_end?
-          @start = @current
+          @start = @current - 1
           scan_token
         end
 
@@ -31,7 +31,8 @@ module Deadfire
       end
 
       def scan_token
-        case advance
+        token = advance
+        case token
         when "@" then add_at_rule
         when "{" then add_token(:left_brace)
         when "}" then add_token(:right_brace)
@@ -61,11 +62,11 @@ module Deadfire
         when NEWLINE then @line += 1
         when " ", "\r", "\t" # Ignore whitespace.
         when '"' then add_string_token
-        when nil # TODO: I think there is a null added at the end of file, which we ignore for now.
+        # when nil then ;# TODO: I think there is a null added somewhere, which we ignore for now.
         else
-          if digit?(current_char)
+          if digit?(token)
             add_number_token
-          elsif text?(current_char)
+          elsif text?(token)
             add_text_token # or word token?
           else
             @error_reporter.error(@line, "Unexpected character.")
@@ -73,18 +74,13 @@ module Deadfire
         end
       end
 
-      def advance
-        @current += 1
-        @source[@current]
-      end
-
       def add_token(type, literal = nil)
-        text = @source[@start + 1..@current]
+        text = @source[@start + 1..current_char_position]
         @tokens << Token.new(type, text, literal, @line)
       end
 
       def add_at_rule(literal = nil)
-        selector = [@source[@current]]
+        selector = [current_char]
 
         while Spec::CSS_AT_RULES.none? { |kwrd| kwrd == selector.join + peek } && !at_end?
           break if peek == NEWLINE
@@ -123,8 +119,8 @@ module Deadfire
         advance
 
         # Trim the surrounding quotes.
-        # this does not look right... page 50 crafting interpreters.
-        value = @source[@start + 2..@current - 1]
+        # TODO: this does not look right... page 50 crafting interpreters.
+        value = @source[@start + 2..current_char_position]
         add_token(:string, value)
       end
 
@@ -136,7 +132,7 @@ module Deadfire
           advance
         end
 
-        value = @source[@start..@current]
+        value = @source[@start..current_char_position]
         add_token(:text, value)
       end
 
@@ -167,16 +163,25 @@ module Deadfire
         end
       end
 
-      def peek
-        @source[@current + 1] unless at_end?
+      def current_char_position
+        @current - 1
       end
 
       def current_char
-        @source[@current]
+        @source[current_char_position]
+      end
+
+      def advance
+        @current += 1
+        current_char
+      end
+
+      def peek
+        @source[@current] unless at_end?
       end
 
       def peek_next
-        @source[@current + 2] unless at_end?
+        @source[@current + 1] unless at_end?
       end
 
       def digit?(char)

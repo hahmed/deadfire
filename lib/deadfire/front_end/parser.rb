@@ -64,7 +64,7 @@ module Deadfire
           elsif matches_ruleset?
             @stylesheet << ruleset_declaration
           else
-            throw "error eval-ing statement"
+            throw "Node should either be an at_rule or a ruleset -- #{peek.inspect}"
           end
         end
 
