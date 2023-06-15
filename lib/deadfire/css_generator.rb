@@ -34,5 +34,11 @@ module Deadfire
         @output << declaration.lexeme
       end
     end
+
+    def visit_ruleset_node(node)
+      @output << node.selector.selector
+      @output << " "
+      visit_block_node(node.block)
+    end
   end
 end

@@ -61,10 +61,8 @@ module Deadfire
         while !is_at_end?
           if matches_at_rule?
             @stylesheet << at_rule_declaration
-          elsif matches_ruleset?
-            @stylesheet << ruleset_declaration
           else
-            throw "Node should either be an at_rule or a ruleset -- #{peek.inspect}"
+            @stylesheet << ruleset_declaration
           end
         end
 
@@ -120,10 +118,6 @@ module Deadfire
         match?(:at_rule)
       end
 
-      def matches_ruleset?
-        match?(:ruleset)
-      end
-
       def at_rule_declaration
         consume(:at_rule, "Expect at rule")
         keyword = previous
@@ -151,17 +145,21 @@ module Deadfire
       end
 
       def ruleset_declaration
-        # consume(:ruleset, "Expect ruleset")
+        values = []
+        while !match?(:left_brace)
+          values << advance
+        end
 
-        # selectors = selectors
+        selector = SelectorNode.new(values[0..-1])
 
-        # consume(:left_brace, "Expect left brace")
+        block = BlockNode.new
+        block << previous
+        while !match?(:right_brace)
+          block << advance
+        end
 
-        # declarations = declarations
-
-        # consume(:right_brace, "Expect right brace")
-
-        # RulesetNode.new(selectors, declarations)
+        block << previous
+        RulesetNode.new(selector, block)
       end
     end
   end

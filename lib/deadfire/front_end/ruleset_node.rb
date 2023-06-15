@@ -3,12 +3,15 @@
 module Deadfire
   module FrontEnd
     class RulesetNode < BaseNode
-      def accept(visitor)
-        visitor.visit_ruleset_node(self)
+      attr_reader :selector, :block
+
+      def initialize(selector, block)
+        @selector = selector
+        @block = block
       end
 
-      def to_s
-        "#{operator.lexeme} #{right}"
+      def accept(visitor)
+        visitor.visit_ruleset_node(self)
       end
     end
   end

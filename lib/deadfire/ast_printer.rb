@@ -31,9 +31,6 @@ module Deadfire
     def visit_ruleset_node(node)
       puts "RulesetNode"
       puts "  Selector: #{node.selector}"
-      node.value.each do |value|
-        puts "  Value: #{value}"
-      end
       puts "  Block: #{node.block}"
     end
   end
