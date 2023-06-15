@@ -159,6 +159,7 @@ module Deadfire
         end
 
         block << previous
+        # TODO: we will need to cache this ruleset node, so we can handle nesting
         RulesetNode.new(selector, block)
       end
     end
