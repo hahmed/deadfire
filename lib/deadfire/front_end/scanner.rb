@@ -132,7 +132,7 @@ module Deadfire
           advance
         end
 
-        value = @source[@start..current_char_position]
+        value = @source[@start+1..current_char_position]
         add_token(:text, value)
       end
 

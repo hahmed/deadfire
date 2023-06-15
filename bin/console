@@ -8,13 +8,14 @@ require "deadfire"
 
 #  simple css test
  css = <<-CSS
-  @charset "UTF-8";
-  @viewport { width: device-width; }
   @page :first { margin: 1cm; }
-  @font-face {
-    font-family: "Open Sans";
-  }
 CSS
+
+  # @charset "UTF-8";
+  # @viewport { width: device-width; }
+  # @font-face {
+  #   font-family: "Open Sans";
+  # }
 
 puts css.inspect
 

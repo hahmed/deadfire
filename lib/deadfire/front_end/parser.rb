@@ -147,7 +147,7 @@ module Deadfire
         end
 
         block << previous # add the right brace to the block
-        AtRuleNode.new(keyword, values[0..-2], block) # remove the left brace, because it's not a value, but part of the block
+        AtRuleNode.new(keyword, values[0..-1], block) # remove the left brace, because it's not a value, but part of the block
       end
 
       def ruleset_declaration

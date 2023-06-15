@@ -21,7 +21,6 @@ require_relative "deadfire/front_end/declaration_node"
 require_relative "deadfire/front_end/selector_node"
 require_relative "deadfire/front_end/property_node"
 require_relative "deadfire/front_end/ruleset_node"
-require_relative "deadfire/front_end/statement_node"
 require_relative "deadfire/front_end/stylesheet_node"
 require_relative "deadfire/front_end/value_node"
 
