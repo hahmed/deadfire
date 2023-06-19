@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Deadfire
-  class AstPrinter
+  class AstPrinter # :nodoc:
     def initialize
       @indentation = 0
     end

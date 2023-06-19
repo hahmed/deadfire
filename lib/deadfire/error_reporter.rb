@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Deadfire
-  class ErrorReporter
+  class ErrorReporter # :nodoc:
     attr_reader :errors
 
     def initialize

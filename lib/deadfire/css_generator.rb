@@ -2,7 +2,7 @@
 require "stringio"
 
 module Deadfire
-  class CssGenerator
+  class CssGenerator # :nodoc:
     def initialize(tree)
       @tree = tree
       @output = StringIO.new # TODO: write to file instead of string buffer in temp folder

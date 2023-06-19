@@ -1,5 +1,5 @@
 module Deadfire
-  class Spec
+  class Spec # :nodoc:
     # EBNF
     # stylesheet         = [ CDO | CDC | S | statement ]*;
     # statement          = ruleset | at-rule;
@@ -17,6 +17,21 @@ module Deadfire
     # value              = any-value [ ',' S* any-value ]*;
     # any-value          = IDENT | STRING | NUMBER | PERCENTAGE | DIMENSION | COLOR | URI | FUNCTION any-value* ')' | '(' any-value* ')' | '[' any-value* ']' | '{' any-value* '}' | ';';
 
+    # -- SASS features
+
+    # Example: @apply button;
+    # apply-rule = "@apply" S* mixin-name S* ";" S*
+    # mixin-name = IDENT
+
+    # Example: button { color: red; &.active { color: blue } }
+    # nested-selector = selector S* "{" S* declaration-list S* "}"
+    # selector = simple-selector [ "&" simple-selector ]
+    # simple-selector = element-name [ "#" id ] [ "." class ]*
+    # element-name = IDENT
+    # id = IDENT
+    # class = "." IDENT
+    # declaration-list = declaration [ ";" S* declaration ]*
+
     CSS_AT_RULES = [
       "@charset",
       "@import",
@@ -28,7 +43,8 @@ module Deadfire
       "@namespace",
       "@counter-style",
       "@viewport",
-      "@document"
+      "@document".
+      "@apply"
     ]
 
     CSS_SELECTORS = [

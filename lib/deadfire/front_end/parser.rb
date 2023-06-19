@@ -159,7 +159,8 @@ module Deadfire
         end
 
         block << previous
-        # TODO: we will need to cache this ruleset node, so we can handle nesting
+        ParserEngine.cached_mixins[selector.mixin_name] = block
+        # TODO: we will need to cache this ruleset node, so we can handle @apply
         RulesetNode.new(selector, block)
       end
     end

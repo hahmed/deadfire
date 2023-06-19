@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 module Deadfire
-  class ParserEngine
+  class ParserEngine # :nodoc:
+    singleton_class.attr_accessor :cached_mixins
+    self.cached_mixins = Hash.new { |h, k| h[k] = nil }
+
     attr_reader :error_reporter, :options, :current
 
     def initialize(content, options = {})

@@ -38,27 +38,27 @@ module Deadfire
       @content = preprocess
       @buffer ||= CssBuffer.new(@content)
     end
-    
+
     def parse
       while ! buffer.eof?
         process_line(buffer.gets)
       end
-      
+
       @output << NEWLINE
-      
+
       @output.join
     end
 
     def errors?
       @errors_list.errors.any?
     end
-    
+
     private
 
     def preprocess
       @content.gsub(/\r\n?|\f/, "\n").gsub("\u{0000}", "\u{FFFD}")
     end
-    
+
     # this method returns void, and modifies the output array directly
     def process_line(line)
       if line.strip.start_with?(OPEN_COMMENT_SELECTOR)
@@ -75,7 +75,7 @@ module Deadfire
         @output << line
       end
     end
-    
+
     def keep_comments?
       Deadfire.configuration.keep_comments
     end
@@ -92,27 +92,27 @@ module Deadfire
         @errors_list.add(message: "Unclosed comment error", lineno: buffer.lineno, original_line: line)
       end
     end
-    
+
     def handle_import(line)
       import = Import.new(line, buffer.lineno)
 
-      # TODO: 
+      # TODO:
       # - decide on how many levels of imports we want to allow
       # - make async??
       @output << import.parse
     end
-    
+
     def handle_apply(line)
       @apply = Apply.new(line, buffer.lineno)
       @output << @apply.parse.join(NEWLINE)
     end
-    
+
     def handle_mixins(line)
       @root = Root.new(line, buffer.lineno, buffer)
       @output << @root.parse
     end
 
-    def handle_nestings(line)      
+    def handle_nestings(line)
       nesting = Nesting.new(line, buffer.lineno, buffer, @output)
       @output << nesting.parse
     end
@@ -120,17 +120,17 @@ module Deadfire
 
   class Line
     attr_accessor :content, :line_number
-  
+
     def initialize(content, line_number)
       @content = content
       @line_number = line_number
     end
-  
+
     def to_s
       content
     end
   end
-  
+
   class Root < Line
     def initialize(content, lineno, buffer)
       super(content, lineno)
@@ -139,13 +139,13 @@ module Deadfire
       @output = []
       @buffer = buffer
     end
-  
+
     def parse
       line = @content
       if line.include? Parser::ROOT_SELECTOR
         @output << Line.new(line, @line_number)
       end
-  
+
       while !@end_tag && line = @buffer.gets
         if line =~ Parser::OPENING_SELECTOR_PATTERN
           @output_current_line = false
@@ -155,26 +155,26 @@ module Deadfire
         elsif line =~ Parser::CLOSING_SELECTOR_PATTERN
           @end_tag = true
         end
-  
+
         @output << Line.new(line, @buffer.lineno) if @output_current_line
         @output_current_line = true
       end
-  
+
       to_s
     end
-  
+
     def to_s
       return "" if @output.size <= 1
-  
+
       @output.map(&:to_s)
     end
-  
+
     private
-  
+
     def extract_mixin_name(line)
       line.tr("{", "").tr(".", "").tr(":", "").strip
     end
-  
+
     def extract_properties_from_mixin(buffer, line)
       properties = {}
       line = buffer.gets # skip opening {
@@ -185,19 +185,19 @@ module Deadfire
       end
       properties
     end
-  
+
     def extract_name_and_values(line)
       name, value = line.split(":")
       value = value.gsub(";", "")
       [name, value].map(&:strip)
     end
   end
-  
-  class Import < Line  
+
+  class Import < Line
     def initialize(...)
       super(...)
     end
-  
+
     def parse
       import_path = FilenameHelper.resolve_import_path(content, @lineno)
 
@@ -210,7 +210,7 @@ module Deadfire
       Parser.new(File.read(import_path), filename: import_path).parse
     end
   end
-  
+
   class Apply < Line
     def initialize(...)
       super
@@ -219,22 +219,22 @@ module Deadfire
       @apply_start_char = "@"
       @output = []
     end
-    
+
     def parse
       raise Deadfire::EarlyApplyException.new(@content, @lineno) if Parser.cached_mixins.empty?
-      
+
       space_counter = calculate_number_of_spaces
       ends_with_end_block_char = false
-  
+
       @current_line.split(" ").each do |css|
         next if css.include?(Parser::APPLY_SELECTOR)
-        
+
         css.gsub!(";", "")
         if css.end_with?(Parser::END_BLOCK_CHAR)
           ends_with_end_block_char = true
           css.gsub!(Parser::END_BLOCK_CHAR, "")
         end
-        
+
         fetch_cached_mixin(css).each_pair do |key, value|
           @output << "#{@space * space_counter}#{key}: #{value};"
         end
@@ -242,9 +242,9 @@ module Deadfire
       @output << "#{Parser::END_BLOCK_CHAR}" if ends_with_end_block_char
       @output
     end
-  
+
     private
-  
+
     def calculate_number_of_spaces
       space_counter = 0
       @current_line.each_char do |char|
@@ -253,18 +253,18 @@ module Deadfire
       end
       space_counter
     end
-  
+
     # find css class key/val from hash, otherwise throw because the mixin is not defined
     def fetch_cached_mixin(key)
       raise Deadfire::EarlyApplyException.new(key, @lineno) unless Parser.cached_mixins.include?(key)
-  
+
       Parser.cached_mixins[key]
     end
   end
-  
+
   class Nesting < Line
     attr_accessor :block_names
-  
+
     def initialize(content, lineno, buffer, output)
       super(content, lineno)
       @buffer = buffer
@@ -272,15 +272,15 @@ module Deadfire
       @block_names = []
       @nested_level = 0
     end
-  
+
     def parse
       line = content.dup.strip
       @block_names << find_block_name(@output, @lineno)
       tmp = []
-  
+
       while @nested_level > 0 || !@buffer.eof?
         spaces = calculate_spaces_to_add(line)
-  
+
         if line.start_with?(Parser::NEST_SELECTOR)
           add_end_block_when_no_end_block_on_prev_line(arr: tmp)
           add_selector_to_block_name(line)
@@ -289,9 +289,9 @@ module Deadfire
         else
           tmp << "#{spaces}#{line.lstrip}"
         end
-  
+
         remove_last_block_name_entry if line.end_with?(Parser::END_BLOCK_CHAR)
-  
+
         if line.end_with?(Parser::END_BLOCK_CHAR)
           result = @buffer.peek
           if result.strip == Parser::END_BLOCK_CHAR
@@ -299,38 +299,38 @@ module Deadfire
             break
           end
         end
-  
+
         line = @buffer.gets
-  
+
         if line.nil? || @buffer.eof? || line.empty?
           break
         else
           line.strip!
         end
       end
-  
+
       tmp.join("\n").concat("\n")
     end
-  
+
     private
-  
+
     def remove_last_block_name_entry
       @nested_level -= 1
       @block_names.pop
     end
-  
+
     def add_selector_to_block_name(line)
       line = extract_selector(line)
       line = line_without_nested_block(line)
       @block_names << line unless @block_names.include?(line)
     end
-  
+
     def add_end_block_when_no_end_block_on_prev_line(arr: @output)
       unless arr[-1]&.strip&.end_with?("}")
         arr << "}"
       end
     end
-  
+
     def calculate_spaces_to_add(line)
       unless line =~ Parser::OPENING_SELECTOR_PATTERN || line =~ Parser::CLOSING_SELECTOR_PATTERN
         "  "
@@ -338,15 +338,15 @@ module Deadfire
         ""
       end
     end
-  
+
     def extract_selector(line)
       line.split(Parser::START_BLOCK_CHAR).first.strip
     end
-  
+
     def line_without_nested_block(line)
       line.split(Parser::NEST_SELECTOR).last.strip
     end
-  
+
     def rewrite_line(spaces, line, selector)
       case number_of_selectors_in(line)
       when 0
@@ -363,22 +363,22 @@ module Deadfire
         end.join
       end
     end
-  
+
     def number_of_selectors_in(line)
       line.split.count do |s|
         # break if s == "{" # early exit, no need to read every char
         s.start_with?(Parser::NEST_SELECTOR)
       end
     end
-  
+
     def find_block_name(output, lineno = nil)
       lineno = output.size unless lineno
       if lineno < 0
         raise "Cannot find block name"
       end
-  
+
       line = output[lineno]
-  
+
       if line.to_s =~ Parser::OPENING_SELECTOR_PATTERN
         extract_selector(line)
       else
