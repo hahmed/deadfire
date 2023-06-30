@@ -43,7 +43,7 @@ module Deadfire
       "@namespace",
       "@counter-style",
       "@viewport",
-      "@document".
+      "@document",
       "@apply"
     ]
 

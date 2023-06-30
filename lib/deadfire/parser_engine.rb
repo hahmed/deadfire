@@ -2,9 +2,6 @@
 
 module Deadfire
   class ParserEngine # :nodoc:
-    singleton_class.attr_accessor :cached_mixins
-    self.cached_mixins = Hash.new { |h, k| h[k] = nil }
-
     attr_reader :error_reporter, :options, :current
 
     def initialize(content, options = {})
@@ -15,6 +12,7 @@ module Deadfire
 
     def parse
       ast = _parse
+      puts "ast: #{ast.inspect}"
       CssGenerator.new(ast).generate
     end
 
@@ -34,9 +32,9 @@ module Deadfire
 
     def _parse
       tokens = @scanner.tokenize
-      # tokens.each do |token|
-      #   puts token.inspect
-      # end
+      tokens.each do |token|
+        puts token.inspect
+      end
       FrontEnd::Parser.new(tokens, error_reporter).parse
     end
   end

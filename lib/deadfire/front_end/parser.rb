@@ -133,15 +133,27 @@ module Deadfire
           return AtRuleNode.new(keyword, values, nil)
         end
 
-        # if we reach { then we need to parse the block
+        block = parse_block
+        AtRuleNode.new(keyword, values[0..-1], block) # remove the left brace, because it's not a value, but part of the block
+      end
+
+      def parse_block
         block = BlockNode.new
         block << previous
-        while !match?(:right_brace)
-          block << advance # TODO: we need to break this down into further nodes, but it's workable for now
+
+        while !is_at_end?
+          puts "peek: #{peek.inspect}"
+          if match?(:right_brace)
+            break
+          elsif matches_at_rule?
+            block << at_rule_declaration
+          else
+            block << advance
+          end
         end
 
-        block << previous # add the right brace to the block
-        AtRuleNode.new(keyword, values[0..-1], block) # remove the left brace, because it's not a value, but part of the block
+        block << previous
+        block
       end
 
       def ruleset_declaration
@@ -152,15 +164,7 @@ module Deadfire
 
         selector = SelectorNode.new(values[0..-1])
 
-        block = BlockNode.new
-        block << previous
-        while !match?(:right_brace)
-          block << advance
-        end
-
-        block << previous
-        ParserEngine.cached_mixins[selector.mixin_name] = block
-        # TODO: we will need to cache this ruleset node, so we can handle @apply
+        block = parse_block
         RulesetNode.new(selector, block)
       end
     end
