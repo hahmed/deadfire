@@ -13,6 +13,7 @@ module Deadfire
     def parse
       ast = _parse
       puts "ast: #{ast.inspect}"
+      Interpreter.new(ast).interpret
       CssGenerator.new(ast).generate
     end
 

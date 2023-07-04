@@ -24,14 +24,23 @@ module Deadfire
     def visit_block_node(node)
       puts "BlockNode"
       node.declarations.each do |declaration|
-        puts "  Declaration: #{declaration}"
+        case declaration
+        when FrontEnd::Token
+          puts "  Declaration: #{declaration.lexeme}"
+        when FrontEnd::AtRuleNode
+          visit_at_rule_node(declaration)
+        when FrontEnd::RulesetNode
+          visit_ruleset_node(declaration)
+        end
       end
     end
 
     def visit_ruleset_node(node)
       puts "RulesetNode"
       puts "  Selector: #{node.selector}"
-      puts "  Block: #{node.block}"
+      if node.block
+        visit_block_node(node.block)
+      end
     end
   end
 end
