@@ -13,7 +13,10 @@ module Deadfire
     def parse
       ast = _parse
       puts "ast: #{ast.inspect}"
-      Interpreter.new(ast).interpret
+      interpreter = Interpreter.new
+      ast.statements.each do |node|
+        interpreter.interpret(node)
+      end
       CssGenerator.new(ast).generate
     end
 
@@ -33,9 +36,9 @@ module Deadfire
 
     def _parse
       tokens = @scanner.tokenize
-      tokens.each do |token|
-        puts token.inspect
-      end
+      # tokens.each do |token|
+      #   puts token.inspect
+      # end
       FrontEnd::Parser.new(tokens, error_reporter).parse
     end
   end

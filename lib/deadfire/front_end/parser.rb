@@ -129,12 +129,15 @@ module Deadfire
         end
 
         if previous.type == :semicolon
-          values << previous # add the semicolon to the values
-          return AtRuleNode.new(keyword, values, nil)
+          if keyword.lexeme == "@apply"
+            return ApplyNode.new(values)
+          else
+            values << previous # add the semicolon to the values
+            return AtRuleNode.new(keyword, values, nil)
+          end
         end
 
-        block = parse_block
-        AtRuleNode.new(keyword, values[0..-1], block) # remove the left brace, because it's not a value, but part of the block
+        AtRuleNode.new(keyword, values[0..-1], parse_block) # remove the left brace, because it's not a value, but part of the block
       end
 
       def parse_block

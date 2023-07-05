@@ -10,6 +10,13 @@ module Deadfire
       node.accept(self)
     end
 
+    def visit_stylesheet_node(node)
+      puts "StylesheetNode"
+      node.statements.each do |statement|
+        # something
+      end
+    end
+
     def visit_at_rule_node(node)
       puts "AtRuleNode"
       puts "  AtKeyword: #{node.at_keyword.lexeme}"
