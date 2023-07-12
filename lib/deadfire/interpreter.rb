@@ -47,7 +47,11 @@ module Deadfire
       declaration.mixin_names.each do |mixin_name|
         if Interpreter.cached_mixins[mixin_name]
           cached_block = Interpreter.cached_mixins[mixin_name]
-          updated_declarations << cached_block.declarations
+
+          # NOTE: remove the left and right brace but we probably don't need to do this, how can this be simplified?
+          cached_block.declarations[1...-1].each do |cached_declaration|
+            updated_declarations << cached_declaration
+          end
         else
           raise "Mixin #{mixin_name} not found" # report instead of raising
         end
@@ -56,7 +60,7 @@ module Deadfire
       if updated_declarations.any?
         index = node.declarations.index(declaration)
         node.declarations.delete_at(index)
-        node.declarations.insert(index, updated_declarations)
+        node.declarations.insert(index, *updated_declarations)
       end
     end
   end

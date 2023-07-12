@@ -12,7 +12,6 @@ module Deadfire
 
     def parse
       ast = _parse
-      puts "ast: #{ast.inspect}"
       interpreter = Interpreter.new
       ast.statements.each do |node|
         interpreter.interpret(node)
