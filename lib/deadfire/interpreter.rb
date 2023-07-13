@@ -32,8 +32,11 @@ module Deadfire
 
     def visit_block_node(node)
       node.declarations.each do |declaration|
-        if declaration.is_a?(ApplyNode)
+        case declaration
+        when ApplyNode
           apply_mixin(declaration, node)
+        when FrontEnd::NestingNode
+          apply_nested_rules(declaration, node)
         else
           # declaration.accept(self) we may not need to visit anything we don't process/transform/optimize
         end
@@ -62,6 +65,9 @@ module Deadfire
         node.declarations.delete_at(index)
         node.declarations.insert(index, *updated_declarations)
       end
+    end
+
+    def apply_nested_rules(declaration, node)
     end
   end
 end

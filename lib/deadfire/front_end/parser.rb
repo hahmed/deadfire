@@ -145,7 +145,6 @@ module Deadfire
         block << previous
 
         while !is_at_end?
-          puts "peek: #{peek.inspect}"
           if match?(:right_brace)
             break
           elsif matches_at_rule?
