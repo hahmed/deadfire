@@ -118,6 +118,42 @@ module Deadfire
         match?(:at_rule)
       end
 
+      def matches_nested_rule?
+        match?(:ampersand)
+      end
+
+      def parse_block
+        block = BlockNode.new
+        block << previous
+
+        while !is_at_end?
+          if match?(:right_brace)
+            break
+          elsif matches_at_rule?
+            block << at_rule_declaration
+          elsif matches_nested_rule?
+            block << nesting_declaration
+          else
+            block << advance
+          end
+        end
+
+        block << previous
+        block
+      end
+
+      def ruleset_declaration
+        values = []
+        while !match?(:left_brace)
+          values << advance
+        end
+
+        selector = SelectorNode.new(values[0..-1])
+
+        block = parse_block
+        RulesetNode.new(selector, block)
+      end
+
       def at_rule_declaration
         consume(:at_rule, "Expect at rule")
         keyword = previous
@@ -140,34 +176,16 @@ module Deadfire
         AtRuleNode.new(keyword, values[0..-1], parse_block) # remove the left brace, because it's not a value, but part of the block
       end
 
-      def parse_block
-        block = BlockNode.new
-        block << previous
+      def nesting_declaration
+        consume(:ampersand, "Expect nesting declaration")
+        property = previous
 
-        while !is_at_end?
-          if match?(:right_brace)
-            break
-          elsif matches_at_rule?
-            block << at_rule_declaration
-          else
-            block << advance
-          end
-        end
-
-        block << previous
-        block
-      end
-
-      def ruleset_declaration
         values = []
         while !match?(:left_brace)
           values << advance
         end
 
-        selector = SelectorNode.new(values[0..-1])
-
-        block = parse_block
-        RulesetNode.new(selector, block)
+        NestingNode.new(property, values[0..-1], parse_block)
       end
     end
   end

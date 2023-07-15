@@ -24,7 +24,9 @@ module Deadfire
     end
 
     def visit_ruleset_node(node)
-      if node.block # && can_cache?(node) TODO: is this node cacheable? There are some rules around what is a mixin
+      if node.block
+        # && can_cache?(node) TODO: is this node cacheable? There are some rules around what is a mixin
+        # can & nested rules be cached? They are not really mixins/rulesets?
         visit_block_node(node.block)
         Interpreter.cached_mixins[node.selector.mixin_name] = node.block
       end
