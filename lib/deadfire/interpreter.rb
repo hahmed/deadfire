@@ -74,8 +74,6 @@ module Deadfire
     end
 
     def apply_nested_rules(declaration, node, parent)
-      # we need to figure out what the parent selector is, and then replace &
-      # what else does nesting do?
       unless parent
         @error_reporter.report_error("Nesting not allowed at root level", declaration)
         return

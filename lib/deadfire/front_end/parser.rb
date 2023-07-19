@@ -13,51 +13,12 @@ module Deadfire
       end
 
       def parse
-        # it looks like the visitor pattern is used by the interpreter, but does the
-        # interpreter do the grouping of tokens into statements?
-        # the parser does the grouping of tokens into statements so what's the value of the epxressions?
-        # do we use that to unfold nested css? or deal with imports?
-        # this is where I need to "parse" or group the words into statements/rules + at_rules, then within that, I need to further
-        # parse words into expressions? if that's the right term.
-
-
         # top level it's a list of statements
         # statements are either rules or at-rules
         # rules are selectors + declarations
         # at-rules are at-keyword + block
         # block is a list of declarations?
         # declarations are property + value
-
-        # //< Statements and State declaration
-        # //> Classes parse-class-declaration
-        #   private Stmt classDeclaration() {
-        #     Token name = consume(IDENTIFIER, "Expect class name.");
-        # //> Inheritance parse-superclass
-
-        #     Expr.Variable superclass = null;
-        #     if (match(LESS)) {
-        #       consume(IDENTIFIER, "Expect superclass name.");
-        #       superclass = new Expr.Variable(previous());
-        #     }
-
-        # //< Inheritance parse-superclass
-        #     consume(LEFT_BRACE, "Expect '{' before class body.");
-
-        #     List<Stmt.Function> methods = new ArrayList<>();
-        #     while (!check(RIGHT_BRACE) && !isAtEnd()) {
-        #       methods.add(function("method"));
-        #     }
-
-        #     consume(RIGHT_BRACE, "Expect '}' after class body.");
-
-        # /* Classes parse-class-declaration < Inheritance construct-class-ast
-        #     return new Stmt.Class(name, methods);
-        # */
-        # //> Inheritance construct-class-ast
-        #     return new Stmt.Class(name, superclass, methods);
-        # //< Inheritance construct-class-ast
-        #   }
-
         while !is_at_end?
           if matches_at_rule?
             @stylesheet << at_rule_declaration
