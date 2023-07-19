@@ -12,7 +12,7 @@ module Deadfire
 
     def parse
       ast = _parse
-      interpreter = Interpreter.new
+      interpreter = Interpreter.new(error_reporter)
       ast.statements.each do |node|
         interpreter.interpret(node)
       end

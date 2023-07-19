@@ -29,14 +29,29 @@ module Deadfire
       end
     end
 
+    def visit_ruleset_node(node)
+      @output << node.selector.selector
+      @output << " "
+
+      visit_block_node(node.block)
+    end
+
     def visit_block_node(node)
       node.declarations.each do |declaration|
-        @output << declaration.lexeme
+        case declaration
+        when FrontEnd::NestingNode
+          visit_nesting_node(declaration)
+        else
+          @output << declaration.lexeme
+        end
       end
     end
 
-    def visit_ruleset_node(node)
-      @output << node.selector.selector
+    # I don't like this here, the generator outputs not deals with this logic
+    def visit_nesting_node(node)
+      @output << node.property.lexeme
+      @output << " "
+      @output << node.lexeme
       @output << " "
 
       visit_block_node(node.block)
