@@ -15,7 +15,7 @@ module Deadfire
 
       def tokenize
         until at_end?
-          @start = @current - 1
+          reset_counter
           scan_token
         end
 
@@ -25,6 +25,10 @@ module Deadfire
       private
 
       NEWLINE = "\n"
+
+      def reset_counter
+        @start = @current - 1
+      end
 
       def at_end?
         @current >= @total_chars
@@ -56,7 +60,7 @@ module Deadfire
         when "|" then add_token(:pipe)
         when "!" then add_token(:exclamation)
         when "-" then add_hypen_token
-        when "/" then add_token(:slash)
+        when "/" then add_forward_slash_or_comment
         when "&" then add_token(:ampersand)
         when "'" then add_token(:single_quote)
         when NEWLINE then @line += 1
@@ -98,8 +102,12 @@ module Deadfire
           @error_reporter.error(@line, "at-rule cannot be on multiple lines.")
           add_token(:at_rule, current_at_rule)
         elsif at_rule
-          text = "at_#{at_rule[1..-1]}"
-          add_token(:at_rule, text)
+          token = add_token(:at_rule, "at_#{at_rule[1..-1]}")
+          if at_rule == "@import"
+            prescan_import_rule(token.last)
+          else
+            token
+          end
         else
           @error_reporter.error(@line, "Invalid at-rule.")
         end
@@ -163,6 +171,19 @@ module Deadfire
         end
       end
 
+      def add_forward_slash_or_comment
+        if peek == "*"
+          advance # consume the *
+          while peek != "*" && peek_next != "/" && !at_end?
+            @line += 1 if peek == NEWLINE
+            advance
+          end
+          add_token(:comment)
+        else
+          add_token(:forward_slash)
+        end
+      end
+
       def current_char_position
         @current - 1
       end
@@ -190,6 +211,39 @@ module Deadfire
 
       def text?(char)
         (char >= "a" && char <= "z") || (char >= "A" && char <= "Z")
+      end
+
+      def prescan_import_rule(token)
+        # we want to get all the text between the @import and the semicolon
+        # so we can parse the file and add it to the ast
+        reset_counter
+
+        while peek != ";" && !at_end?
+          advance
+        end
+
+        if at_end?
+          @error_reporter.error(@line, "Unterminated import rule.")
+          return
+        end
+
+        add_token(:text)
+        advance # remove the semicolon
+
+        text_token = @tokens.last
+
+        text = text_token.lexeme.gsub(/\\|"/, '')
+        file = FilenameHelper.resolve_import_path(text, @line)
+
+        # file is ready for scanning
+        content = File.read(file)
+        scanner = Scanner.new(content, @error_reporter)
+
+        @tokens.pop # remove the text token
+        @tokens.pop # remove the at_rule token
+
+        imported_tokens = scanner.tokenize[0..-2]
+        @tokens.concat imported_tokens
       end
     end
   end

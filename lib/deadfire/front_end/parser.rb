@@ -20,13 +20,17 @@ module Deadfire
         # block is a list of declarations?
         # declarations are property + value
         while !is_at_end?
-          if matches_at_rule?
+          puts "=========="
+          puts "peek: #{peek.inspect}"
+          if match?(:comment)
+            @stylesheet << add_comment if Deadfire.configuration.keep_comments
+          elsif matches_at_rule?
             @stylesheet << at_rule_declaration
           else
             @stylesheet << ruleset_declaration
           end
         end
-
+        puts "=========="
         @stylesheet
       end
 
@@ -113,6 +117,11 @@ module Deadfire
 
         block = parse_block
         RulesetNode.new(selector, block)
+      end
+
+      def add_comment
+        consume(:comment, "Expect comment")
+        CommentNode.new(previous)
       end
 
       def at_rule_declaration
