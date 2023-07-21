@@ -49,6 +49,10 @@ module Deadfire
       node.accept(self)
     end
 
+    def visit_comment_node(node)
+      # node.accept(self)
+    end
+
     private
 
     def apply_mixin(declaration, node)

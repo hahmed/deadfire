@@ -178,6 +178,8 @@ module Deadfire
             @line += 1 if peek == NEWLINE
             advance
           end
+          advance # consume the *
+          advance # consume the /
           add_token(:comment)
         else
           add_token(:forward_slash)

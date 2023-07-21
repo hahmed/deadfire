@@ -49,5 +49,10 @@ module Deadfire
         visit_block_node(node.block)
       end
     end
+
+    def visit_comment_node(node)
+      puts "CommentNode"
+      puts "  Comment: #{node.comment.lexeme}"
+    end
   end
 end

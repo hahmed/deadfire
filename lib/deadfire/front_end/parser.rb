@@ -20,8 +20,6 @@ module Deadfire
         # block is a list of declarations?
         # declarations are property + value
         while !is_at_end?
-          puts "=========="
-          puts "peek: #{peek.inspect}"
           if match?(:comment)
             @stylesheet << add_comment if Deadfire.configuration.keep_comments
           elsif matches_at_rule?
@@ -30,7 +28,6 @@ module Deadfire
             @stylesheet << ruleset_declaration
           end
         end
-        puts "=========="
         @stylesheet
       end
 

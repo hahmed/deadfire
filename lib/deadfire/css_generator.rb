@@ -47,7 +47,7 @@ module Deadfire
       end
     end
 
-    # I don't like this here, the generator outputs not deals with this logic
+    # I don't like this here, do we merge the generator and interpreter?
     def visit_nesting_node(node)
       @output << node.property.lexeme
       @output << " "
@@ -55,6 +55,10 @@ module Deadfire
       @output << " "
 
       visit_block_node(node.block)
+    end
+
+    def visit_comment_node(node)
+      @output << node.comment.lexeme if Deadfire.configuration.keep_comments
     end
   end
 end
