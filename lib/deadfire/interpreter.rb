@@ -54,6 +54,7 @@ module Deadfire
     end
 
     def visit_apply_node(node)
+      # do nothing for now
     end
 
     private
