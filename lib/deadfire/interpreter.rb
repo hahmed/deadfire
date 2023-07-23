@@ -53,6 +53,9 @@ module Deadfire
       # node.accept(self)
     end
 
+    def visit_apply_node(node)
+    end
+
     private
 
     def apply_mixin(declaration, node)

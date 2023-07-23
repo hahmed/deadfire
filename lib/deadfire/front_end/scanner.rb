@@ -49,6 +49,7 @@ module Deadfire
         when ")" then add_token(:right_paren)
         when "[" then add_token(:left_bracket)
         when "]" then add_token(:right_bracket)
+        when "_" then add_token(:underscore)
         when "=" then add_token(:equal)
         when "~" then add_token(:tilde)
         when "+" then add_token(:plus)
@@ -59,9 +60,10 @@ module Deadfire
         when "$" then add_token(:dollar)
         when "|" then add_token(:pipe)
         when "!" then add_token(:exclamation)
+        when "%" then add_token(:percent)
+        when "&" then add_token(:ampersand)
         when "-" then add_hypen_token
         when "/" then add_forward_slash_or_comment
-        when "&" then add_token(:ampersand)
         when "'" then add_token(:single_quote)
         when NEWLINE then @line += 1
         when " ", "\r", "\t" # Ignore whitespace.
