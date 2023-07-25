@@ -47,20 +47,10 @@ module Deadfire
         when "," then add_token(:comma)
         when "(" then add_token(:left_paren)
         when ")" then add_token(:right_paren)
-        when "[" then add_token(:left_bracket)
-        when "]" then add_token(:right_bracket)
         when "_" then add_token(:underscore)
         when "=" then add_token(:equal)
         when "~" then add_token(:tilde)
-        when "+" then add_token(:plus)
-        when ">" then add_token(:greater_than)
-        when "<" then add_token(:less_than)
         when "*" then add_token(:asterisk)
-        when "^" then add_token(:caret)
-        when "$" then add_token(:dollar)
-        when "|" then add_token(:pipe)
-        when "!" then add_token(:exclamation)
-        when "%" then add_token(:percent)
         when "&" then add_token(:ampersand)
         when "-" then add_hypen_token
         when "/" then add_forward_slash_or_comment
@@ -68,14 +58,13 @@ module Deadfire
         when NEWLINE then @line += 1
         when " ", "\r", "\t" # Ignore whitespace.
         when '"' then add_string_token
-        # when nil then ;# TODO: I think there is a null added somewhere, which we ignore for now.
         else
           if digit?(token)
             add_number_token
           elsif text?(token)
             add_text_token # or word token?
           else
-            @error_reporter.error(@line, "Unexpected character.")
+            add_token(:other)
           end
         end
       end

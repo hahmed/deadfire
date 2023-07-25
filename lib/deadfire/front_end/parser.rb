@@ -20,7 +20,7 @@ module Deadfire
         # block is a list of declarations?
         # declarations are property + value
         while !is_at_end?
-          if match?(:comment)
+          if check(:comment)
             @stylesheet << add_comment if Deadfire.configuration.keep_comments
           elsif matches_at_rule?
             @stylesheet << at_rule_declaration
@@ -73,11 +73,11 @@ module Deadfire
           return
         end
 
-        error_reporter.error(peek, message)
+        error_reporter.error(peek.lineno, message)
       end
 
       def matches_at_rule?
-        match?(:at_rule)
+        check(:at_rule)
       end
 
       def matches_nested_rule?
@@ -127,7 +127,7 @@ module Deadfire
 
         # peek until we get to ; or {, if we reach ; then add to at rule node and return
         values = []
-        while !match?(:semicolon, :left_brace)
+        while !match?(:semicolon, :left_brace) && !is_at_end?
           values << advance
         end
 

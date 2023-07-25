@@ -32,9 +32,9 @@ module Deadfire
           name = []
           tokens.each do |token|
             case token.type
-            when :LEFT_BRACE, :LEFT_PAREN
+            when :right_paren, :left_paren
               break
-            when :COLON
+            when :colon
               name << token.lexeme
             else
               name << token.lexeme

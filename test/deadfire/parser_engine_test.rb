@@ -1,6 +1,16 @@
 require "test_helper"
 
 class ParserTest < Minitest::Test
+  def setup
+    Deadfire.configuration.root_path = fixtures_path
+    Deadfire::Interpreter.cached_mixins = {}
+  end
+
+  def teardown
+    Deadfire.reset
+    Deadfire::Interpreter.cached_mixins = {}
+  end
+
   def test_at_rule_viewport_successfully
     assert_equal "@viewport {width:device-width;}", parse("@viewport { width: device-width; }")
   end
@@ -59,6 +69,26 @@ class ParserTest < Minitest::Test
     assert_includes output, parse(css)
   end
 
+  def test_import_parses_correctly
+    output = <<~OUTPUT
+    .test_css_1 {
+      padding: 1rem;
+    }
+
+    .app_css {
+      margin: 1rem;
+    }
+    OUTPUT
+
+    assert_equal output, parse("@import \"application.css\";")
+  end
+
+  def test_import_without_ending_semicolon_reports_error
+    parser = Deadfire::ParserEngine.new("@import \"application.css\"")
+    parser.send(:_parse)
+    assert_equal 1, parser.error_reporter.errors.count
+    assert_equal "Unterminated import rule.", parser.error_reporter.errors.first.message
+  end
 
   private
 

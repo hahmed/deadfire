@@ -35,9 +35,6 @@ module Deadfire
 
     def _parse
       tokens = @scanner.tokenize
-      # tokens.each do |token|
-      #   puts token.inspect
-      # end
       FrontEnd::Parser.new(tokens, error_reporter).parse
     end
   end
