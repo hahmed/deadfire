@@ -69,7 +69,12 @@ class ParserEngineTest < Minitest::Test
     assert_includes output, parse(css)
   end
 
-  def test_import_parses_correctly
+  def test_single_import_parses_correctly
+    output = ".test_css_1 {padding:1rem;}"
+    assert_equal output, parse("@import \"test_1.css\";")
+  end
+
+  def test_import_that_imports_another_file_parses_correctly
     output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")
   end

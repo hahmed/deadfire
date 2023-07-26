@@ -9,7 +9,6 @@ class ParserTest < Minitest::Test
 
   def teardown
     Deadfire.reset
-    
     Deadfire::Parser.cached_mixins = {}
     Deadfire::Parser.import_path_cache = []
   end
@@ -366,7 +365,7 @@ class ParserTest < Minitest::Test
   end
 
   def test_parses_content_after_nested_block
-    output = <<~OUTPUT 
+    output = <<~OUTPUT
     .title {
       color: blue;
     }
