@@ -3,12 +3,12 @@ require "test_helper"
 class ParserEngineTest < Minitest::Test
   def setup
     Deadfire.configuration.root_path = fixtures_path
-    Deadfire::Interpreter.cached_mixins = {}
+    Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def teardown
     Deadfire.reset
-    Deadfire::Interpreter.cached_mixins = {}
+    Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def test_at_rule_viewport_successfully
@@ -77,6 +77,14 @@ class ParserEngineTest < Minitest::Test
   def test_import_that_imports_another_file_parses_correctly
     output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")
+  end
+
+  def test_mixin_gets_cached
+    css = ".test_css_1 {padding:1rem;}"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    assert_equal 1, Deadfire::Interpreter.cached_apply_rules.size
+    assert Deadfire::Interpreter.cached_apply_rules[".test_css_1"]
   end
 
   private

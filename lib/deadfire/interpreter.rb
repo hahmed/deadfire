@@ -2,8 +2,8 @@
 
 module Deadfire
   class Interpreter
-    singleton_class.attr_accessor :cached_mixins
-    self.cached_mixins = Hash.new { |h, k| h[k] = nil }
+    singleton_class.attr_accessor :cached_apply_rules
+    self.cached_apply_rules = Hash.new { |h, k| h[k] = nil }
 
     def initialize(error_reporter)
       @error_reporter = error_reporter
@@ -28,7 +28,9 @@ module Deadfire
         # && can_cache?(node) TODO: is this node cacheable? There are some rules around what is a mixin
         # can & nested rules be cached? They are not really mixins/rulesets?
         visit_block_node(node.block, node)
-        Interpreter.cached_mixins[node.selector.mixin_name] = node.block
+        unless Interpreter.cached_apply_rules[node.selector.selector]
+          Interpreter.cached_apply_rules[node.selector.mixin_name] = node.block
+        end
       end
     end
 
@@ -62,8 +64,8 @@ module Deadfire
     def apply_mixin(mixin, node)
       updated_declarations = []
       mixin.mixin_names.each do |mixin_name|
-        if Interpreter.cached_mixins[mixin_name]
-          cached_block = Interpreter.cached_mixins[mixin_name]
+        if Interpreter.cached_apply_rules[mixin_name]
+          cached_block = Interpreter.cached_apply_rules[mixin_name]
 
           # NOTE: remove the left and right brace but we probably don't need to do this, how can this be simplified?
           cached_block.declarations[1...-1].each do |cached_declaration|
