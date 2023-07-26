@@ -14,6 +14,10 @@ module Deadfire
         visitor.visit_selector_node(self)
       end
 
+      def cacheable?
+        selector.start_with?(".")
+      end
+
       private
 
       # TODO:

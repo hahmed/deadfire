@@ -11,7 +11,7 @@ class ErrorReporterTest < Minitest::Test
     Deadfire::Interpreter.cached_apply_rules = {}
   end
 
-   def test_import_without_ending_semicolon_reports_error
+  def test_import_without_ending_semicolon_reports_error
     parser = Deadfire::ParserEngine.new("@import \"application.css\"")
     parser.send(:_parse)
     assert_equal 1, parser.error_reporter.errors.count

@@ -80,11 +80,29 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_mixin_gets_cached
-    css = ".test_css_1 {padding:1rem;}"
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
+    parse ".test_css_1 {padding:1rem;}"
     assert_equal 1, Deadfire::Interpreter.cached_apply_rules.size
     assert Deadfire::Interpreter.cached_apply_rules[".test_css_1"]
+  end
+
+  def test_psuedo_selector_does_not_get_cached
+    parse "a:hover {padding:1rem;}"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_id_selector_does_not_get_cached
+    parse "#my_nav {padding:1rem;}"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_element_selector_does_not_get_cached
+    parse "p {padding:1rem;}"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_attribute_selector_does_not_get_cached
+    parse "input[type=\"text\"] {padding:1rem;}"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
   end
 
   private
