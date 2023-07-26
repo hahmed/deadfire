@@ -12,3 +12,7 @@ require "deadfire"
 def fixtures_path
   File.expand_path("../deadfire/app/stylesheets", __FILE__)
 end
+
+def import(filename)
+  "@import \"#{filename}\";"
+end
