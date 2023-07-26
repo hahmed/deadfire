@@ -59,9 +59,9 @@ module Deadfire
 
     private
 
-    def apply_mixin(declaration, node)
+    def apply_mixin(mixin, node)
       updated_declarations = []
-      declaration.mixin_names.each do |mixin_name|
+      mixin.mixin_names.each do |mixin_name|
         if Interpreter.cached_mixins[mixin_name]
           cached_block = Interpreter.cached_mixins[mixin_name]
 
@@ -70,12 +70,12 @@ module Deadfire
             updated_declarations << cached_declaration
           end
         else
-          raise "Mixin #{mixin_name} not found" # report instead of raising
+          @error_reporter.error(mixin.lineno, "Mixin #{mixin_name} not found") # TODO: we need the declarations lineno, not the block
         end
       end
 
       if updated_declarations.any?
-        index = node.declarations.index(declaration)
+        index = node.declarations.index(mixin)
         node.declarations.delete_at(index)
         node.declarations.insert(index, *updated_declarations)
       end
@@ -83,7 +83,7 @@ module Deadfire
 
     def apply_nested_rules(declaration, node, parent)
       unless parent
-        @error_reporter.report_error("Nesting not allowed at root level", declaration)
+        @error_reporter.error(declaration.lineno, "Nesting not allowed at root level")
         return
       end
 

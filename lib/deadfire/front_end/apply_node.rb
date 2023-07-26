@@ -2,15 +2,20 @@
 
 module Deadfire
   class ApplyNode
-    attr_reader :mixin_names
+    attr_reader :node, :mixin_names
 
-    def initialize(mixin_names)
+    def initialize(node, mixin_names)
       # TODO: mixin name can be single or multiple names, separated by a comma
+      @node = node
       @mixin_names = fetch_mixin_name_from(mixin_names)
     end
 
     def accept(visitor)
       visitor.visit_apply_node(self)
+    end
+
+    def lineno
+      node.lineno
     end
 
     private
@@ -21,7 +26,7 @@ module Deadfire
         current = []
         tokens.each do |token|
           case token.type
-          when :COMMA
+          when :comma
             names << current.join("")
             current = []
             current << token.lexeme

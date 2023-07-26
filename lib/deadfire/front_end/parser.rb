@@ -133,7 +133,7 @@ module Deadfire
 
         if previous.type == :semicolon
           if keyword.lexeme == "@apply"
-            return ApplyNode.new(values)
+            return ApplyNode.new(keyword, values)
           else
             values << previous # add the semicolon to the values
             return AtRuleNode.new(keyword, values, nil)

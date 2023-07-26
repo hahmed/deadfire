@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ParserTest < Minitest::Test
+class ParserEngineTest < Minitest::Test
   def setup
     Deadfire.configuration.root_path = fixtures_path
     Deadfire::Interpreter.cached_mixins = {}
@@ -70,19 +70,11 @@ class ParserTest < Minitest::Test
   end
 
   def test_import_parses_correctly
-    output = <<~OUTPUT
-    .test_css_1 {
-      padding: 1rem;
-    }
-
-    .app_css {
-      margin: 1rem;
-    }
-    OUTPUT
-
+    output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")
   end
 
+  # Error reporting
   def test_import_without_ending_semicolon_reports_error
     parser = Deadfire::ParserEngine.new("@import \"application.css\"")
     parser.send(:_parse)
@@ -90,9 +82,19 @@ class ParserTest < Minitest::Test
     assert_equal "Unterminated import rule.", parser.error_reporter.errors.first.message
   end
 
+  def test_when_mixin_undefined_error_is_reported
+    parser = Deadfire::ParserEngine.new(".header { @apply --bg-header; }")
+    parser.parse
+    assert_equal 1, parser.error_reporter.errors.count
+  end
+
   private
 
   def parse(css)
     Deadfire::ParserEngine.new(css).parse
+  end
+
+  def import(filename)
+    "@import \"#{filename}\";"
   end
 end
