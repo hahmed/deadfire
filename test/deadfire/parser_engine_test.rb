@@ -184,6 +184,44 @@ class ParserEngineTest < Minitest::Test
     refute parser.errors?
   end
 
+  def test_nest_selector_used_on_its_own
+    css = ".foo {color:blue; & > .bar{color:red;}}"
+    output = ".foo {color:blue;}.foo >.bar {color:red;}"
+
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    assert_equal output, parser.parse
+  end
+
+  # focus
+  def test_nest_in_compound_selector
+    css = ".foo {color:blue; &.bar{color:red;}}"
+    output = ".foo {color:blue;}.foo.bar {color:red;}"
+
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    assert_equal output, parser.parse
+  end
+
+  def test_multiple_selectors_unfold_when_correct_starting_selector_is_used
+    skip
+
+    css = ".foo, .bar {.foo, .bar { color: blue; } :is(.foo, .bar) + .baz, :is(.foo, .bar).qux { color: red; }}"
+    output = ".foo {color:blue;}.foo.bar {color:red;}"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    assert_equal output, parser.parse
+  end
+
+  focus
+  def test_selectors_can_be_used_multiple_times_in_single_selector
+    css = ".foo {color:blue; & .bar & .baz & .qux { color: red; }}"
+    output = ".foo {color:blue;}.foo .bar .foo .baz .foo .qux { color: red; }"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    assert_equal output, parser.parse
+  end
+
   private
 
   def parse(css)
