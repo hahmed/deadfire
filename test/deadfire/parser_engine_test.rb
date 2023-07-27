@@ -69,6 +69,16 @@ class ParserEngineTest < Minitest::Test
     assert_includes output, parse(css)
   end
 
+  def test_parses_comment_within_block_with_comment_correctly
+    css = ".test_css_1 {/* comment */padding:1rem;}"
+    assert_equal css, parse(css)
+  end
+
+  def test_parses_nested_block_with_comment_correctly
+    css = "::root {.test_css_1{padding:1rem;/* comment */}}"
+    assert_equal css, parse(css)
+  end
+
   def test_single_import_parses_correctly
     output = ".test_css_1 {padding:1rem;}"
     assert_equal output, parse("@import \"test_1.css\";")
@@ -105,7 +115,6 @@ class ParserEngineTest < Minitest::Test
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
   end
 
-  # focus
   def test_nested_utility_selector_does_not_get_cached
     parse "::root { .nav{padding:1rem;} }"
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
