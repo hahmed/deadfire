@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 module Deadfire
+  # NOTE: Legacy parser, will be replaced by ParserEngine
   class Parser
     singleton_class.attr_accessor :cached_mixins
     self.cached_mixins = Hash.new { |h, k| h[k] = {} }

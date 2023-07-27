@@ -120,7 +120,7 @@ class ParserEngineTest < Minitest::Test
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
   end
 
-  def test_parses_nested_media_query_correctly
+  def test_parses_nested_media_query_correctly_and_block_is_not_cached
     css = <<~CSS
       @media screen and (min-width: 480px) {
         .test_css_1 {padding:1rem;}
@@ -129,6 +129,59 @@ class ParserEngineTest < Minitest::Test
 
     parse css
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_parses_keyframes_correctly_and_block_is_not_cached
+    css = <<~CSS
+      @keyframes slidein {
+        from {
+          margin-left: 100%;
+          width: 300%;
+        }
+
+        to {
+          margin-left: 0%;
+          width: 100%;
+        }
+      }
+    CSS
+
+    parse css
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_parses_font_face_correctly
+    css = <<~CSS
+    @font-face {
+      font-family: "MyFont";
+      src: url("font.woff2");
+    }
+    CSS
+
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    refute parser.errors?
+  end
+
+  def test_parses_multiple_selectors_correctly
+    css = "h1,h2,h3 {font-weight:bold;}"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    refute parser.errors?
+  end
+
+  def test_parses_vendor_prefixes_correctly
+    css = "h1 {-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);}"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    refute parser.errors?
+  end
+
+  def test_parses_important_keyword_correctly
+    css = "h1 {font-weight:bold !important;}"
+    parser = Deadfire::ParserEngine.new(css)
+    parser.parse
+    refute parser.errors?
   end
 
   private

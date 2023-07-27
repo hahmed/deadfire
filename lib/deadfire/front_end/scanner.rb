@@ -178,9 +178,14 @@ module Deadfire
             @line += 1 if peek == NEWLINE
             advance
           end
-          advance # consume the *
-          advance # consume the /
-          add_token(:comment)
+
+          if at_end? && peek != "*"
+            @error_reporter.error(@line, "Unterminated comment on line #{@line}.")
+          else
+            advance # consume the *
+            advance # consume the /
+          end
+          add_token(:comment) # Add the comment anyway, but report an error.
         else
           add_token(:forward_slash)
         end
