@@ -95,6 +95,8 @@ module Deadfire
             block << at_rule_declaration
           elsif matches_nested_rule?
             block << nesting_declaration
+          elsif match?(:left_brace)
+            block << parse_block
           else
             block << advance
           end

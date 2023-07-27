@@ -42,7 +42,6 @@ module Deadfire
         when "}" then add_token(:right_brace)
         when "#" then add_token(:id_selector)
         when "." then add_token(:class_selector)
-        when ":" then add_token(:pseudo_selector)
         when ";" then add_token(:semicolon)
         when "," then add_token(:comma)
         when "(" then add_token(:left_paren)
@@ -52,6 +51,7 @@ module Deadfire
         when "~" then add_token(:tilde)
         when "*" then add_token(:asterisk)
         when "&" then add_token(:ampersand)
+        when ":" then add_psuedo_selector
         when "-" then add_hypen_token
         when "/" then add_forward_slash_or_comment
         when "'" then add_token(:single_quote)
@@ -151,6 +151,15 @@ module Deadfire
         end
 
         add_token(:number, @source[@start..@current].to_f)
+      end
+
+      def add_psuedo_selector
+        if peek == ":"
+          advance
+          add_token(:double_colon)
+        else
+          add_token(:colon)
+        end
       end
 
       def add_hypen_token

@@ -79,7 +79,7 @@ class ParserEngineTest < Minitest::Test
     assert_equal output, parse("@import \"application.css\";")
   end
 
-  def test_mixin_gets_cached
+  def test_utility_selector_gets_cached
     parse ".test_css_1 {padding:1rem;}"
     assert_equal 1, Deadfire::Interpreter.cached_apply_rules.size
     assert Deadfire::Interpreter.cached_apply_rules[".test_css_1"]
@@ -102,6 +102,23 @@ class ParserEngineTest < Minitest::Test
 
   def test_attribute_selector_does_not_get_cached
     parse "input[type=\"text\"] {padding:1rem;}"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  # focus
+  def test_nested_utility_selector_does_not_get_cached
+    parse "::root { .nav{padding:1rem;} }"
+    assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
+  end
+
+  def test_parses_nested_media_query_correctly
+    css = <<~CSS
+      @media screen and (min-width: 480px) {
+        .test_css_1 {padding:1rem;}
+      }
+    CSS
+
+    parse css
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
   end
 

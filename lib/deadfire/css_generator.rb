@@ -43,6 +43,8 @@ module Deadfire
           visit_nesting_node(declaration)
         when ApplyNode
           visit_apply_node(declaration)
+        when FrontEnd::BlockNode
+          visit_block_node(declaration)
         else
           @output << declaration.lexeme
         end
