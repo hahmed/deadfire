@@ -34,11 +34,14 @@ module Deadfire
     end
 
     def visit_block_node(node, parent)
+      puts "visit block node======="
       node.declarations.each do |declaration|
         case declaration
         when ApplyNode
           apply_mixin(declaration, node)
         when FrontEnd::NestingNode
+          puts "apply nested rules========="
+          puts node.inspect
           apply_nested_rules(declaration, node, parent)
         else
           # we may not need to visit this as we don't process/transform/optimize
@@ -89,11 +92,39 @@ module Deadfire
       end
 
       # replace & with parent selector in the declaration?
-      declaration.update_nesting(parent.selector.selector)
+      # declaration.update_nesting(parent.selector.selector)
 
+      # the current declaration is a nesting node, which needs rewriting
+      # then we need to check every value after this node, because there could be more nesting nodes
+      # if there are, we need to rewrite them as well
+      values = []
+      property = FrontEnd::Token.new(:text, "#{parent.selector.selector}", nil, declaration.property.lineno)
+
+      # values << FrontEnd::Token.new(:space, " ", nil, declaration.property.lineno) if declaration.value.any?
+
+      declaration.value.each do |value|
+        if value.lexeme == "&"
+          prev = values[-1]
+          if prev && prev.type == :text
+            values << FrontEnd::Token.new(:space, " ", nil, value.lineno)
+          end
+          values << FrontEnd::Token.new(:text, "#{parent.selector.selector}", nil, value.lineno)
+          values << FrontEnd::Token.new(:space, " ", nil, value.lineno)
+        else
+          values << value
+          values << FrontEnd::Token.new(:space, " ", nil, value.lineno)
+        end
+      end
+
+      # declaration.update_nesting(property, values)
+
+      # TODO: the lineno should prob be updated, now that the node has been rewritten
       # rewrite node by moving the nesting node to the parent block
       index = node.declarations.index(declaration)
       node.declarations.delete_at(index)
+
+      # What node should this be now? a ruleset node?
+      updated = FrontEnd::BlockNode.new([property, *values], node.declarations)
       parent.block.declarations.push(declaration)
     end
   end

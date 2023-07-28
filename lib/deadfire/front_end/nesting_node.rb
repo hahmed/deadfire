@@ -11,12 +11,13 @@ module Deadfire
         @block = block
       end
 
-      def update_nesting(updated_selector)
-        @property = Token.new(:value, updated_selector, nil, @property.lineno)
+      def update_nesting(property, value)
+        @property = property
+        @value = value
       end
 
       def lexeme
-        value.map(&:lexeme).join("")
+        [property.lexeme, *value.map(&:lexeme)].join
       end
 
       def accept(visitor)

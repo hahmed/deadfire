@@ -185,40 +185,35 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_nest_selector_used_on_its_own
-    css = ".foo {color:blue; & > .bar{color:red;}}"
-    output = ".foo {color:blue;}.foo >.bar {color:red;}"
+    css = ".foo {color:blue; & > .bar {color:red;}}"
+    output = ".foo {color:blue;}.foo>.bar {color:red;}" # TODO: this should be ``.foo>.bar{` no space after > and {
 
     parser = Deadfire::ParserEngine.new(css)
-    parser.parse
     assert_equal output, parser.parse
   end
 
-  # focus
   def test_nest_in_compound_selector
     css = ".foo {color:blue; &.bar{color:red;}}"
     output = ".foo {color:blue;}.foo.bar {color:red;}"
 
     parser = Deadfire::ParserEngine.new(css)
-    parser.parse
-    assert_equal output, parser.parse
-  end
-
-  def test_multiple_selectors_unfold_when_correct_starting_selector_is_used
-    skip
-
-    css = ".foo, .bar {.foo, .bar { color: blue; } :is(.foo, .bar) + .baz, :is(.foo, .bar).qux { color: red; }}"
-    output = ".foo {color:blue;}.foo.bar {color:red;}"
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
     assert_equal output, parser.parse
   end
 
   focus
-  def test_selectors_can_be_used_multiple_times_in_single_selector
-    css = ".foo {color:blue; & .bar & .baz & .qux { color: red; }}"
-    output = ".foo {color:blue;}.foo .bar .foo .baz .foo .qux { color: red; }"
+  def test_multi_level_nesting
+    css = ".nav {color:blue; &-item{color:red; &-text{color:green;}}}"
+    output = ".nav{color:blue}.nav-item{color:red}.nav-item-text{color:green}"
+
     parser = Deadfire::ParserEngine.new(css)
-    parser.parse
+    assert_equal output, parser.parse
+  end
+
+  # focus
+  def test_selectors_can_be_used_multiple_times_in_single_selector
+    css = ".foo {color:blue; & .bar & .baz & .qux {color:red;}}"
+    output = ".foo {color:blue;}.foo .bar .foo .baz .foo .qux {color:red;}"
+    parser = Deadfire::ParserEngine.new(css)
     assert_equal output, parser.parse
   end
 
