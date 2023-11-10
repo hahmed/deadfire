@@ -43,22 +43,6 @@ class ParserTest < Minitest::Test
     end
   end
 
-  def test_custom_mixin_parses_correctly
-    # TODO: we may not support this format, this should be a function
-    # that means we can drop this this
-    output = <<~OUTPUT
-    :root {
-      --main-color: hotpink;
-      --admin-header-padding: 5px 42px;
-    }
-    OUTPUT
-
-    assert_equal output, css_import_content("custom_mixins.css")
-    assert Deadfire::Parser.cached_mixins.include?("--bg-header")
-    output = {"color"=>"red", "padding"=>"4px"}
-    assert_equal output, Deadfire::Parser.cached_mixins["--bg-header"]
-  end
-
   def test_inline_comment_outputs_correctly
     output = <<~OUTPUT
       .test_css_1 {
@@ -161,12 +145,6 @@ class ParserTest < Minitest::Test
   def test_import_with_mixins_parses_correctly
     # TODO: fix empty lines in mixin, maybe remove entire root tag if no mixins?
     output = <<~OUTPUT
-    :root {
-
-
-
-    }
-
     .hero-title {
       font-weight: bold;}
 

@@ -29,7 +29,7 @@ class ErrorReporterTest < Minitest::Test
     parser = Deadfire::ParserEngine.new(import("early_apply_error.css"))
     parser.parse
     assert_equal 1, parser.error_reporter.errors.count
-    assert_equal "Mixin --padding-1 not found", parser.error_reporter.errors.first.message
+    assert_equal "Mixin .padding-1 not found", parser.error_reporter.errors.first.message
   end
 
   def test_comment_without_closing_tag_has_errors
