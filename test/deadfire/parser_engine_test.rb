@@ -11,23 +11,34 @@ class ParserEngineTest < Minitest::Test
     Deadfire::Interpreter.cached_apply_rules = {}
   end
 
-  def test_at_rule_viewport_successfully
+  def test_simple_css_parses
+    output = ".test_css_1 {padding:1rem;}"
+    assert_equal output, css_import_content("test_1.css")
+  end
+
+  def test_early_apply_raises_error_when_mixins_not_defined
+    assert_error_reported do
+      Deadfire::ParserEngine.new("@import \"early_apply_error.css\";")
+    end
+  end
+
+  def test_at_rule_viewport_parses
     assert_equal "@viewport {width:device-width;}", parse("@viewport { width: device-width; }")
   end
 
-  def test_ruleset_successfully
+  def test_ruleset_parses
     assert_equal ".header {color:red;}", parse(".header { color: red; }")
   end
 
-  def test_ruleset_with_underscore
+  def test_ruleset_with_underscore_parses
     assert_equal ".nav_header {color:red;}", parse(".nav_header { color: red; }")
   end
 
-  def test_comment_successfully
+  def test_comment_parses
     assert_equal "/* comment */", parse("/* comment */")
   end
 
-  def test_comment_with_import_ignored
+  def test_comment_with_import_ignored_parses
     assert_equal "/* comment @import url('test'); */", parse("/* comment @import url('test'); */")
   end
 
@@ -50,7 +61,7 @@ class ParserEngineTest < Minitest::Test
     assert_includes output, parse(css)
   end
 
-  def test_multiline_comment_outputs_correctly
+  def test_multiline_comment_parses
     css = <<~CSS
       /* comment
       @import "test_1.css";
@@ -69,22 +80,22 @@ class ParserEngineTest < Minitest::Test
     assert_includes output, parse(css)
   end
 
-  def test_parses_comment_within_block_with_comment_correctly
+  def test_comment_within_block_parses
     css = ".test_css_1 {/* comment */padding:1rem;}"
     assert_equal css, parse(css)
   end
 
-  def test_parses_nested_block_with_comment_correctly
-    css = "::root {.test_css_1{padding:1rem;/* comment */}}"
+  def test_nested_block_with_comment_parses
+    css = ".body {.test_css_1{padding:1rem;/* comment */}}"
     assert_equal css, parse(css)
   end
 
-  def test_single_import_parses_correctly
+  def test_single_import_parses
     output = ".test_css_1 {padding:1rem;}"
     assert_equal output, parse("@import \"test_1.css\";")
   end
 
-  def test_import_that_imports_another_file_parses_correctly
+  def test_import_that_imports_another_file_parses
     output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")
   end
@@ -150,7 +161,7 @@ class ParserEngineTest < Minitest::Test
     assert_equal 0, Deadfire::Interpreter.cached_apply_rules.size
   end
 
-  def test_parses_font_face_correctly
+  def test_font_face_parses
     css = <<~CSS
     @font-face {
       font-family: "MyFont";
@@ -163,21 +174,21 @@ class ParserEngineTest < Minitest::Test
     refute parser.errors?
   end
 
-  def test_parses_multiple_selectors_correctly
+  def test_multiple_selectors_parses
     css = "h1,h2,h3 {font-weight:bold;}"
     parser = Deadfire::ParserEngine.new(css)
     parser.parse
     refute parser.errors?
   end
 
-  def test_parses_vendor_prefixes_correctly
+  def test_vendor_prefixes_parses
     css = "h1 {-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);}"
     parser = Deadfire::ParserEngine.new(css)
     parser.parse
     refute parser.errors?
   end
 
-  def test_parses_important_keyword_correctly
+  def test_important_keyword_parses
     css = "h1 {font-weight:bold !important;}"
     parser = Deadfire::ParserEngine.new(css)
     parser.parse
@@ -188,5 +199,16 @@ class ParserEngineTest < Minitest::Test
 
   def parse(css)
     Deadfire::ParserEngine.new(css).parse
+  end
+
+  def css_import_content(filename)
+    normalized_path = Deadfire::FilenameHelper.normalize_path(filename)
+    parse("@import \"#{normalized_path}\";")
+  end
+
+  def assert_error_reported
+    parser = yield
+    parser.parse
+    assert parser.errors?
   end
 end

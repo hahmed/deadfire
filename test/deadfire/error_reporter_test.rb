@@ -19,10 +19,10 @@ class ErrorReporterTest < Minitest::Test
   end
 
   def test_when_mixin_undefined_error_is_reported
-    parser = Deadfire::ParserEngine.new(".header { @apply --bg-header; }")
+    parser = Deadfire::ParserEngine.new(".header { @apply .bg-header; }")
     parser.parse
     assert_equal 1, parser.error_reporter.errors.count
-    assert_equal "Mixin --bg-header not found", parser.error_reporter.errors.first.message
+    assert_equal "Mixin .bg-header not found", parser.error_reporter.errors.first.message
   end
 
   def test_content_of_imports_are_parsed_and_report_error_when_using_undefined_mixin
