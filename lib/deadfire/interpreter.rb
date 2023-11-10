@@ -38,8 +38,6 @@ module Deadfire
         case declaration
         when ApplyNode
           apply_mixin(declaration, node)
-        when FrontEnd::NestingNode
-          apply_nested_rules(declaration, node, parent)
         else
           # we may not need to visit this as we don't process/transform/optimize
         end
@@ -80,21 +78,6 @@ module Deadfire
         node.declarations.delete_at(index)
         node.declarations.insert(index, *updated_declarations)
       end
-    end
-
-    def apply_nested_rules(declaration, node, parent)
-      unless parent
-        @error_reporter.error(declaration.lineno, "Nesting not allowed at root level")
-        return
-      end
-
-      # replace & with parent selector in the declaration?
-      declaration.update_nesting(parent.selector.selector)
-
-      # rewrite node by moving the nesting node to the parent block
-      index = node.declarations.index(declaration)
-      node.declarations.delete_at(index)
-      parent.block.declarations.push(declaration)
     end
   end
 end

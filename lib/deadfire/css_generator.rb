@@ -39,8 +39,6 @@ module Deadfire
     def visit_block_node(node)
       node.declarations.each do |declaration|
         case declaration
-        when FrontEnd::NestingNode
-          visit_nesting_node(declaration)
         when ApplyNode
           visit_apply_node(declaration)
         when FrontEnd::BlockNode
@@ -49,18 +47,6 @@ module Deadfire
           @output << declaration.lexeme
         end
       end
-    end
-
-    # I don't like this here, do we merge the generator and interpreter?
-    # or the node is transformed into a declaration node, because interpreting is finished
-    # and here we can focus on generating the css
-    def visit_nesting_node(node)
-      @output << node.property.lexeme
-      @output << " "
-      @output << node.lexeme
-      @output << " "
-
-      visit_block_node(node.block)
     end
 
     def visit_apply_node(node)

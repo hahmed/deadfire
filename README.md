@@ -2,7 +2,7 @@
 
 A lightweight CSS preprocessor.
 
-Use plain ol' CSS with a little bit of @import, @apply and nestings.
+Use plain ol' CSS with a little bit of @import and @apply.
 
 CSS is a staple technology when building web applications. With the introduction of LESS, SASS, SCSS it made CSS easier to maintain. However, most of these tools are no longer supported, maintained or have far too many features (wait... that's a bad thing?).
 
@@ -14,7 +14,6 @@ Deadfire can be used with or without a CSS framework.
 
 - [x] @import
 - [x] [@apply](https://tabatkins.github.io/specs/css-apply-rule/)
-- [x] [nesting](https://drafts.csswg.org/css-nesting-1)
 
 ### @import
 
@@ -82,27 +81,6 @@ How can we use mixins? Using @apply...
 .homepage-hero {
   @apply --font-bold;
 }
-```
-
-### nesting
-
-Nesting adds the ability to nest one style rule inside another.
-
-NOTE: This feature is still a work in progress.
-
-```CSS
-/* & can be used on its own */
-.btn {
-  color: blue;
-  & > .homepage { color: red; }
-}
-```
-
-This is expanded to:
-
-```CSS
-.btn { color: blue; }
-.btn > .homepage { color: red; }
 ```
 
 ## Installation

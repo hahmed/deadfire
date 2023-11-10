@@ -235,105 +235,6 @@ class ParserTest < Minitest::Test
     assert_includes "margin: 2px;\nfont-color: red;", transform("@apply --margin-sm --text-red;")
   end
 
-  def test_nest_selector_used_on_its_own
-    output = <<~CSS
-    .foo {
-      color: blue;
-    }
-    .foo > .bar { color: red; }
-    CSS
-
-    assert_includes output, transform(<<~INPUT)
-    .foo {
-      color: blue;
-      & > .bar { color: red; }
-    }
-    INPUT
-  end
-
-  def test_nest_in_compound_selector
-    output = <<~CSS
-    .foo {
-      color: blue;
-    }
-    .foo.bar { color: red; }
-    CSS
-
-    assert_includes output, transform(<<~INPUT)
-    .foo {
-      color: blue;
-      &.bar { color: red; }
-    }
-    INPUT
-  end
-
-  def test_multiple_selectors_unfold_when_correct_starting_selector_is_used
-    skip
-
-    output = <<~CSS
-    .foo {
-      color: blue;
-    }
-    .foo.bar { color: red; }
-    CSS
-
-    assert_equal output, transform(<<~INPUT)
-    .foo, .bar {
-      .foo, .bar { color: blue; }
-      :is(.foo, .bar) + .baz,
-      :is(.foo, .bar).qux { color: red; }
-    }
-    INPUT
-  end
-
-  def test_selectors_can_be_used_multiple_times_in_single_selector
-    output = <<~CSS
-    .foo {
-      color: blue;
-    }
-    .foo .bar .foo .baz .foo .qux { color: red; }
-    CSS
-
-    assert_includes output, transform(<<~INPUT)
-    .foo {
-      color: blue;
-      & .bar & .baz & .qux { color: red; }
-    }
-    INPUT
-  end
-
-  def test_complete_nesting_unfolds_correctly
-    output = <<~CSS
-    table.colortable {
-    }
-    table.colortable th {
-      text-align:center;
-      background:black;
-      color:white;
-    }
-    table.colortable td {
-      text-align:center;
-    }
-    table.colortable td.c { text-transform:uppercase; }
-    table.colortable td:first-child, table.colortable td:first-child+td { border:1px solid black; }
-    CSS
-
-    assert_includes transform(<<~INPUT), output.chomp
-    table.colortable {
-      & th {
-        text-align:center;
-        background:black;
-        color:white;
-      }
-      & td {
-        text-align:center;
-        &.c { text-transform:uppercase; }
-        &:first-child, &:first-child+td { border:1px solid black; }
-      }
-    }
-    INPUT
-  end
-
   def test_raises_error_when_invalid_import_location
     assert_raises(Deadfire::ImportException) do
       css_import_content("randomness/test_1")
@@ -362,24 +263,6 @@ class ParserTest < Minitest::Test
         padding: 3rem;
       }
     CSS
-  end
-
-  def test_parses_content_after_nested_block
-    output = <<~OUTPUT
-    .title {
-      color: blue;
-    }
-    .title .text { padding: 3px; }
-    .image { padding: 2px; }
-    OUTPUT
-
-    assert_equal output, transform(<<~INPUT)
-    .title {
-      color: blue;
-      & .text { padding: 3px; }
-    }
-    .image { padding: 2px; }
-    INPUT
   end
 
   def test_parses_apply_correctly_when_line_ends_with_end_block_char

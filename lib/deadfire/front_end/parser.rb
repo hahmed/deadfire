@@ -93,8 +93,6 @@ module Deadfire
             break
           elsif matches_at_rule?
             block << at_rule_declaration
-          elsif matches_nested_rule?
-            block << nesting_declaration
           elsif match?(:left_brace)
             block << parse_block
           else
@@ -143,18 +141,6 @@ module Deadfire
         end
 
         AtRuleNode.new(keyword, values[0..-1], parse_block) # remove the left brace, because it's not a value, but part of the block
-      end
-
-      def nesting_declaration
-        consume(:ampersand, "Expect nesting declaration")
-        property = previous
-
-        values = []
-        while !match?(:left_brace)
-          values << advance
-        end
-
-        NestingNode.new(property, values[0..-1], parse_block)
       end
     end
   end

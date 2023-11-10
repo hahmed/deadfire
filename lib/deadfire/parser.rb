@@ -70,8 +70,6 @@ module Deadfire
         handle_mixins(line)
       elsif line.strip.start_with?(APPLY_SELECTOR)
         handle_apply(line)
-      elsif line.strip.start_with?(NEST_SELECTOR)
-        handle_nestings(line)
       else
         @output << line
       end
@@ -111,11 +109,6 @@ module Deadfire
     def handle_mixins(line)
       @root = Root.new(line, buffer.lineno, buffer)
       @output << @root.parse
-    end
-
-    def handle_nestings(line)
-      nesting = Nesting.new(line, buffer.lineno, buffer, @output)
-      @output << nesting.parse
     end
   end
 
@@ -260,131 +253,6 @@ module Deadfire
       raise Deadfire::EarlyApplyException.new(key, @lineno) unless Parser.cached_mixins.include?(key)
 
       Parser.cached_mixins[key]
-    end
-  end
-
-  class Nesting < Line
-    attr_accessor :block_names
-
-    def initialize(content, lineno, buffer, output)
-      super(content, lineno)
-      @buffer = buffer
-      @output = output
-      @block_names = []
-      @nested_level = 0
-    end
-
-    def parse
-      line = content.dup.strip
-      @block_names << find_block_name(@output, @lineno)
-      tmp = []
-
-      while @nested_level > 0 || !@buffer.eof?
-        spaces = calculate_spaces_to_add(line)
-
-        if line.start_with?(Parser::NEST_SELECTOR)
-          add_end_block_when_no_end_block_on_prev_line(arr: tmp)
-          add_selector_to_block_name(line)
-          @nested_level += 1
-          tmp << rewrite_line(spaces, line, @block_names[0...-1].join(" "))
-        else
-          tmp << "#{spaces}#{line.lstrip}"
-        end
-
-        remove_last_block_name_entry if line.end_with?(Parser::END_BLOCK_CHAR)
-
-        if line.end_with?(Parser::END_BLOCK_CHAR)
-          result = @buffer.peek
-          if result.strip == Parser::END_BLOCK_CHAR
-            @buffer.gets(skip_buffer: true)
-            break
-          end
-        end
-
-        line = @buffer.gets
-
-        if line.nil? || @buffer.eof? || line.empty?
-          break
-        else
-          line.strip!
-        end
-      end
-
-      tmp.join("\n").concat("\n")
-    end
-
-    private
-
-    def remove_last_block_name_entry
-      @nested_level -= 1
-      @block_names.pop
-    end
-
-    def add_selector_to_block_name(line)
-      line = extract_selector(line)
-      line = line_without_nested_block(line)
-      @block_names << line unless @block_names.include?(line)
-    end
-
-    def add_end_block_when_no_end_block_on_prev_line(arr: @output)
-      unless arr[-1]&.strip&.end_with?("}")
-        arr << "}"
-      end
-    end
-
-    def calculate_spaces_to_add(line)
-      unless line =~ Parser::OPENING_SELECTOR_PATTERN || line =~ Parser::CLOSING_SELECTOR_PATTERN
-        "  "
-      else
-        ""
-      end
-    end
-
-    def extract_selector(line)
-      line.split(Parser::START_BLOCK_CHAR).first.strip
-    end
-
-    def line_without_nested_block(line)
-      line.split(Parser::NEST_SELECTOR).last.strip
-    end
-
-    def rewrite_line(spaces, line, selector)
-      case number_of_selectors_in(line)
-      when 0
-        line
-      when 1
-        "#{spaces}#{line.strip.gsub("&", selector)}"
-      else
-        line.strip.each_char.map do |s|
-          if s == Parser::NEST_SELECTOR
-            selector
-          else
-            s
-          end
-        end.join
-      end
-    end
-
-    def number_of_selectors_in(line)
-      line.split.count do |s|
-        # break if s == "{" # early exit, no need to read every char
-        s.start_with?(Parser::NEST_SELECTOR)
-      end
-    end
-
-    def find_block_name(output, lineno = nil)
-      lineno = output.size unless lineno
-      if lineno < 0
-        raise "Cannot find block name"
-      end
-
-      line = output[lineno]
-
-      if line.to_s =~ Parser::OPENING_SELECTOR_PATTERN
-        extract_selector(line)
-      else
-        find_block_name(output, lineno - 1)
-      end
     end
   end
 end
