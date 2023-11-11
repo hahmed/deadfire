@@ -90,14 +90,43 @@ class ParserEngineTest < Minitest::Test
     assert_equal css, parse(css)
   end
 
+  def test_multiline_comment_is_removed_when_config_setting_is_true
+    Deadfire.configuration.keep_comments = false
+    css = <<~CSS
+      /* comment
+      @import "test_1.css";
+      multilines */
+      .test_css_1 {
+        padding: 1rem;
+      }
+    CSS
+    assert_equal ".test_css_1 {padding:1rem;}", parse(css)
+  end
+
   def test_single_import_parses
     output = ".test_css_1 {padding:1rem;}"
     assert_equal output, parse("@import \"test_1.css\";")
   end
 
+  def test_import_without_extention_parses
+    output = ".test_css_1 {padding:1rem;}"
+    assert_equal output, parse("@import \"test_1\";")
+  end
+
   def test_import_that_imports_another_file_parses
     output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")
+  end
+
+  def test_import_from_admin_directory_parses
+    output = ".test_css_3 {padding:3rem;}"
+    assert_equal output, parse("@import \"admin/test_3.css\";")
+  end
+
+  def test_raises_error_when_invalid_import_location
+    assert_raises(Deadfire::ImportException) do
+      css_import_content("randomness/test_1")
+    end
   end
 
   def test_utility_selector_gets_cached

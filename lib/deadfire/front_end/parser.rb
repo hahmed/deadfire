@@ -21,7 +21,8 @@ module Deadfire
         # declarations are property + value
         while !is_at_end?
           if check(:comment)
-            @stylesheet << add_comment if Deadfire.configuration.keep_comments
+            comment = add_comment
+            @stylesheet << comment if Deadfire.configuration.keep_comments
           elsif matches_at_rule?
             @stylesheet << at_rule_declaration
           else
