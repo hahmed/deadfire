@@ -54,20 +54,18 @@ Output;
 
 The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Mixins simplify applying existing css to a new class.
 
-All mixins must be declared on the `:root` element or preloaded via the `Deadfire.mixins` method. Using a mixin before it's declared will raise an `EarlyApplyException`. Ideally the `:root` element should appear near the top of the document.
+Using a mixin before it's declared will raise an `EarlyApplyException`.
 
 Let's see an example of how to declare mixins and use the @apply directive.
 
 ```CSS
-:root {
-  --font-bold: {
-    font-weight: bold;
-  }
+.font-bold: {
+  font-weight: bold;
+}
 
-  --btn: {
-    padding-bottom: 10px;
-    text-align: center;
-  }
+.btn: {
+  padding-bottom: 10px;
+  text-align: center;
 }
 ```
 
@@ -75,11 +73,11 @@ How can we use mixins? Using @apply...
 
 ```CSS
 .btn-blue {
-  @apply --btn --font-bold;
+  @apply .btn .font-bold;
 }
 
 .homepage-hero {
-  @apply --font-bold;
+  @apply .font-bold;
 }
 ```
 
