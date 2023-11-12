@@ -55,8 +55,8 @@ module Deadfire
         when "-" then add_hypen_token
         when "/" then add_forward_slash_or_comment
         when "'" then add_token(:single_quote)
-        when NEWLINE then @line += 1
-        when " ", "\r", "\t" # Ignore whitespace.
+        when NEWLINE then add_newline_token
+        when " ", "\r", "\t" then add_whitespace_token
         when '"' then add_string_token
         else
           if digit?(token)
@@ -189,6 +189,17 @@ module Deadfire
         else
           add_token(:forward_slash)
         end
+      end
+
+      def add_whitespace_token
+        puts "adding whitespace token===="
+        add_token(:whitespace) if Deadfire.configuration.keep_whitespace
+      end
+
+      def add_newline_token
+        puts "adding newline token===="
+        @line += 1
+        add_token(:newline) if Deadfire.configuration.keep_whitespace
       end
 
       def current_char_position

@@ -2,6 +2,7 @@ require "test_helper"
 
 class ParserEngineTest < Minitest::Test
   def setup
+    Deadfire.configuration.keep_whitespace = false
     Deadfire.configuration.root_path = fixtures_path
     Deadfire::Interpreter.cached_apply_rules = {}
   end
@@ -222,6 +223,16 @@ class ParserEngineTest < Minitest::Test
     parser = Deadfire::ParserEngine.new(css)
     parser.parse
     refute parser.errors?
+  end
+
+  def test_keep_whitespace_successfully
+    Deadfire.configuration.keep_whitespace = true
+    output = <<~OUTPUT
+    .test_css_1  {
+      padding: 1rem;
+    }
+    OUTPUT
+    assert_equal output.chomp, css_import_content("test_1.css")
   end
 
   private
