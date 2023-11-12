@@ -49,6 +49,10 @@ module Deadfire
       end
     end
 
+    def visit_newline_node(node)
+      @output << node.text
+    end
+
     def visit_apply_node(node)
       @output << node.node.lexeme
     end

@@ -24,7 +24,7 @@ module Deadfire
       # For descendant values such as `a b`, we need to add a space between the tokens,
       # otherwise all other values will be concatenated together.
       def tokens_to_selector(tokens)
-        tokens.map(&:lexeme).join("")
+        tokens.map(&:lexeme).join("").strip
       end
 
       # https://sass-lang.com/guide

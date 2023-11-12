@@ -23,6 +23,9 @@ module Deadfire
           if check(:comment)
             comment = add_comment
             @stylesheet << comment if Deadfire.configuration.keep_comments
+          elsif check(:newline)
+            newline = add_newline
+            @stylesheet << newline if Deadfire.configuration.keep_whitespace
           elsif matches_at_rule?
             @stylesheet << at_rule_declaration
           else
@@ -120,6 +123,11 @@ module Deadfire
       def add_comment
         consume(:comment, "Expect comment")
         CommentNode.new(previous)
+      end
+
+      def add_newline
+        consume(:newline, "Expect newline")
+        NewlineNode.new(previous)
       end
 
       def at_rule_declaration

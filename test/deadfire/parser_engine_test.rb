@@ -228,7 +228,7 @@ class ParserEngineTest < Minitest::Test
   def test_keep_whitespace_successfully
     Deadfire.configuration.keep_whitespace = true
     output = <<~OUTPUT
-    .test_css_1  {
+    .test_css_1 {
       padding: 1rem;
     }
     OUTPUT

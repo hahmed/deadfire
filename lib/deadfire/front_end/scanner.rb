@@ -192,12 +192,10 @@ module Deadfire
       end
 
       def add_whitespace_token
-        puts "adding whitespace token===="
         add_token(:whitespace) if Deadfire.configuration.keep_whitespace
       end
 
       def add_newline_token
-        puts "adding newline token===="
         @line += 1
         add_token(:newline) if Deadfire.configuration.keep_whitespace
       end

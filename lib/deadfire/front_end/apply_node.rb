@@ -30,6 +30,8 @@ module Deadfire
             names << current.join("")
             current = []
             current << token.lexeme
+          when :whitespace
+            # ignore whitespace
           else
             current << token.lexeme
           end

@@ -56,6 +56,9 @@ module Deadfire
       # do nothing for now
     end
 
+    def visit_newline_node(node)
+    end
+
     private
 
     def apply_mixin(mixin, node)
