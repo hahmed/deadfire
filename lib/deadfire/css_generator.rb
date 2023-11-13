@@ -43,6 +43,8 @@ module Deadfire
           visit_apply_node(declaration)
         when FrontEnd::BlockNode
           visit_block_node(declaration)
+        when FrontEnd::AtRuleNode
+          visit_at_rule_node(declaration)
         else
           @output << declaration.lexeme
         end

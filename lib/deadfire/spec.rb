@@ -4,7 +4,7 @@ module Deadfire
     # stylesheet         = [ CDO | CDC | S | statement ]*;
     # statement          = ruleset | at-rule;
     # at-rule            = ATKEYWORD S* any-value* [ block | ';' S* ];
-    # block              = '{' S* [ S* declaration ]* '}' S*;
+    # block              = '{' S* [ S* (declaration | at-rule) ]* '}' S*;
     # ruleset            = selector [ ',' S* selector ]* S* '{' S* declaration [ ';' S* declaration ]* '}' S*;
     # selector           = simple-selector [ combinator selector | S+ [ combinator? selector ]? ];
     # simple-selector    = element-name? [ '#' id-selector ]? [ '.' class-selector ]* [ '[' attrib-selector ']' ]*;

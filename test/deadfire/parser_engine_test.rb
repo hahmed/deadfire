@@ -235,6 +235,23 @@ class ParserEngineTest < Minitest::Test
     assert_equal output.chomp, css_import_content("test_1.css")
   end
 
+  def test_at_rule_node_contains_at_rule_node_parses
+    css = <<~CSS
+    @media (min-width: 1536px) {
+      .\32xl\:container {
+        width: 100%;
+      }
+
+      @media (min-width: 640px) {
+        .\32xl\:container {
+          max-width: 640px;
+        }
+      }
+    }
+    CSS
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
+  end
+
   private
 
   def parse(css)
@@ -250,5 +267,11 @@ class ParserEngineTest < Minitest::Test
     parser = yield
     parser.parse
     assert parser.errors?
+  end
+
+  def assert_no_error_reported
+    parser = yield
+    parser.parse
+    refute parser.errors?
   end
 end
