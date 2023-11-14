@@ -28,7 +28,7 @@ module Deadfire
         visit_block_node(node.block, node)
 
         unless Interpreter.cached_apply_rules[node.selector.selector]
-          Interpreter.cached_apply_rules[node.selector.mixin_name] = node.block if node.selector.cacheable?
+          Interpreter.cached_apply_rules[node.selector.selector] = node.block if node.selector.cacheable?
         end
       end
     end
@@ -71,6 +71,8 @@ module Deadfire
           cached_block.declarations[1...-1].each do |cached_declaration|
             updated_declarations << cached_declaration
           end
+          updated_declarations.shift if updated_declarations.first.type == :newline
+          updated_declarations.pop if updated_declarations.last.type == :newline
         else
           @error_reporter.error(mixin.lineno, "Mixin #{mixin_name} not found") # TODO: we need the declarations lineno, not the block
         end
