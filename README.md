@@ -79,6 +79,12 @@ How can we use mixins? Using @apply...
 }
 ```
 
+### Fault tolerant
+
+When Deadfire encounters an error, such as a missing mixin or other issues, it does not immediately raise an error that would halt the execution. Instead, it continues processing the CSS code and collects the encountered errors. These errors are then reported through the ErrorReporter class, allowing you to handle or display them as needed.
+
+By adopting this fault-tolerant approach, Deadfire aims to provide more flexibility and resilience when dealing with CSS code that may contain errors or inconsistencies. It allows you to gather information about the encountered issues and take appropriate actions based on the reported errors.
+
 ## Installation
 
 Add this line to your application's Gemfile:
