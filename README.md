@@ -54,8 +54,6 @@ Output;
 
 The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Mixins simplify applying existing css to a new class.
 
-Using a mixin before it's declared will raise an `EarlyApplyException`.
-
 Let's see an example of how to declare mixins and use the @apply directive.
 
 ```CSS
@@ -99,7 +97,25 @@ Or install it yourself as:
 
 ## Deadfire + Ruby on Rails
 
-After adding Deadfire gem to your rails application, open the file `config/initializers/assets.rb` to setup your Sprocket and the asset pipeline to use the new preprocessor.
+After adding Deadfire gem to your rails application, open the file `config/initializers/assets.rb` or create a new initializer `config/initializers/deadfire.rb`.
+
+### Propshaft
+
+To setup Propshaft to use Deadfire as a preprocessor:
+
+```ruby
+# config/initializers/assets.rb
+class DeadfireCompiler < Propshaft::Compiler
+  def compile(logical_path, input)
+    Deadfire.parse(input, root_path: Rails.root.join("app", "assets", "stylesheets"))
+  end
+end
+
+Rails.application.config.assets.compilers << ["text/css", DeadfireCompiler]
+```
+### Sprockets
+
+To setup Sprocket to use Deadfire as a preprocessor:
 
 ```ruby
 # config/initializers/assets.rb
