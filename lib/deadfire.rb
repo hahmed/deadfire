@@ -45,7 +45,9 @@ module Deadfire
     end
 
     def parse(content, options = {})
-      Parser.parse(content, options)
+      parser = ParserEngine.new(content)
+      # TODO: hook into a logger and report the errors
+      parser.parse
     end
   end
 end

@@ -127,7 +127,7 @@ module Deadfire
 
       def add_newline
         consume(:newline, "Expect newline")
-        NewlineNode.new(previous)
+        NewlineNode.new(previous.lexeme)
       end
 
       def at_rule_declaration
