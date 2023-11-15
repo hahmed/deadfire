@@ -20,13 +20,10 @@ require_relative "deadfire/front_end/apply_node"
 require_relative "deadfire/front_end/at_rule_node"
 require_relative "deadfire/front_end/block_node"
 require_relative "deadfire/front_end/comment_node"
-require_relative "deadfire/front_end/declaration_node"
 require_relative "deadfire/front_end/newline_node"
-require_relative "deadfire/front_end/property_node"
 require_relative "deadfire/front_end/ruleset_node"
 require_relative "deadfire/front_end/selector_node"
 require_relative "deadfire/front_end/stylesheet_node"
-require_relative "deadfire/front_end/value_node"
 
 module Deadfire
   class << self
