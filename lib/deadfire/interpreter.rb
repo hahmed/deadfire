@@ -1,7 +1,7 @@
 # Frozen_string_literal: true
 
 module Deadfire
-  class Interpreter
+  class Interpreter # :nodoc:
     singleton_class.attr_accessor :cached_apply_rules
     self.cached_apply_rules = Hash.new { |h, k| h[k] = nil }
 
