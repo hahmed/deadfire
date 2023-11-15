@@ -199,30 +199,22 @@ class ParserEngineTest < Minitest::Test
     }
     CSS
 
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
-    refute parser.errors?
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
   def test_multiple_selectors_parses
     css = "h1,h2,h3 {font-weight:bold;}"
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
-    refute parser.errors?
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
   def test_vendor_prefixes_parses
     css = "h1 {-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);}"
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
-    refute parser.errors?
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
   def test_important_keyword_parses
     css = "h1 {font-weight:bold !important;}"
-    parser = Deadfire::ParserEngine.new(css)
-    parser.parse
-    refute parser.errors?
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
   def test_keep_whitespace_successfully
@@ -254,7 +246,7 @@ class ParserEngineTest < Minitest::Test
 
   # native css features tests mostly for completeness and show deadfire can parse the syntax
 
-  def test_nesting_parses
+  def test_nesting_css_parses
     css = <<~CSS
     .foo {
       @layer base {
@@ -264,6 +256,43 @@ class ParserEngineTest < Minitest::Test
             min-block-size: 100%;
           }
         }
+      }
+    }
+    CSS
+
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
+  end
+
+  def test_keyframes_css_parses
+    css = <<~CSS
+    @keyframes slide-in {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    .element {
+      animation: slide-in 1s ease-in-out;
+    }
+    CSS
+
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
+  end
+
+  def test_media_queries_css_parses
+    css = <<~CSS
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+    }
+
+    @media screen and (min-width: 1024px) {
+      .sidebar {
+        display: none;
       }
     }
     CSS
