@@ -44,7 +44,8 @@ module Deadfire
       "@counter-style",
       "@viewport",
       "@document",
-      "@apply"
+      "@apply",
+      "@layer"
     ]
 
     CSS_SELECTORS = [

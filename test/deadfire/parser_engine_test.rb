@@ -252,6 +252,25 @@ class ParserEngineTest < Minitest::Test
     assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
+  # native css features tests mostly for completeness and show deadfire can parse the syntax
+
+  def test_nesting_parses
+    css = <<~CSS
+    .foo {
+      @layer base {
+        block-size: 100%;
+        @layer support {
+          & .bar {
+            min-block-size: 100%;
+          }
+        }
+      }
+    }
+    CSS
+
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
+  end
+
   private
 
   def parse(css)
