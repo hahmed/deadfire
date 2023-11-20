@@ -50,11 +50,11 @@ Output;
 
 ### @apply
 
-@apply inlines your classes into your custom css.
+The `@apply` directive inlines your classes into your custom CSS, simplifying the process of applying existing styles to a new class.
 
 The CSS apply rule was [proposed to be included into CSS](https://tabatkins.github.io/specs/css-apply-rule/) however it was abandoned. Mixins simplify applying existing css to a new class.
 
-Let's see an example of how to declare mixins and use the @apply directive.
+Let's take a look at an example of how to use the @apply directive. Note that all utility classes are automatically cached.
 
 ```CSS
 .font-bold: {
@@ -67,7 +67,7 @@ Let's see an example of how to declare mixins and use the @apply directive.
 }
 ```
 
-How can we use mixins? Using @apply...
+Re-use the styles using @apply:
 
 ```CSS
 .btn-blue {
@@ -76,6 +76,31 @@ How can we use mixins? Using @apply...
 
 .homepage-hero {
   @apply .font-bold;
+}
+```
+
+### Nesting
+
+The CSS nesting feature, as described in the CSS Nesting specification (https://drafts.csswg.org/css-nesting/), allows for more intuitive and concise styling by enabling the nesting of CSS rules within one another. This feature simplifies the structure of stylesheets and improves readability.
+
+Now that nesting has been upstreamed to CSS, meaning it is now a part of the official CSS specification. As a result, Deafire will leverage the native CSS nesting feature instead of implementing this feature (which was the original goal of this project).
+
+Example:
+
+```css
+.foo {
+  color: green;
+}
+.foo .bar {
+  font-size: 1.4rem;
+}
+
+/* can be simplified to  */
+.foo {
+  color: green;
+  .bar {
+    font-size: 1.4rem;
+  }
 }
 ```
 
