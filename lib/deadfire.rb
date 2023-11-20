@@ -7,7 +7,6 @@ require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/error_reporter"
 require_relative "deadfire/interpreter"
-require_relative "deadfire/parser"
 require_relative "deadfire/parser_engine"
 require_relative "deadfire/spec"
 require_relative "deadfire/filename_helper"
@@ -26,6 +25,8 @@ require_relative "deadfire/front_end/selector_node"
 require_relative "deadfire/front_end/stylesheet_node"
 
 module Deadfire
+  CSS_FILE_EXTENSION = ".css"
+
   class << self
     attr_reader :config
 
