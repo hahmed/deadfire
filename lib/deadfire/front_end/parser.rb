@@ -13,12 +13,6 @@ module Deadfire
       end
 
       def parse
-        # top level it's a list of statements
-        # statements are either rules or at-rules
-        # rules are selectors + declarations
-        # at-rules are at-keyword + block
-        # block is a list of declarations?
-        # declarations are property + value
         while !is_at_end?
           if check(:comment)
             comment = add_comment
