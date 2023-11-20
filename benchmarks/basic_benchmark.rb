@@ -25,7 +25,7 @@ body {
 }
 
 h1 {
-  font-size: 40px; 
+  font-size: 40px;
 }
 /* Just
 a
@@ -66,14 +66,30 @@ end
 Benchmark.ips do |x|
   x.config(:time => 5, :warmup => 2)
 
-  x.report("dartsass") { dartsass }
+  # x.report("dartsass") { dartsass }
   x.report("deadfire")    { Deadfire.parse(css) }
   x.report("sassc")       { SassC::Engine.new(css).render }
   x.report("sytanx_tree") { SyntaxTree::CSS.parse(css) }
   x.compare!
 end
 
-# FYI
+# Nov 2023: (Note: removed dart sass because I don't have it installed, need to re-run again)
+# Warming up --------------------------------------
+#             deadfire   116.000  i/100ms
+#                sassc    69.000  i/100ms
+#          sytanx_tree    64.000  i/100ms
+# Calculating -------------------------------------
+#             deadfire      1.164k (± 1.2%) i/s -      5.916k in   5.084777s
+#                sassc    695.721  (± 1.3%) i/s -      3.519k in   5.059025s
+#          sytanx_tree    635.684  (± 3.3%) i/s -      3.200k in   5.040489s
+
+# Comparison:
+#             deadfire:     1163.6 i/s
+#                sassc:      695.7 i/s - 1.67x  slower
+#          sytanx_tree:      635.7 i/s - 1.83x  slower
+
+
+# Sep 2022:
 # Warming up --------------------------------------
 #             dartsass     1.000  i/100ms
 #             deadfire     1.088k i/100ms
