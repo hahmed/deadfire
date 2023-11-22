@@ -12,6 +12,8 @@ module Deadfire
     end
 
     def root_path=(value)
+      return if value.nil?
+
       unless Dir.exist?(value)
         raise DirectoryNotFoundError.new("Root not found #{value}")
       end
@@ -19,11 +21,11 @@ module Deadfire
     end
 
     def keep_comments=(value)
-      @keep_comments = value
+      @keep_comments = value unless value.nil?
     end
 
     def keep_whitespace=(value)
-      @keep_whitespace = value
+      @keep_whitespace = value unless value.nil?
     end
   end
 end
