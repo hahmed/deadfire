@@ -104,6 +104,11 @@ class ParserEngineTest < Minitest::Test
     assert_equal ".test_css_1 {padding:1rem;}", parse(css)
   end
 
+  def test_comment_after_selector_parses
+    Deadfire.configuration.keep_comments = false
+    assert_equal ".test_css_1 {padding:1rem;}", parse(".test_css_1 /* comment */ {padding:1rem;}")
+  end
+
   def test_single_import_parses
     output = ".test_css_1 {padding:1rem;}"
     assert_equal output, parse("@import \"test_1.css\";")

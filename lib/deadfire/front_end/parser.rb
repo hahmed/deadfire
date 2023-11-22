@@ -105,7 +105,11 @@ module Deadfire
       def ruleset_declaration
         values = []
         while !match?(:left_brace)
-          values << advance
+          unless match?(:comment)
+            values << advance
+          else
+            values << advance if Deadfire.configuration.keep_comments
+          end
         end
 
         selector = SelectorNode.new(values[0..-1])
