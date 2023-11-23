@@ -44,10 +44,6 @@ module Deadfire
       end
     end
 
-    def visit_declaration_node(node)
-      node.accept(self)
-    end
-
     def visit_comment_node(node)
       # node.accept(self)
     end
