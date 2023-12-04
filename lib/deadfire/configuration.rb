@@ -2,13 +2,12 @@
 
 module Deadfire
   class Configuration
-    attr_reader :directories, :root_path, :keep_comments, :keep_whitespace
+    attr_reader :directories, :root_path, :compressed
 
     def initialize
       @directories = []
       @root_path = ""
-      @keep_comments = true
-      @keep_whitespace = true
+      @compressed = false
     end
 
     def root_path=(value)
@@ -20,12 +19,8 @@ module Deadfire
       @root_path = value
     end
 
-    def keep_comments=(value)
-      @keep_comments = value unless value.nil?
-    end
-
-    def keep_whitespace=(value)
-      @keep_whitespace = value unless value.nil?
+    def compressed=(value)
+      @compressed = value unless value.nil?
     end
   end
 end

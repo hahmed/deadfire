@@ -16,10 +16,10 @@ module Deadfire
         while !is_at_end?
           if check(:comment)
             comment = add_comment
-            @stylesheet << comment if Deadfire.configuration.keep_comments
+            @stylesheet << comment unless Deadfire.configuration.compressed
           elsif check(:newline)
             newline = add_newline
-            @stylesheet << newline if Deadfire.configuration.keep_whitespace
+            @stylesheet << newline unless Deadfire.configuration.compressed
           elsif matches_at_rule?
             @stylesheet << at_rule_declaration
           else
@@ -108,7 +108,7 @@ module Deadfire
           unless match?(:comment)
             values << advance
           else
-            values << advance if Deadfire.configuration.keep_comments
+            values << advance unless Deadfire.configuration.compressed
           end
         end
 

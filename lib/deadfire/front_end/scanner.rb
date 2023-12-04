@@ -192,12 +192,12 @@ module Deadfire
       end
 
       def add_whitespace_token
-        add_token(:whitespace) if Deadfire.configuration.keep_whitespace
+        add_token(:whitespace) unless Deadfire.configuration.compressed
       end
 
       def add_newline_token
         @line += 1
-        add_token(:newline) if Deadfire.configuration.keep_whitespace
+        add_token(:newline) unless Deadfire.configuration.compressed
       end
 
       def current_char_position

@@ -1,4 +1,8 @@
 ## Changelog
+### 0.3.0 (current)
+
+- Simplify the configuration by having one option called compressed instead of keep_newlines and keep_comments.
+
 ### 0.3.0 (15 November 2023)
 
 - Redo the parser by splitting up the tokenizer, parser, interpreter and generator phases which makes each step simpler. It's still faster than sassc but much slower than it was previously which is something I hope to address soon.

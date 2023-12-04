@@ -14,8 +14,7 @@ class DeadfireTest < Minitest::Test
   end
 
   def test_deadfire_parses_with_options
-    assert_equal ".test_css_1 {padding:1rem;}body {color:red;}", Deadfire.parse("/*test*/@import \"test_1.css\"; body {\n  color: red;\n}\n", root_path: fixtures_path, keep_whitespace: false, keep_comments: false)
-    refute Deadfire.configuration.keep_comments
-    refute Deadfire.configuration.keep_whitespace
+    assert_equal ".test_css_1 {padding:1rem;}body {color:red;}", Deadfire.parse("/*test*/@import \"test_1.css\"; body {\n  color: red;\n}\n", root_path: fixtures_path, compressed: true)
+    assert Deadfire.configuration.compressed
   end
 end

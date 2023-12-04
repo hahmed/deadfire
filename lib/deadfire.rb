@@ -44,8 +44,7 @@ module Deadfire
     def parse(content, options = {})
       configure do |config|
         config.root_path = options[:root_path]
-        config.keep_comments = options[:keep_comments]
-        config.keep_whitespace = options[:keep_whitespace]
+        config.compressed = options[:compressed]
       end
 
       parser = ParserEngine.new(content)

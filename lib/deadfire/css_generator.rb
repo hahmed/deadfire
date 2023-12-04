@@ -60,7 +60,7 @@ module Deadfire
     end
 
     def visit_comment_node(node)
-      @output << node.comment.lexeme if Deadfire.configuration.keep_comments
+      @output << node.comment.lexeme unless Deadfire.configuration.compressed
     end
   end
 end

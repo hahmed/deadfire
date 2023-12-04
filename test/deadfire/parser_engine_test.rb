@@ -2,7 +2,7 @@ require "test_helper"
 
 class ParserEngineTest < Minitest::Test
   def setup
-    Deadfire.configuration.keep_whitespace = false
+    Deadfire.configuration.compressed = true
     Deadfire.configuration.root_path = fixtures_path
     Deadfire::Interpreter.cached_apply_rules = {}
   end
@@ -36,14 +36,17 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_comment_parses
+    Deadfire.configuration.compressed = false
     assert_equal "/* comment */", parse("/* comment */")
   end
 
   def test_comment_with_import_ignored_parses
+    Deadfire.configuration.compressed = false
     assert_equal "/* comment @import url('test'); */", parse("/* comment @import url('test'); */")
   end
 
   def test_multiline_comment_with_import_ignored
+    Deadfire.configuration.compressed = false
     css = <<~CSS
       /* comment
       on
@@ -52,14 +55,7 @@ class ParserEngineTest < Minitest::Test
         padding: 1rem;
       }
     CSS
-
-    output = <<~CSS
-      /* comment
-      on
-      multlines */.test_css_1 {padding:1rem;}
-    CSS
-
-    assert_includes output, parse(css)
+    assert_includes css, parse(css)
   end
 
   def test_multiline_comment_parses
@@ -91,8 +87,7 @@ class ParserEngineTest < Minitest::Test
     assert_equal css, parse(css)
   end
 
-  def test_multiline_comment_is_removed_when_config_setting_is_true
-    Deadfire.configuration.keep_comments = false
+  def test_multiline_comment_is_removed_when_compressed
     css = <<~CSS
       /* comment
       @import "test_1.css";
@@ -104,8 +99,7 @@ class ParserEngineTest < Minitest::Test
     assert_equal ".test_css_1 {padding:1rem;}", parse(css)
   end
 
-  def test_comment_after_selector_parses
-    Deadfire.configuration.keep_comments = false
+def test_comment_after_selector_is_removed_when_compressed
     assert_equal ".test_css_1 {padding:1rem;}", parse(".test_css_1 /* comment */ {padding:1rem;}")
   end
 
@@ -222,8 +216,8 @@ class ParserEngineTest < Minitest::Test
     assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
-  def test_keep_whitespace_successfully
-    Deadfire.configuration.keep_whitespace = true
+  def test_compressed_successfully
+    Deadfire.configuration.compressed = false
     output = <<~OUTPUT
     .test_css_1 {
       padding: 1rem;
