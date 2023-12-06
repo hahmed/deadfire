@@ -123,6 +123,11 @@ def test_comment_after_selector_is_removed_when_compressed
     assert_equal output, parse("@import \"admin/test_3.css\";")
   end
 
+  def test_import_scss_parses
+    output = ".test_scss {padding:1rem;}"
+    assert_equal output, parse("@import \"test_scss.scss\";")
+  end
+
   def test_reports_error_when_invalid_import_location
     assert_error_reported do
       Deadfire::ParserEngine.new("@import \"randomness/test_1\";")
