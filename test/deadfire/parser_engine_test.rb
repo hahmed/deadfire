@@ -123,9 +123,9 @@ def test_comment_after_selector_is_removed_when_compressed
     assert_equal output, parse("@import \"admin/test_3.css\";")
   end
 
-  def test_raises_error_when_invalid_import_location
-    assert_raises(Deadfire::ImportException) do
-      css_import_content("randomness/test_1")
+  def test_reports_error_when_invalid_import_location
+    assert_error_reported do
+      Deadfire::ParserEngine.new("@import \"randomness/test_1\";")
     end
   end
 

@@ -38,6 +38,7 @@ module Deadfire
           option = File.join(Deadfire.configuration.root_path, path + ext)
           return option if valid_file?(option)
         end
+        nil
       end
 
       def potential_path(path)
