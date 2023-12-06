@@ -5,7 +5,6 @@ module Deadfire
     attr_reader :node, :mixin_names
 
     def initialize(node, mixin_names)
-      # TODO: mixin name can be single or multiple names, separated by a comma
       @node = node
       @mixin_names = fetch_mixin_name_from(mixin_names)
     end

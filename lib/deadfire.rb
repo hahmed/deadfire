@@ -24,7 +24,7 @@ require_relative "deadfire/front_end/selector_node"
 require_relative "deadfire/front_end/stylesheet_node"
 
 module Deadfire
-  CSS_FILE_EXTENSION = ".css"
+  PERMISSIBLE_FILE_EXTENSIONS = [".css", ".scss"].freeze
 
   class << self
     attr_reader :config

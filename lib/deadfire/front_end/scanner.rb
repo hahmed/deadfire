@@ -251,15 +251,19 @@ module Deadfire
         text = text_token.lexeme.gsub(/\\|"/, '')
         file = FilenameHelper.resolve_import_path(text, @line)
 
-        # file is ready for scanning
-        content = File.read(file)
-        scanner = Scanner.new(content, @error_reporter)
+        if file
+          # file is ready for scanning
+          content = File.read(file)
+          scanner = Scanner.new(content, @error_reporter)
 
-        @tokens.pop # remove the text token
-        @tokens.pop # remove the at_rule token
+          @tokens.pop # remove the text token
+          @tokens.pop # remove the at_rule token
 
-        imported_tokens = scanner.tokenize[0..-2]
-        @tokens.concat imported_tokens
+          imported_tokens = scanner.tokenize[0..-2]
+          @tokens.concat imported_tokens
+        else
+          @error_reporter.error(@line, "File not found '#{text}'")
+        end
       end
     end
   end

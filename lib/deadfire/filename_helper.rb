@@ -5,16 +5,12 @@ module Deadfire
     class << self
       def resolve_import_path(line, lineno = 0)
         path = normalize_path(line)
-        unless path.end_with?(Deadfire::CSS_FILE_EXTENSION)
-          path += Deadfire::CSS_FILE_EXTENSION
-        end
-        import_path = File.join(Deadfire.configuration.root_path, path)
 
-        unless File.exist?(import_path)
-          raise Deadfire::ImportException.new(import_path, lineno)
+        if file_extension?(path)
+          return unless valid_file_extension?(path)
         end
 
-        import_path
+        potential_path(path)
       end
 
       def normalize_path(line)
@@ -23,6 +19,28 @@ module Deadfire
         path.gsub!("\'", "")
         path.gsub!(";", "")
         path
+      end
+
+      private
+
+      def file_extension?(path)
+        path.include?(".")
+      end
+
+      def valid_file_extension?(path)
+        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.include?(path)
+      end
+
+      def valid_file?(path, ext)
+        File.exist?(Deadfire.configuration.root_path, path + ext)
+      end
+
+      def potential_path(path)
+        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.each do |ext|
+          if valid_file?(path, ext)
+            return File.join(Deadfire.configuration.root_path, path + ext)
+          end
+        end
       end
     end
   end
