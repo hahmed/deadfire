@@ -244,7 +244,6 @@ module Deadfire
         end
 
         add_token(:text)
-        advance # remove the semicolon
 
         text_token = @tokens.last
 
@@ -256,6 +255,7 @@ module Deadfire
           content = File.read(file)
           scanner = Scanner.new(content, @error_reporter)
 
+          advance # remove the semicolon
           @tokens.pop # remove the text token
           @tokens.pop # remove the at_rule token
 

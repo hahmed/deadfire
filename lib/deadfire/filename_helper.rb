@@ -5,12 +5,14 @@ module Deadfire
     class << self
       def resolve_import_path(line, lineno = 0)
         path = normalize_path(line)
+        potential = potential_path(path)
+        ext = File.extname(path)
 
-        if file_extension?(path)
-          return unless valid_file_extension?(path)
+        if ext && valid_file?(potential)
+          potential
+        else
+          possible_paths(path)
         end
-
-        potential_path(path)
       end
 
       def normalize_path(line)
@@ -23,24 +25,23 @@ module Deadfire
 
       private
 
-      def file_extension?(path)
-        path.include?(".")
+      def valid_file_extension?(ext)
+        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.include?(ext)
       end
 
-      def valid_file_extension?(path)
-        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.include?(path)
+      def valid_file?(path)
+        File.exist?(path)
       end
 
-      def valid_file?(path, ext)
-        File.exist?(Deadfire.configuration.root_path, path + ext)
+      def possible_paths(path)
+        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.each do |ext|
+          option = File.join(Deadfire.configuration.root_path, path + ext)
+          return option if valid_file?(option)
+        end
       end
 
       def potential_path(path)
-        Deadfire::PERMISSIBLE_FILE_EXTENSIONS.each do |ext|
-          if valid_file?(path, ext)
-            return File.join(Deadfire.configuration.root_path, path + ext)
-          end
-        end
+        File.join(Deadfire.configuration.root_path, path)
       end
     end
   end

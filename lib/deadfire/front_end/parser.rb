@@ -26,7 +26,6 @@ module Deadfire
             @stylesheet << ruleset_declaration
           end
         end
-        puts @stylesheet.inspect
         @stylesheet
       end
 
@@ -138,9 +137,6 @@ module Deadfire
         while !match?(:semicolon, :left_brace) && !is_at_end?
           values << advance
         end
-
-        puts "values: #{values.inspect}"
-        puts "previous: #{previous.inspect}"
 
         if previous.type == :semicolon
           if keyword.lexeme == "@apply"
