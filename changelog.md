@@ -1,6 +1,14 @@
 ## Changelog
 ### 0.3.0 (current)
 
+- Add support for importing .scss files, making it easier to migrate from other libraries.
+```
+@import "nav"
+@import "sidebar.scss"
+.image { padding: 2px; }
+```
+Deadfire will look for the file nav.css, then nav.scss in the `config.root_path` in the case when a file extension is not included.
+
 - Simplify the configuration by having one option called compressed instead of keep_newlines and keep_comments.
 
 ### 0.3.0 (15 November 2023)
