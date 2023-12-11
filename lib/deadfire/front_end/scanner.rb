@@ -75,26 +75,15 @@ module Deadfire
       end
 
       def add_at_rule(literal = nil)
-        selector = [current_char]
-
-        while Spec::CSS_AT_RULES.none? { |kwrd| kwrd == selector.join + peek } && !at_end?
-          break if peek == NEWLINE
-          selector << advance
-        end
-
-        # final char in at-rule
-        selector << advance
-
-        current_at_rule = selector.join
-        at_rule = Spec::CSS_AT_RULES.find { |kwrd| kwrd == current_at_rule }
+        at_rule = determine_at_rule
 
         if peek == NEWLINE
           @line += 1
           @error_reporter.error(@line, "at-rule cannot be on multiple lines.")
-          add_token(:at_rule, current_at_rule)
+          add_token(:at_rule, at_rule)
         elsif at_rule
           token = add_token(:at_rule, "at_#{at_rule[1..-1]}")
-          if at_rule == "@import"
+          if at_rule == Spec::IMPORT
             prescan_import_rule(token.last)
           else
             token
@@ -227,6 +216,21 @@ module Deadfire
 
       def text?(char)
         (char >= "a" && char <= "z") || (char >= "A" && char <= "Z")
+      end
+
+      def determine_at_rule
+        selector = [current_char]
+
+        while Spec::CSS_AT_RULES.none? { |kwrd| kwrd == selector.join + peek } && !at_end?
+          break if peek == NEWLINE
+          selector << advance
+        end
+
+        # final char in at-rule
+        selector << advance
+
+        current_at_rule = selector.join
+        Spec::CSS_AT_RULES.find { |kwrd| kwrd == current_at_rule }
       end
 
       def prescan_import_rule(token)

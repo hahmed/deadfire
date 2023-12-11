@@ -17,20 +17,34 @@ module Deadfire
     # value              = any-value [ ',' S* any-value ]*;
     # any-value          = IDENT | STRING | NUMBER | PERCENTAGE | DIMENSION | COLOR | URI | FUNCTION any-value* ')' | '(' any-value* ')' | '[' any-value* ']' | '{' any-value* '}' | ';';
 
+    CHARSET = "@charset"
+    IMPORT = "@import"
+    MEDIA = "@media"
+    PAGE = "@page"
+    FONT_FACE = "@font-face"
+    KEYFRAMES = "@keyframes"
+    SUPPORTS = "@supports"
+    NAMESPACE = "@namespace"
+    COUNTER_STYLE = "@counter-style"
+    VIEWPORT = "@viewport"
+    DOCUMENT = "@document"
+    APPLY = "@apply"
+    LAYER = "@layer"
+
     CSS_AT_RULES = [
-      "@charset",
-      "@import",
-      "@media",
-      "@page",
-      "@font-face",
-      "@keyframes",
-      "@supports",
-      "@namespace",
-      "@counter-style",
-      "@viewport",
-      "@document",
-      "@apply",
-      "@layer"
+      CHARSET,
+      IMPORT,
+      MEDIA,
+      PAGE,
+      FONT_FACE,
+      KEYFRAMES,
+      SUPPORTS,
+      NAMESPACE,
+      COUNTER_STYLE,
+      VIEWPORT,
+      DOCUMENT,
+      APPLY,
+      LAYER
     ]
 
     CSS_SELECTORS = [
