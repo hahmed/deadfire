@@ -113,6 +113,12 @@ def test_comment_after_selector_is_removed_when_compressed
     assert_equal output, parse("@import \"test_1\";")
   end
 
+  def test_import_without_ending_semicolon_parses
+    assert_error_reported do
+      Deadfire::ParserEngine.new("@import \"test_1\"")
+    end
+  end
+
   def test_import_that_imports_another_file_parses
     output = ".test_css_1 {padding:1rem;}.app_css {margin:1rem;}"
     assert_equal output, parse("@import \"application.css\";")

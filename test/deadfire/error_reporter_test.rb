@@ -15,7 +15,7 @@ class ErrorReporterTest < Minitest::Test
     parser = Deadfire::ParserEngine.new("@import \"application.css\"")
     parser.send(:_parse)
     assert_equal 1, parser.error_reporter.errors.count
-    assert_equal "Unterminated import rule.", parser.error_reporter.errors.first.message
+    assert_equal "Imports must be terminated correctly with a ';'.", parser.error_reporter.errors.first.message
   end
 
   def test_when_mixin_undefined_error_is_reported

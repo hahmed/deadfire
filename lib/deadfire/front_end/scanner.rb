@@ -243,7 +243,7 @@ module Deadfire
         end
 
         if at_end?
-          @error_reporter.error(@line, "Unterminated import rule.")
+          @error_reporter.error(@line, "Imports must be terminated correctly with a ';'.")
           return
         end
 

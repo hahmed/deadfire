@@ -132,6 +132,9 @@ module Deadfire
         consume(:at_rule, "Expect at rule")
         keyword = previous
 
+        # handle the case where the at_rule is missing the ; at the end, e.g. @import "test" and return early
+        return AtRuleNode.new(keyword, [], nil) if is_at_end?
+
         # peek until we get to ; or {, if we reach ; then add to at rule node and return
         values = []
         while !match?(:semicolon, :left_brace) && !is_at_end?
