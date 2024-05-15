@@ -140,6 +140,16 @@ def test_comment_after_selector_is_removed_when_compressed
     end
   end
 
+  def test_ignores_imports_with_media_queries
+    output = "@import  \"test_scss.scss\" print;"
+    assert_equal output, parse("@import \"test_scss.scss\" print;")
+  end
+
+  def test_ignores_imports_with_multiple_media_queries
+    output = "@import  \"test_scss.scss\" handheld and (max-width: 400px);"
+    assert_equal output, parse("@import \"test_scss.scss\" handheld and (max-width: 400px);")
+  end
+
   def test_utility_selector_gets_cached
     parse ".test_css_1 {padding:1rem;}"
     assert_equal 1, Deadfire::Interpreter.cached_apply_rules.size
