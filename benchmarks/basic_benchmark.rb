@@ -8,6 +8,7 @@ gemfile(true) do
   gem "sassc"
   gem "deadfire", github: "hahmed/deadfire", branch: "main"
   gem "syntax_tree-css"
+  gem "sass-embedded"
 
   gem "benchmark-ips"
 end
@@ -59,10 +60,6 @@ code {
 }
 CSS
 
-def dartsass
-  system "sass benchmarks/input.scss output.css", exception: true
-end
-
 Benchmark.ips do |x|
   x.config(:time => 5, :warmup => 2)
 
@@ -70,8 +67,27 @@ Benchmark.ips do |x|
   x.report("deadfire")    { Deadfire.parse(css) }
   x.report("sassc")       { SassC::Engine.new(css).render }
   x.report("sytanx_tree") { SyntaxTree::CSS.parse(css) }
+  x.report("dart sass")   { Sass.compile_string(css) }
   x.compare!
 end
+
+# May 2024: Re-added dart sass
+# Warming up --------------------------------------
+#             deadfire   172.000 i/100ms
+#                sassc    85.000 i/100ms
+#          sytanx_tree    79.000 i/100ms
+#            dart sass   520.000 i/100ms
+# Calculating -------------------------------------
+#             deadfire      1.680k (± 0.9%) i/s -      8.428k in   5.018094s
+#                sassc    816.292 (± 0.2%) i/s -      4.165k in   5.102378s
+#          sytanx_tree    750.421 (± 1.9%) i/s -      3.792k in   5.054908s
+#            dart sass      5.225k (± 4.7%) i/s -     26.520k in   5.090927s
+
+# Comparison:
+#            dart sass:     5224.7 i/s
+#             deadfire:     1679.7 i/s - 3.11x  slower
+#                sassc:      816.3 i/s - 6.40x  slower
+#          sytanx_tree:      750.4 i/s - 6.96x  slower
 
 # Nov 2023: (Note: removed dart sass because I don't have it installed, need to re-run again)
 # Warming up --------------------------------------
