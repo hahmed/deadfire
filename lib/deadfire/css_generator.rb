@@ -19,7 +19,6 @@ module Deadfire
 
     def visit_at_rule_node(node)
       @output << node.at_keyword.lexeme
-      @output << " "
       node.value.each do |value|
         @output << value.lexeme
       end

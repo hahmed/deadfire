@@ -24,7 +24,7 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_at_rule_viewport_parses
-    assert_equal "@viewport {width:device-width;}", parse("@viewport { width: device-width; }")
+    assert_equal "@viewport{width:device-width;}", parse("@viewport { width: device-width; }")
   end
 
   def test_ruleset_parses
@@ -151,13 +151,18 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_ignores_imports_with_media_queries
-    output = "@import  \"test_scss.scss\" print;"
+    output = "@import \"test_scss.scss\" print;"
     assert_equal output, parse("@import \"test_scss.scss\" print;")
   end
 
   def test_ignores_imports_with_multiple_media_queries
-    output = "@import  \"test_scss.scss\" handheld and (max-width: 400px);"
+    output = "@import \"test_scss.scss\" handheld and (max-width: 400px);"
     assert_equal output, parse("@import \"test_scss.scss\" handheld and (max-width: 400px);")
+  end
+
+  def test_ignores_imports_with_url
+    output = "@import url(\"test_scss.scss\");"
+    assert_equal output, parse(output)
   end
 
   def test_utility_selector_gets_cached
