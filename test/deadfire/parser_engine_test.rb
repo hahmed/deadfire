@@ -99,8 +99,18 @@ class ParserEngineTest < Minitest::Test
     assert_equal ".test_css_1 {padding:1rem;}", parse(css)
   end
 
-def test_comment_after_selector_is_removed_when_compressed
+  def test_comment_after_selector_is_removed_when_compressed
     assert_equal ".test_css_1 {padding:1rem;}", parse(".test_css_1 /* comment */ {padding:1rem;}")
+  end
+
+  def test_comment_with_two_stars_at_the_end_parses
+    Deadfire.configuration.compressed = false
+    assert_equal "/* comment **/", parse("/* comment **/")
+  end
+
+  def test_comment_with_two_stars_at_the_start_parses
+    Deadfire.configuration.compressed = false
+    assert_equal "/** comment */", parse("/** comment */")
   end
 
   def test_single_import_parses

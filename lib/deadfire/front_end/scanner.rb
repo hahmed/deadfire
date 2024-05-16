@@ -161,23 +161,29 @@ module Deadfire
       end
 
       def add_forward_slash_or_comment
-        if peek == "*"
-          advance # consume the *
-          while peek != "*" && peek_next != "/" && !at_end?
-            @line += 1 if peek == NEWLINE
-            advance
+        return add_token(:forward_slash) unless peek == "*"
+
+        advance # consume the *
+        while true
+          if at_end?
+            @error_reporter.error(@line, "Unterminated comment on line #{@line}.")
+            break
           end
 
-          if at_end? && peek != "*"
-            @error_reporter.error(@line, "Unterminated comment on line #{@line}.")
-          else
-            advance # consume the *
-            advance # consume the /
+          case peek
+          when NEWLINE
+            @line += 1
+          when "*"
+            if peek_next == "/"
+              advance # consume the *
+              advance # consume the /
+              break
+            end
           end
-          add_token(:comment) # Add the comment anyway, but report an error.
-        else
-          add_token(:forward_slash)
+
+          advance
         end
+        add_token(:comment) # Add the comment anyway, but report an error.
       end
 
       def add_whitespace_token
