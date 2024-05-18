@@ -124,9 +124,10 @@ class ParserEngineTest < Minitest::Test
   end
 
   def test_import_without_ending_semicolon_parses
-    assert_error_reported do
-      Deadfire::ParserEngine.new("@import \"test_1\"")
-    end
+    parser = Deadfire::ParserEngine.new("@import \"test_1\"")
+    result = parser.parse
+    assert parser.errors?
+    assert_equal "@import \"test_1\"", result
   end
 
   def test_import_that_imports_another_file_parses

@@ -132,9 +132,6 @@ module Deadfire
         consume(:at_rule, "Expect at rule")
         keyword = previous
 
-        # handle the case where the at_rule is missing the ; at the end, e.g. @import "test" and return early
-        return AtRuleNode.new(keyword, [], nil) if is_at_end?
-
         # peek until we get to ; or {, if we reach ; then add to at rule node and return
         values = []
         while !match?(:semicolon, :left_brace) && !is_at_end?
@@ -143,14 +140,16 @@ module Deadfire
 
         if previous.type == :semicolon
           if keyword.lexeme == "@apply"
-            return ApplyNode.new(keyword, values)
+            ApplyNode.new(keyword, values)
           else
             values << previous # add the semicolon to the values
-            return AtRuleNode.new(keyword, values, nil)
+            AtRuleNode.new(keyword, values, nil)
           end
+        elsif is_at_end?
+          AtRuleNode.new(keyword, values, nil)
+        else
+          AtRuleNode.new(keyword, values[0..-1], parse_block) # remove the left brace, because it's not a value, but part of the block
         end
-
-        AtRuleNode.new(keyword, values[0..-1], parse_block) # remove the left brace, because it's not a value, but part of the block
       end
     end
   end

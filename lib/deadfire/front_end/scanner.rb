@@ -247,13 +247,13 @@ module Deadfire
         while peek != ";" && !at_end?
           advance
         end
+        
+        add_token(:text)
 
         if at_end?
           @error_reporter.error(@line, "Imports must be terminated correctly with a ';'.")
           return
         end
-
-        add_token(:text)
 
         text_token = @tokens.last
 
