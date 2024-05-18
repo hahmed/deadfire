@@ -9,7 +9,9 @@ module Deadfire
     end
 
     def error(line, message)
-      @errors << Error.new(line, message)
+      error = Error.new(line, message)
+      Deadfire.configuration.logger.error(error.to_s) unless Deadfire.configuration.supressed
+      @errors << error
     end
 
     def errors?
@@ -19,6 +21,10 @@ module Deadfire
     private
 
     # create error struct with line and message
-    Error = Struct.new(:line, :message)
+    Error = Struct.new(:line, :message) do
+      def to_s
+        "Line #{line}: #{message}"
+      end
+    end
   end
 end

@@ -1,5 +1,5 @@
 ## Changelog
-### 0.3.0 (current)
+### 0.4.0 (current)
 
 - Add support for importing .scss files, making it easier to migrate from other libraries.
 ```
