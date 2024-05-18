@@ -1,6 +1,11 @@
 ## Changelog
-### 0.4.0 (current)
+### 0.5.0 (current)
 
+### 0.4.0 (18 May 2024)
+- Fix parsing comments that have 2 stars e.g. /**
+- Adds a logger and a default setting that suppresses the logs which can be configured to report errors.
+- Fixes issue with import's not parsing correctly when there is no ending semicolon.
+- Added ci for ruby 3.3
 - Add support for importing .scss files, making it easier to migrate from other libraries.
 ```
 @import "nav"
