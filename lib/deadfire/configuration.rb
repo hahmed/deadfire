@@ -3,7 +3,7 @@ require "logger"
 
 module Deadfire
   class Configuration
-    attr_reader :directories, :root_path, :compressed, :logger, :supressed
+    attr_reader :directories, :root_path, :compressed, :logger, :supressed, :prefixers
 
     def initialize
       @directories = []
@@ -11,6 +11,7 @@ module Deadfire
       @compressed = false
       @logger = Logger.new(STDOUT, level: :warn)
       @supressed = true
+      @prefixers = {}
     end
 
     def root_path=(value)
@@ -32,6 +33,21 @@ module Deadfire
 
     def supressed=(value)
       @supressed = value
+    end
+
+    # Add an import path, when imported all the utility classes will be prefixed
+    # Example:
+    #  Deadfire.configure do |config|
+    #    config.add_prefixer("admin.css", "admin-")
+    #  end
+    # =>
+    # file: assets/stylesheets/admin.css
+    # .user { color: red; }
+    # file: assets/stylesheets/application.css
+    # import "admin"
+    # .admin-user { color: red; }
+    def add_prefixer(path, prefix)
+      @prefixers[path] = prefix
     end
   end
 end
