@@ -47,7 +47,19 @@ module Deadfire
     # import "admin"
     # .admin-user { color: red; }
     def add_prefixer(path, prefix)
-      @prefixers[path] = prefix
+      @prefixers[path] = assign_default_prefix(prefix)
+    end
+
+    private
+
+    def assign_default_prefix(value)
+      raise ArgumentError, "Prefix must be a string" if value.nil?
+
+      if value.end_with?("-")
+        value
+      else
+        "#{value}-"
+      end
     end
   end
 end

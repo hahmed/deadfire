@@ -46,4 +46,28 @@ class ConfigurationTest < Minitest::Test
 
     assert_instance_of Logger, Deadfire.configuration.logger
   end
+
+  def test_add_prefixer
+    Deadfire.configure do |config|
+      config.add_prefixer("admin.css", "admin-")
+    end
+
+    assert_equal({"admin.css" => "admin-"}, Deadfire.configuration.prefixers)
+  end
+
+  def test_raises_error_when_prefix_is_nil
+    assert_raises(ArgumentError) do
+      Deadfire.configure do |config|
+        config.add_prefixer("admin.css", nil)
+      end
+    end
+  end
+
+  def test_prefixer_adds_dash_when_not_present
+    Deadfire.configure do |config|
+      config.add_prefixer("admin.css", "admin")
+    end
+
+    assert_equal({"admin.css" => "admin-"}, Deadfire.configuration.prefixers)
+  end
 end
