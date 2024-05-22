@@ -78,10 +78,6 @@ module Deadfire
         check(:at_rule)
       end
 
-      def matches_nested_rule?
-        match?(:ampersand)
-      end
-
       def parse_block
         block = BlockNode.new
         block << previous
