@@ -13,7 +13,7 @@ module Deadfire
     def visit_stylesheet_node(node)
       puts "StylesheetNode"
       node.statements.each do |statement|
-        # something
+        # todo
       end
     end
 
@@ -53,6 +53,11 @@ module Deadfire
     def visit_comment_node(node)
       puts "CommentNode"
       puts "  Comment: #{node.comment.lexeme}"
+    end
+
+    def visit_newline_node(node)
+      puts "NewlineNode"
+      puts "  Newline: #{node.text}"
     end
   end
 end
