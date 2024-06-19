@@ -23,6 +23,7 @@ module Deadfire
     PAGE = "@page"
     FONT_FACE = "@font-face"
     KEYFRAMES = "@keyframes"
+    WEBKIT_KEYFRAMES = "@-webkit-keyframes"
     SUPPORTS = "@supports"
     NAMESPACE = "@namespace"
     COUNTER_STYLE = "@counter-style"
@@ -38,6 +39,7 @@ module Deadfire
       PAGE,
       FONT_FACE,
       KEYFRAMES,
+      WEBKIT_KEYFRAMES,
       SUPPORTS,
       NAMESPACE,
       COUNTER_STYLE,

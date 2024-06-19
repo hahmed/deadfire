@@ -318,6 +318,18 @@ class ParserEngineTest < Minitest::Test
     assert_no_error_reported { Deadfire::ParserEngine.new(css) }
   end
 
+  def test_webkit_keyframes_css_parses
+    css = <<~CSS
+    @-webkit-keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    CSS
+
+    assert_no_error_reported { Deadfire::ParserEngine.new(css) }
+  end
+
   def test_media_queries_css_parses
     css = <<~CSS
     @media (max-width: 768px) {
