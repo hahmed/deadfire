@@ -3,13 +3,14 @@
 module Deadfire
   module FrontEnd
     class Scanner
-      def initialize(source, error_reporter)
+      def initialize(source, error_reporter, filename)
         @source = source
         @total_chars = @source.length
         @tokens = []
         @start = 0
         @current = 0
         @line = 1
+        @filename = filename
         @error_reporter = error_reporter
       end
 
@@ -259,11 +260,12 @@ module Deadfire
 
         text = text_token.lexeme.gsub(/\\|"/, '')
         file = FilenameHelper.resolve_import_path(text, @line)
-
+        
         if file
+          DependencyGraph.add(@filename, file)
           # file is ready for scanning
           content = File.read(file)
-          scanner = Scanner.new(content, @error_reporter)
+          scanner = Scanner.new(content, @error_reporter, file)
 
           advance # remove the semicolon
           @tokens.pop # remove the text token

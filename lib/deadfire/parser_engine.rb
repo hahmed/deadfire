@@ -6,8 +6,8 @@ module Deadfire
 
     def initialize(content, options = {})
       @error_reporter = ErrorReporter.new
-      @options = {}
-      @scanner = FrontEnd::Scanner.new(content, error_reporter)
+      file_name = options[:file_name] || "root"
+      @scanner = FrontEnd::Scanner.new(content, error_reporter, file_name)
     end
 
     def parse

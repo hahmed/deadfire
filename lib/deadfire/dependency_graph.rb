@@ -24,6 +24,10 @@ module Deadfire
       def dependents_of(file)
         @dependencies.select { |key, deps| deps.include?(file) }.keys
       end
+
+      def reset
+        @dependencies = Hash.new { |h, k| h[k] = [] }
+      end
     end
   end
 end
