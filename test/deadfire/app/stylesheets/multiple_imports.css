@@ -1,0 +1,10 @@
+@import "test_1";
+@import "admin/test_3.css";
+
+.font-bold {
+  font-weight: bold;
+}
+
+.py-2 {
+  padding: 2px 0;
+}

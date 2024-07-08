@@ -16,3 +16,8 @@ end
 def import(filename)
   "@import \"#{filename}\";"
 end
+
+def css_import_from_path(filename)
+  normalized_path = Deadfire::FilenameHelper.normalize_path(filename)
+  import(normalized_path)
+end

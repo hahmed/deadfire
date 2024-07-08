@@ -260,7 +260,7 @@ module Deadfire
 
         text = text_token.lexeme.gsub(/\\|"/, '')
         file = FilenameHelper.resolve_import_path(text, @line)
-        
+
         if file
           DependencyGraph.add(@filename, file)
           # file is ready for scanning

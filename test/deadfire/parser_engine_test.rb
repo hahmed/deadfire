@@ -355,8 +355,7 @@ class ParserEngineTest < Minitest::Test
   end
 
   def css_import_content(filename)
-    normalized_path = Deadfire::FilenameHelper.normalize_path(filename)
-    parse(import(normalized_path))
+    parse(css_import_from_path(filename))
   end
 
   def assert_error_reported
