@@ -34,10 +34,6 @@ class DependencyGraphTest < Minitest::Test
     assert_equal [import_path("test_1.css"), import_path("admin/test_3.css")], Deadfire::DependencyGraph.dependencies[import_path("multiple_imports.css")]
   end
 
-  def test_the_dependency_graph_has_nested_depedency
-    true
-  end
-
   private
 
   def import_path(import)
