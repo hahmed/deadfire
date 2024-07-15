@@ -262,7 +262,7 @@ module Deadfire
         file = FilenameHelper.resolve_import_path(text, @line)
 
         if file
-          DependencyGraph.add(@filename, file)
+          ImportDependency.add(@filename, file)
           # file is ready for scanning
           content = File.read(file)
           scanner = Scanner.new(content, @error_reporter, file)

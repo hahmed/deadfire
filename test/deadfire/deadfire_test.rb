@@ -10,7 +10,11 @@ class DeadfireTest < Minitest::Test
   end
 
   def test_deadfire_parses_css
-    assert_equal "body {\n  color: red;\n}\n", Deadfire.parse("body {\n  color: red;\n}\n")
+    assert_equal "body {\n  color: red;\n}\n", Deadfire.parse(<<~CSS)
+      body {
+        color: red;
+      }
+    CSS
   end
 
   def test_deadfire_parses_with_options

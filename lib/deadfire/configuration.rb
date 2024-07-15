@@ -4,10 +4,11 @@ require "logger"
 
 module Deadfire
   class Configuration
-    attr_reader :directories, :root_path, :compressed, :logger, :supressed
+    attr_reader :directories, :root_path, :compressed, :logger, :supressed, :file_settings
 
     def initialize
       @directories = []
+      @file_settings = []
       @root_path = ""
       @compressed = false
       @logger = Logger.new(STDOUT, level: :warn)
@@ -33,6 +34,10 @@ module Deadfire
 
     def supressed=(value)
       @supressed = value
+    end
+
+    def add_setting(file, type)
+      @file_settings << FileSetting.new(file, type)
     end
   end
 end
