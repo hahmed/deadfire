@@ -128,39 +128,14 @@ Or install it yourself as:
 
 ## Deadfire + Ruby on Rails
 
-After adding Deadfire gem to your rails application, open the file `config/initializers/assets.rb` or create a new initializer `config/initializers/deadfire.rb`.
-
-### Propshaft
-
-To setup Propshaft to use Deadfire as a preprocessor:
+Propshaft is the new asset pipeline for Rails, to use Deadfire as a preprocessor add the deadfire gem to your Gemfile.
 
 ```ruby
-# config/initializers/assets.rb
-class DeadfireCompiler < Propshaft::Compiler
-  def compile(logical_path, input)
-    Deadfire.parse(input, root_path: Rails.root.join("app", "assets", "stylesheets"))
-  end
-end
-
-Rails.application.config.assets.compilers << ["text/css", DeadfireCompiler]
-```
-### Sprockets
-
-To setup Sprocket to use Deadfire as a preprocessor:
-
-```ruby
-# config/initializers/assets.rb
-class DeadfireProcessor
-  def call(input)
-    return { data: Deadfire.parse(input[:data]) }
-  end
-end
-
-Deadfire.configuration.root_path = Rails.root.join('app', 'assets', 'stylesheets')
-Sprockets.register_preprocessor('text/css', DeadfireProcessor.new)
+gem "deadfire"
 ```
 
-Your css file should now be run through Deadfire.
+That's all, your css file should now be run through Deadfire.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
