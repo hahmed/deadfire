@@ -48,8 +48,9 @@ module Deadfire
       end
 
       parser = ParserEngine.new(content)
-      # TODO: hook into a logger and report the errors
       parser.parse
     end
   end
 end
+
+require_relative "deadfire/railtie"
