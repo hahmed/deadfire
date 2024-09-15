@@ -11,7 +11,7 @@ class AstTest < Minitest::Test
       p { size: 1rem; }
     CSS
     parser = Deadfire::ParserEngine.new(css)
-    out, err = capture_io do
+    out, _ = capture_io do
       parser.print_ast
     end
 
