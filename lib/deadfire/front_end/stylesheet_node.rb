@@ -13,7 +13,7 @@ module Deadfire
         visitor.visit_stylesheet_node(self)
       end
 
-      def << (node)
+      def <<(node)
         @statements << node
       end
     end
