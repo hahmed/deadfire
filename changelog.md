@@ -15,6 +15,7 @@
 Deadfire will look for the file nav.css, then nav.scss in the `config.root_path` in the case when a file extension is not included.
 
 - Simplify the configuration by having one option called compressed instead of keep_newlines and keep_comments.
+- Add the ability to exclude files from being pre-processed via the `config.deadfire.excluded_files` option.
 
 ### 0.3.0 (15 November 2023)
 
