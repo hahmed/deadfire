@@ -7,12 +7,13 @@ module Deadfire
     def initialize(content, options = {})
       @error_reporter = ErrorReporter.new
       @options = {}
+      @asset_loader = AssetLoader.new(options[:filename])
       @scanner = FrontEnd::Scanner.new(content, error_reporter)
     end
 
     def parse
       ast = _parse
-      interpreter = Interpreter.new(error_reporter)
+      interpreter = Interpreter.new(error_reporter, @asset_loader)
       ast.statements.each do |node|
         interpreter.interpret(node)
       end
@@ -29,6 +30,15 @@ module Deadfire
 
     def errors?
       @error_reporter.errors?
+    end
+
+    def load_mixins
+      ast = _parse
+      parser = MixinParser.new
+      ast.statements.each do |node|
+        parser.interpret(node)
+      end
+      parser.mixins
     end
 
     private

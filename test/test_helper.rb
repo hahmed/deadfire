@@ -16,3 +16,11 @@ end
 def import(filename)
   "@import \"#{filename}\";"
 end
+
+def clear_cache
+  FileUtils.rm_rf("tmp/deadfire_cache")
+end
+
+def tmp_path
+  File.expand_path("../tmp", __dir__)
+end

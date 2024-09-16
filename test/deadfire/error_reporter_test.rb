@@ -3,12 +3,12 @@ require "test_helper"
 class ErrorReporterTest < Minitest::Test
   def setup
     Deadfire.configuration.root_path = fixtures_path
-    Deadfire::Interpreter.cached_apply_rules = {}
+    # Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def teardown
     Deadfire.reset
-    Deadfire::Interpreter.cached_apply_rules = {}
+    # Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def test_import_without_ending_semicolon_reports_error

@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative "deadfire/ast_printer"
+require_relative "deadfire/asset_loader"
+require_relative "deadfire/asset_registry"
 require_relative "deadfire/css_generator"
 require_relative "deadfire/configuration"
 require_relative "deadfire/errors"
 require_relative "deadfire/error_reporter"
 require_relative "deadfire/interpreter"
+require_relative "deadfire/mixin_parser"
 require_relative "deadfire/parser_engine"
 require_relative "deadfire/spec"
 require_relative "deadfire/filename_helper"
@@ -47,7 +50,7 @@ module Deadfire
         config.compressed = options[:compressed]
       end
 
-      parser = ParserEngine.new(content)
+      parser = ParserEngine.new(content, filename: options[:filename])
       parser.parse
     end
   end

@@ -1,12 +1,10 @@
-# Frozen_string_literal: true
+# frozen_string_literal: true
 
 module Deadfire
   class Interpreter # :nodoc:
-    singleton_class.attr_accessor :cached_apply_rules
-    self.cached_apply_rules = Hash.new { |h, k| h[k] = nil }
-
-    def initialize(error_reporter)
+    def initialize(error_reporter, asset_loader)
       @error_reporter = error_reporter
+      @asset_loader = asset_loader
     end
 
     def interpret(node)
@@ -27,8 +25,8 @@ module Deadfire
       if node.block
         visit_block_node(node.block, node)
 
-        unless Interpreter.cached_apply_rules[node.selector.selector]
-          Interpreter.cached_apply_rules[node.selector.selector] = node.block if node.selector.cacheable?
+        unless @asset_loader.cached_css(node.selector.selector)
+          @asset_loader.cache_css(node.selector.selector, node.block) if node.selector.cacheable?
         end
       end
     end
@@ -60,8 +58,8 @@ module Deadfire
     def apply_mixin(mixin, node)
       updated_declarations = []
       mixin.mixin_names.each do |mixin_name|
-        if Interpreter.cached_apply_rules[mixin_name]
-          cached_block = Interpreter.cached_apply_rules[mixin_name]
+        if @asset_loader.cached_css(mixin_name)
+          cached_block = @asset_loader.cached_css(mixin_name)
 
           # NOTE: remove the left and right brace but we probably don't need to do this, how can this be simplified?
           cached_block.declarations[1...-1].each do |cached_declaration|

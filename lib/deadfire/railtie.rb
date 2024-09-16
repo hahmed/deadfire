@@ -5,7 +5,7 @@ require "propshaft"
 module Deadfire
   class Railties < ::Rails::Railtie
     config.deadfire = ActiveSupport::OrderedOptions.new
-    config.deadfire.root_path = Rails.root.join("app", "assets") if Rails.root
+    config.deadfire.root_path = Rails.root.join("app", "assets", "stylesheets") if Rails.root
     config.deadfire.excluded_files = []
 
     config.after_initialize do

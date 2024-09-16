@@ -3,7 +3,7 @@ require "logger"
 
 module Deadfire
   class Configuration
-    attr_reader :directories, :root_path, :compressed, :logger, :supressed, :excluded_files
+    attr_reader :directories, :root_path, :compressed, :logger, :supressed, :excluded_files, :asset_registry
 
     def initialize
       @directories = []
@@ -12,6 +12,7 @@ module Deadfire
       @logger = Logger.new(STDOUT, level: :warn)
       @supressed = true
       @excluded_files = []
+      @asset_registry = AssetRegistry.new
     end
 
     def root_path=(value)
