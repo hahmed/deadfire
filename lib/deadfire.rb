@@ -3,6 +3,7 @@
 require_relative "deadfire/ast_printer"
 require_relative "deadfire/css_generator"
 require_relative "deadfire/configuration"
+require_relative "deadfire/cache"
 require_relative "deadfire/errors"
 require_relative "deadfire/error_reporter"
 require_relative "deadfire/interpreter"
@@ -39,6 +40,10 @@ module Deadfire
 
     def configure
       yield(configuration)
+    end
+
+    def cache
+      @_cache ||= Cache.new
     end
 
     def parse(content, options = {})
