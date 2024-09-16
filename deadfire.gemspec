@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 7.0.0"
   spec.add_dependency "railties", ">= 7.0.0"
   spec.add_dependency "propshaft", ">= 0.9.0"
+  spec.add_dependency 'sqlite3', ">= 2.0.0"
 end
