@@ -52,7 +52,7 @@ module Deadfire
         config.compressed = options[:compressed]
       end
 
-      parser = ParserEngine.new(content)
+      parser = ParserEngine.new(content, filename: options[:filename])
       parser.parse
     end
   end
