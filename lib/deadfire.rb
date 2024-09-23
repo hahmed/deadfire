@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "deadfire/ast_printer"
+require_relative "deadfire/asset_loader"
 require_relative "deadfire/css_generator"
 require_relative "deadfire/configuration"
 require_relative "deadfire/cache"
