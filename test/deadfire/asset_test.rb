@@ -10,7 +10,17 @@ class AsssetLoaderTest < Minitest::Test
   end
 
   def test_register_path_successfully
-    @loader.register_path("app/stylsheets")
-    assert_equal ["test/fixtures"], @loader.settings["app/stylsheets"]
+    @loader.register_path(:default, "admin")
+    assert_equal ["admin"], @loader.settings["default"]
+  end
+
+  def test_register_multiple_paths_successfully
+    @loader.register_path(:default, "admin", "dashboard")
+    assert_equal ["admin", "dashboard"], @loader.settings["default"]
+  end
+
+  def test_register_custom_path_succesfully
+    @loader.register_path("admin/dashboard", "admin")
+    assert_equal ["admin"], @loader.settings["admin/dashboard"]
   end
 end
