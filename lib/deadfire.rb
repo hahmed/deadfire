@@ -43,10 +43,6 @@ module Deadfire
       yield(configuration)
     end
 
-    def cache
-      @_cache ||= Cache.new
-    end
-
     def parse(content, options = {})
       configure do |config|
         config.root_path = options[:root_path]

@@ -11,6 +11,7 @@ module Deadfire
     end
 
     def parse
+      preload_mixins
       ast = _parse
       interpreter = Interpreter.new(error_reporter)
       ast.statements.each do |node|
@@ -36,6 +37,11 @@ module Deadfire
     def _parse
       tokens = @scanner.tokenize
       FrontEnd::Parser.new(tokens, error_reporter).parse
+    end
+
+    # async load all the mixin files needed for this stylesheet
+    def preload_mixins
+      Deadfire.config.asset_loader.load(@options[:filename])
     end
   end
 end

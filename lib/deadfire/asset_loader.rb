@@ -15,7 +15,15 @@ module Deadfire
       @settings[path.to_s].concat(mixins)
     end
 
+    def cached_css(name)
+      # TODO...
+    end
+
     def load(path)
+      return if @settings[path].empty?
+
+      # if the path is found and the object has already been cached, load from cache
+      # otherwise load from the file system and parse, then cache it
       Array.wrap(@settings[path]).map do |mixin|
         # TODO...
       end
