@@ -19,6 +19,10 @@ module Deadfire
       # TODO...
     end
 
+    def cache_css(name, value)
+      # TODO
+    end
+
     def load(path)
       return if @settings[path].empty?
 

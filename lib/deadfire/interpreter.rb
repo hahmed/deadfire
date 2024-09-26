@@ -28,7 +28,7 @@ module Deadfire
         visit_block_node(node.block, node)
 
         unless Deadfire.config.asset_loader.cached_css(node.selector.selector)
-          Deadfire.config.asset_loader.cached_css(node.selector.selector) = node.block if node.selector.cacheable?
+          Deadfire.config.asset_loader.cache_css(node.selector.selector, node.block) if node.selector.cacheable?
         end
       end
     end
