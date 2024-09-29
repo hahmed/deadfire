@@ -12,7 +12,6 @@ module Deadfire
       @logger = Logger.new(STDOUT, level: :warn)
       @supressed = true
       @excluded_files = []
-      @asset_loader = Deadfire::AssetLoader.new
     end
 
     def root_path=(value)

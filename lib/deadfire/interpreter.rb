@@ -2,9 +2,6 @@
 
 module Deadfire
   class Interpreter # :nodoc:
-    # singleton_class.attr_accessor :cached_apply_rules
-    # self.cached_apply_rules = Hash.new { |h, k| h[k] = nil }
-
     def initialize(error_reporter)
       @error_reporter = error_reporter
     end

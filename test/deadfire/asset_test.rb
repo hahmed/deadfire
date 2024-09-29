@@ -5,10 +5,6 @@ class AsssetLoaderTest < Minitest::Test
     @loader = Deadfire::AssetLoader.new
   end
 
-  def teardown
-    FileUtils.rm_rf(Deadfire::Cache::NAME)
-  end
-
   def test_register_path_successfully
     @loader.register_path(:default, "admin")
     assert_equal ["admin"], @loader.settings["default"]
