@@ -38,6 +38,7 @@ module Deadfire
       ast.statements.each do |node|
         interpreter.interpret(node)
       end
+      ast.mixins
     end
 
     private

@@ -2,6 +2,8 @@
 
 module Deadfire
   class MixinParser # :nodoc:
+    attr_reader :mixins
+
     def initialize
       @mixins = {}
     end

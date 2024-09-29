@@ -66,11 +66,9 @@ module Deadfire
     end
 
     def load_and_parse_mixin(filename)
-      # NOTE: the content will need to be parsed
       content = File.read(filename)
-      @cache.write(filename, content)
-      # need to get the content back in a way where I get back all the mixing that are available
-      Parser.new(content).mixins
+      mixins = Parser.new(content).mixins
+      @cache.write(filename, mixins)
     end
   end
 end
