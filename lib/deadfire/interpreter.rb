@@ -2,8 +2,9 @@
 
 module Deadfire
   class Interpreter # :nodoc:
-    def initialize(error_reporter)
+    def initialize(error_reporter, asset_loader)
       @error_reporter = error_reporter
+      @asset_loader = asset_loader
     end
 
     def interpret(node)
@@ -24,8 +25,8 @@ module Deadfire
       if node.block
         visit_block_node(node.block, node)
 
-        unless Deadfire.config.asset_loader.cached_css(node.selector.selector)
-          Deadfire.config.asset_loader.cache_css(node.selector.selector, node.block) if node.selector.cacheable?
+        unless @asset_loader.cached_css(node.selector.selector)
+          @asset_loader.cache_css(node.selector.selector, node.block) if node.selector.cacheable?
         end
       end
     end

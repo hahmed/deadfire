@@ -1,8 +1,8 @@
 require "test_helper"
 
-class AsssetLoaderTest < Minitest::Test
+class AsssetRegistryTest < Minitest::Test
   def setup
-    @loader = Deadfire::AssetLoader.new
+    @loader = Deadfire::AssetRegistry.new
   end
 
   def test_register_path_successfully
