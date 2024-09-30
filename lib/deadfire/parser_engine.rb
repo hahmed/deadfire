@@ -34,9 +34,9 @@ module Deadfire
 
     def load_mixins
       ast = _parse
-      interpreter = MixinParser.new(@asset_loader)
+      parser = MixinParser.new
       ast.statements.each do |node|
-        interpreter.interpret(node)
+        parser.interpret(node)
       end
       ast.mixins
     end

@@ -26,8 +26,8 @@ module Deadfire
       if node.block
         visit_block_node(node.block, node)
 
-        unless @mixin.key?(node.selector.selector)
-          @mixin[node.selector.selector] = node.block if node.selector.cacheable?
+        unless @mixins.key?(node.selector.selector)
+          @mixins[node.selector.selector] = node.block if node.selector.cacheable?
         end
       end
     end

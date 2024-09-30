@@ -58,8 +58,8 @@ module Deadfire
     def apply_mixin(mixin, node)
       updated_declarations = []
       mixin.mixin_names.each do |mixin_name|
-        if Deadfire.config.asset_loader.cached_css(mixin_name)
-          cached_block = Deadfire.config.asset_loader.cached_css(mixin_name)
+        if @asset_loader.cached_css(mixin_name)
+          cached_block = @asset_loader.cached_css(mixin_name)
 
           # NOTE: remove the left and right brace but we probably don't need to do this, how can this be simplified?
           cached_block.declarations[1...-1].each do |cached_declaration|
