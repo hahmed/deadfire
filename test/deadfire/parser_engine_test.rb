@@ -4,12 +4,10 @@ class ParserEngineTest < Minitest::Test
   def setup
     Deadfire.configuration.compressed = true
     Deadfire.configuration.root_path = fixtures_path
-    # Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def teardown
     Deadfire.reset
-    # Deadfire::Interpreter.cached_apply_rules = {}
   end
 
   def test_simple_css_parses
