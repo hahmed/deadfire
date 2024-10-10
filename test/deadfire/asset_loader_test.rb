@@ -1,9 +1,13 @@
 require "test_helper"
 
 class AssetLoaderTest < Minitest::Test
+  def setup
+    File.mkdir(tmp_path) unless File.exist?(tmp_path)
+  end
+
   def teardown
     clear_cache
-    Deadfire.configuration.asset_registry.settings.clear
+    Deadfire.reset
   end
 
   def test_valid_file_path_loads_mixin
@@ -54,11 +58,11 @@ class AssetLoaderTest < Minitest::Test
     assert_equal 3, loader.preload.size
 
     # update content for vendor file to simulate file changed between requests
-    File.open(tmp_mixin_file, "a") { |f| f.write(".font-boldest{font-weight:bolder;}") }
+    File.open(tmp_mixin_file, "a") { |f| f.write(".font-bold{font-weight:bolder;}") }
     loader.preload(true)
 
-    assert_equal 4, loader.preload.size
-    assert_equal "{font-weight:bolder;}", loader.preload[".font-boldest"].declarations.map(&:lexeme).join
+    assert_equal 3, loader.preload.size
+    assert_equal "{font-weight:bolder;}", loader.preload[".font-bold"].declarations.map(&:lexeme).join
   end
 
   private
