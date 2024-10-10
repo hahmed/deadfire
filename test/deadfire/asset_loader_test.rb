@@ -2,7 +2,7 @@ require "test_helper"
 
 class AssetLoaderTest < Minitest::Test
   def setup
-    File.mkdir(tmp_path) unless File.exist?(tmp_path)
+    Dir.mkdir(tmp_path) unless Dir.exist?(tmp_path)
   end
 
   def teardown
