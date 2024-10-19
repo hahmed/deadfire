@@ -58,7 +58,7 @@ class AssetLoaderTest < Minitest::Test
     assert_equal 3, loader.preload.size
 
     # update content for vendor file to simulate file changed between requests
-    File.open(tmp_mixin_file, "a") { |f| f.write(".font-bold{font-weight:bolder;}") }
+    File.open(tmp_mixin_file, "a") { |f| f.write("\n\n.font-bold {font-weight:bolder;}") }
     loader.preload(true)
 
     assert_equal 3, loader.preload.size
