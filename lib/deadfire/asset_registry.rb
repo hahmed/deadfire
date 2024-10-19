@@ -12,8 +12,6 @@ module Deadfire
       @settings[path.to_s].concat(mixins)
     end
 
-    # load files from the root path first, then load all the mixins from the
-    # path provided
     def mixins_for(path)
       return [] unless path.present?
 
