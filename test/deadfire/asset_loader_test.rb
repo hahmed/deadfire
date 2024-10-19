@@ -48,21 +48,18 @@ class AssetLoaderTest < Minitest::Test
   end
 
   def test_mixin_loads_latest_version_when_cache_is_invalidated
-    Deadfire.configuration.root_path = tmp_path
-    tmp_mixin_file = File.join(tmp_path, "vendor.css")
-    FileUtils.cp(File.join(fixtures_path, "vendor.css"), tmp_mixin_file)
-
-    Deadfire.configuration.asset_registry.register_path("mixin.css", "vendor.css")
-
+    default_config
     loader = Deadfire::AssetLoader.new("mixin.css")
     assert_equal 3, loader.preload.size
 
     # update content for vendor file to simulate file changed between requests
-    File.open(tmp_mixin_file, "a") { |f| f.write("\n\n.font-bold {font-weight:bolder;}") }
+    Deadfire.configuration.asset_registry.clear
+    Deadfire.configuration.asset_registry.register_path("mixin.css", "vendor2.css")
+
     loader.preload(true)
 
     assert_equal 3, loader.preload.size
-    assert_equal "{font-weight:bolder;}", loader.preload[".font-bold"].declarations.map(&:lexeme).join
+    assert_equal "{\n  font-weight: bolder;\n}", loader.preload[".font-bold"].declarations.map(&:lexeme).join
   end
 
   private

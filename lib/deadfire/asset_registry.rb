@@ -18,6 +18,10 @@ module Deadfire
       Array.wrap(@settings[path]).map { |file| full_path(file) }.compact.flatten
     end
 
+    def clear
+      @settings.clear
+    end
+
     private
 
     def full_path(filename)
