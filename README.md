@@ -79,31 +79,6 @@ Re-use the styles using @apply:
 }
 ```
 
-### Nesting
-
-The CSS nesting feature, as described in the CSS Nesting specification (https://drafts.csswg.org/css-nesting/), allows for more intuitive and concise styling by enabling the nesting of CSS rules within one another. This feature simplifies the structure of stylesheets and improves readability.
-
-Now that nesting has been upstreamed to CSS, meaning it is now a part of the official CSS specification. As a result, Deafire will leverage the native CSS nesting feature instead of implementing this feature (which was the original goal of this project).
-
-Example:
-
-```css
-.foo {
-  color: green;
-}
-.foo .bar {
-  font-size: 1.4rem;
-}
-
-/* can be simplified to  */
-.foo {
-  color: green;
-  .bar {
-    font-size: 1.4rem;
-  }
-}
-```
-
 ### Fault tolerant
 
 When Deadfire encounters an error, such as a missing mixin or other issues, it does not immediately raise an error that would halt the execution. Instead, it continues processing the CSS code and collects the encountered errors. These errors are then reported through the ErrorReporter class, allowing you to handle or display them as needed.
