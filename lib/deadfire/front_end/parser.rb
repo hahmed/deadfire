@@ -135,7 +135,7 @@ module Deadfire
         end
 
         if previous.type == :semicolon
-          if keyword.lexeme == "@apply"
+          if keyword.lexeme == Spec::APPLY
             ApplyNode.new(keyword, values)
           else
             values << previous # add the semicolon to the values

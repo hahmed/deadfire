@@ -33,7 +33,7 @@ module Deadfire
       @_cached_mixins ||= load_mixins
     end
 
-    def load_mixins    
+    def load_mixins
       Array.wrap(Deadfire.configuration.asset_registry.mixins_for(@path)).each.with_object({}) do |filename, data|
         unless File.exist?(filename)
           Deadfire.config.logger.error("Mixin not found: #{filename}")

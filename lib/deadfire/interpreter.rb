@@ -58,15 +58,16 @@ module Deadfire
     def apply_mixin(mixin, node)
       updated_declarations = []
       mixin.mixin_names.each do |mixin_name|
-        if @asset_loader.cached_css(mixin_name)
-          cached_block = @asset_loader.cached_css(mixin_name)
-
+        if cached_block = @asset_loader.cached_css(mixin_name)
           # NOTE: remove the left and right brace but we probably don't need to do this, how can this be simplified?
           cached_block.declarations[1...-1].each do |cached_declaration|
             updated_declarations << cached_declaration
           end
           updated_declarations.shift if updated_declarations.first.type == :newline
           updated_declarations.pop if updated_declarations.last.type == :newline
+          unless updated_declarations.last.type == :semicolon
+            updated_declarations << FrontEnd::Token.new(:semicolon, ";", ";", updated_declarations.last.lineno)
+          end
         else
           @error_reporter.error(mixin.lineno, "Mixin #{mixin_name} not found") # TODO: we need the declarations lineno, not the block
         end
