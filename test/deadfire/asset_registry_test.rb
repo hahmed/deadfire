@@ -2,14 +2,11 @@ require "test_helper"
 
 class AsssetRegistryTest < Minitest::Test
   def setup
-    @loader = Deadfire::AssetRegistry.new
-    Deadfire.configure do |config|
-      config.root_path = fixtures_path
-    end
+    Deadfire.configure { |config| config.root_path = fixtures_path }
+    @loader = Deadfire.configuration.asset_registry
   end
 
   def teardown
-    @loader.clear
     Deadfire.reset
   end
 
