@@ -11,13 +11,13 @@ class AsssetRegistryTest < Minitest::Test
   end
 
   def test_register_path_successfully
-    @loader.register_path("application", "vendor")
-    assert_includes application_mixins, asset_path("vendor.css")
+    @loader.register_path("application", "test_1")
+    assert_includes application_mixins, asset_path("test_1.css")
   end
 
   def test_register_multiple_paths_successfully
-    @loader.register_path("application", "vendor", "vendor2")
-    assert_includes application_mixins, asset_path("vendor.css")
+    @loader.register_path("application", "test_1", "vendor2")
+    assert_includes application_mixins, asset_path("test_1.css")
     assert_includes application_mixins, asset_path("vendor2.css")
   end
 
