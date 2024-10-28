@@ -9,13 +9,14 @@ module Deadfire
     end
 
     def register_path(path, *mixins)
-      @settings[path.to_s].concat(mixins)
+      normalized_paths = Array.wrap(mixins).map { |p| full_path(p) }
+      @settings[path.to_s].concat(normalized_paths)
     end
 
     def mixins_for(path)
       return [] unless path.present?
 
-      Array.wrap(@settings[path]).map { |file| full_path(file) }.compact.flatten
+      Array.wrap(@settings[path]).compact
     end
 
     def clear
@@ -25,7 +26,26 @@ module Deadfire
     private
 
     def full_path(filename)
-      File.join(Deadfire.config.root_path, filename)
+      if File.exist?(filename)
+        filename
+      else
+        normalize_path(filename)
+      end
+    end
+
+    def normalize_path(filename)
+      path = File.join(Deadfire.config.root_path, filename)
+      path = css_extension(path)
+
+      unless File.exist?(path)
+        raise "Error finding asset path"
+      end
+
+      path
+    end
+
+    def css_extension(filename)
+      filename.end_with?(".css") ? filename : "#{filename}.css"
     end
   end
 end
