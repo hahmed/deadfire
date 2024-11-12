@@ -8,15 +8,36 @@ module Deadfire
       @settings = Hash.new { |h, k| h[k] = [] }
     end
 
+    # for a given path, load all the mixins that are registered
+    # this makes it possible to load admin or other scoped mixins for a 
+    # specific path
     def register_path(path, *mixins)
-      normalized_paths = Array.wrap(mixins).map { |p| full_path(p) }
-      @settings[path.to_s].concat(normalized_paths)
+      normalized_mixins = Array.wrap(mixins).map { |p| full_path(p) }
+      normalize_path = strip_path(path).to_s
+      @settings[normalize_path].concat(normalized_mixins)
     end
 
+    # for a given path, load all the mixins that are registered
+    # e.g. admin/ or admin will load all mixins for admin, if admin is a scope
+    # all mixins for admin/* will be loaded
     def mixins_for(path)
       return [] unless path.present?
 
-      Array.wrap(@settings[path]).compact
+      mixins = []
+
+      mixins.concat Array.wrap(@settings[path])
+
+      if settings["*"].present?
+        mixins.concat Array.wrap(settings["*"])
+      end
+
+      scope = scope_from_path(path)
+
+      if scope.present? && settings[scope].present?
+        mixins.concat Array.wrap(settings[scope])
+      end
+
+      mixins.compact.uniq
     end
 
     def clear
@@ -46,6 +67,22 @@ module Deadfire
 
     def css_extension(filename)
       filename.end_with?(".css") ? filename : "#{filename}.css"
+    end
+
+    def scope?(path)
+      path.include?("/")
+    end
+
+    def scope_from_path(path)
+      if scope?(path)
+        path.split("/")[0...-1].join("/")
+      else
+        nil
+      end
+    end
+
+    def strip_path(path)
+      path.split("/").last
     end
   end
 end

@@ -39,5 +39,9 @@ module Deadfire
     def excluded_files=(value)
       @excluded_files = value
     end
+
+    def preprocess(*mixins, path: "*")
+      @asset_registry.register_path(path, *mixins)
+    end
   end
 end

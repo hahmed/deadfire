@@ -23,7 +23,7 @@ module Deadfire
 
         return input if Deadfire.config.excluded_files.include?(path)
 
-        Deadfire.parse(input, filename: path)
+        Deadfire.parse(input, filename: logical_path.logical_path.to_s)
       end
     end
   
