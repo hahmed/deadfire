@@ -59,7 +59,7 @@ module Deadfire
       path = css_extension(path)
 
       unless File.exist?(path)
-        raise "Error finding asset path"
+        raise "Error finding asset path #{path}"
       end
 
       path
