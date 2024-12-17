@@ -1,5 +1,12 @@
 ## Changelog
-### 0.5.0 (current)
+### 0.6.0 (current)
+
+### 0.5.0 (12 Dec 2024)
+- Drop ruby 2.7
+- Add a railties to make it real simple to pre-process every file for a simple setup
+- Added the asset registry to make it easier to control how or which file is used as a mixin
+- Excluded files are no longer pro-processed
+- Make rails + propshaft dependencies
 
 ### 0.4.0 (18 May 2024)
 - Fix parsing comments that have 2 stars e.g. /**
