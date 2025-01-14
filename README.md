@@ -81,7 +81,7 @@ Re-use the styles using @apply:
 
 ### Fault tolerant
 
-When Deadfire encounters an error, such as a missing mixin or other issues, it does not immediately raise an error that would halt the execution. Instead, it continues processing the CSS code and collects the encountered errors. These errors are then reported through the ErrorReporter class, allowing you to handle or display them as needed.
+When Deadfire encounters an error, such as a missing mixin or other issues, it does not raise an error that would halt the execution. Instead, it continues processing the CSS code and collects the encountered errors. These errors are then reported through the ErrorReporter class, allowing you to handle or display them as needed.
 
 By adopting this fault-tolerant approach, Deadfire aims to provide more flexibility and resilience when dealing with CSS code that may contain errors or inconsistencies. It allows you to gather information about the encountered issues and take appropriate actions based on the reported errors.
 
@@ -101,15 +101,35 @@ Or install it yourself as:
 
   `> gem install deadfire`
 
-## Deadfire + Ruby on Rails
+## Ruby on Rails
 
-Propshaft is the new asset pipeline for Rails, to use Deadfire as a preprocessor add the deadfire gem to your Gemfile.
+Propshaft is the new asset pipeline for Rails, Deadfire aims to work alongside Propshaft and takes care of your css files.
+
+With the gem included in your app's Gemfile, by default all your css files will be pre-processed and run through Deadfire.
+
+For more control over the files you want to pre-process, the most important configurations are;
+
+`Deadfire.configuration.root_path` - change the root path where files are processed e.g. tailwind is bundled into `app/assets/builds/tailwind.css`
+which means the root_path will need updating, whereas the default deadfire root_path is `app/assetss/stylesheets`.
 
 ```ruby
-gem "deadfire"
+# config/initializers/assets.rb
+Deadfire.configuration.root_path = Rails.root.join("app/assets").to_s
 ```
 
-That's all, your css file should now be run through Deadfire.
+By default all files are processed and the contents cached, so you can re-use the styles across your stylesheets. If you prefer 
+to preprocess specific mixins;
+
+```ruby
+# config/initializers/assets.rb
+Deadfire.configuration.preprocess("builds/tailwind.css")
+```
+
+To preprocess a file just for the admin path e.g. /admin/users, use the path keyword;
+
+```ruby
+Deadfire.configuration.preprocess("builds/tailwind.css", path: "admin")
+```
 
 ## Development
 
