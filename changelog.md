@@ -1,5 +1,7 @@
 ## Changelog
+
 ### 0.6.0 (current)
+- Drop config.deadfire.* instead the Deadfire.configuration is preferred for configuring deadfire.
 
 ### 0.5.0 (12 Dec 2024)
 - Drop ruby 2.7
