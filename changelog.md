@@ -1,6 +1,7 @@
 ## Changelog
+### 0.7.0 (current)
 
-### 0.6.0 (current)
+### 0.6.0 (15 Jan 2025)
 - Drop config.deadfire.* instead the Deadfire.configuration is preferred for configuring deadfire.
 
 ### 0.5.0 (12 Dec 2024)
