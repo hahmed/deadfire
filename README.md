@@ -103,11 +103,11 @@ Or install it yourself as:
 
 ## Ruby on Rails
 
-Propshaft is the new asset pipeline for Rails, Deadfire aims to work alongside Propshaft and takes care of your css files.
+Deadfire aims to work alongside the new asset pipeline, Propshaft.
 
-With the gem included in your app's Gemfile, by default all your css files will be pre-processed and run through Deadfire.
+With the gem included in your app's Gemfile, by default all your css files will be pre-processed.
 
-For more control over the files you want to pre-process, the most important configurations are;
+For more control over the files you want to pre-process;
 
 `Deadfire.configuration.root_path` - change the root path where files are processed e.g. tailwind is bundled into `app/assets/builds/tailwind.css`
 which means the root_path will need updating, whereas the default deadfire root_path is `app/assetss/stylesheets`.
@@ -117,15 +117,15 @@ which means the root_path will need updating, whereas the default deadfire root_
 Deadfire.configuration.root_path = Rails.root.join("app/assets").to_s
 ```
 
-By default all files are processed and the contents cached, so you can re-use the styles across your stylesheets. If you prefer 
-to preprocess specific mixins;
+`Deadfire.configuration.preprocess` - configure exactly which files you want to pre-process, which caches all the utility classes declared
+so they are available using `@apply` in your stylesheets.
 
 ```ruby
 # config/initializers/assets.rb
 Deadfire.configuration.preprocess("builds/tailwind.css")
 ```
 
-To preprocess a file just for the admin path e.g. /admin/users, use the path keyword;
+To preprocess a file for a specific path like admin e.g. /admin/users, use the path keyword;
 
 ```ruby
 Deadfire.configuration.preprocess("builds/tailwind.css", path: "admin")
